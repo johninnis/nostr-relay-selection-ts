@@ -1,0 +1,745 @@
+[
+    {
+        "name": "authors all have kind 10002: one plan per distinct outbox relay, no fallback plan",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://shared.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://alice-only.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://shared.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://shared.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    ]
+                ]
+            },
+            {
+                "relays": [
+                    "wss://alice-only.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "authors all missing kind 10002: single fallback plan with every author chunked",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            ],
+            "relayListEvents": [],
+            "fallbackRelays": [
+                "wss://fallback-a.example.com",
+                "wss://fallback-b.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://fallback-a.example.com",
+                    "wss://fallback-b.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "mixed: per-outbox plans plus a fallback plan for authors lacking kind 10002",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://alice.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://alice.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            },
+            {
+                "relays": [
+                    "wss://fallback.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "duplicate input pubkeys are deduplicated",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "relayListEvents": [],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://fallback.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "newest kind 10002 per pubkey wins (replaceable-event semantics)",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 100,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://old.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 200,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://new.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://new.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "read-only relay list means no outbox: author goes to fallback",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://read.example.com",
+                            "read"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://fallback.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "maxAuthorsPerFilter chunks a crowded outbox relay",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://crowded.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://crowded.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://crowded.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://crowded.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://crowded.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ],
+            "maxAuthorsPerFilter": 2
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://crowded.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02"
+                    ],
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04"
+                    ],
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "no authors returns no plans",
+        "context": {
+            "authorPubkeys": [],
+            "relayListEvents": [],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ]
+        },
+        "expected": []
+    },
+    {
+        "name": "redundancy=1 picks the minimal cover (one relay per author when possible)",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r2.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r3.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r2.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [],
+            "redundancy": 1
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://r1.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "redundancy=null covers every author at every relay they have (unbounded)",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r2.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r3.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://r2.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [],
+            "redundancy": null
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://r1.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+                    ]
+                ]
+            },
+            {
+                "relays": [
+                    "wss://r2.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    ]
+                ]
+            },
+            {
+                "relays": [
+                    "wss://r3.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "maxAuthorsPerFilter=0 disables chunking (single chunk regardless of author count)",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                },
+                {
+                    "kind": 10002,
+                    "pubkey": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://r1.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [],
+            "maxAuthorsPerFilter": 0
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://r1.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                        "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "author whose entire outbox is blocked falls through to fallback relays, not silently dropped",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://blocked-1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://blocked-2.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ],
+            "blockedRelays": [
+                "wss://blocked-1.example.com",
+                "wss://blocked-2.example.com"
+            ]
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://fallback.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    },
+    {
+        "name": "redundancy is reached using available relays only, never counting a blocked relay toward the target",
+        "context": {
+            "authorPubkeys": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://blocked.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://available-1.example.com",
+                            "write"
+                        ],
+                        [
+                            "r",
+                            "wss://available-2.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ],
+            "fallbackRelays": [
+                "wss://fallback.example.com"
+            ],
+            "blockedRelays": [
+                "wss://blocked.example.com"
+            ],
+            "redundancy": 2
+        },
+        "expected": [
+            {
+                "relays": [
+                    "wss://available-1.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            },
+            {
+                "relays": [
+                    "wss://available-2.example.com"
+                ],
+                "authorChunks": [
+                    [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                ]
+            }
+        ]
+    }
+]

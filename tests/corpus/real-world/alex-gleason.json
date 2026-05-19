@@ -1,0 +1,22 @@
+{
+    "name": "Alex Gleason",
+    "pubkey": "0461fcbecc4c3374439932d6b8f11269ccdb7cc973ad7a50ae362db135a474dd",
+    "events": [
+        {"kind":10002,"id":"2fcb9f6b45af120fb214cb05869219babf7283df66e38430037a24a7b15984bb","pubkey":"0461fcbecc4c3374439932d6b8f11269ccdb7cc973ad7a50ae362db135a474dd","created_at":1772418121,"tags":[["r","wss://relay.primal.net"],["r","wss://relay.ditto.pub"],["client","Ditto"]],"content":"","sig":"13933d26947479e72ac8a5e77ab1db8a9d66dce7027870a183c77ecba1045dae7b4e56f35d5175d75b76afd14e03dc7659480f7442bf78eea5604f779cebdfe7"},
+        {"kind":10050,"id":"95f15d31500cd982f54bec0e6d523f7df56443cee809dcc59a8431a9ab413809","pubkey":"0461fcbecc4c3374439932d6b8f11269ccdb7cc973ad7a50ae362db135a474dd","created_at":1772771871,"tags":[["relay","wss://relay.damus.io"],["relay","wss://relay.primal.net"]],"content":"","sig":"ba697019262feb203ce1ec2b92acafdf76def43fbc69f0d66d5de7dfdcca99d9b86e76d92b9b96dd3655e75cb0268e0a8ca4455516f049eef08370f487e70876"}
+    ],
+    "expected": {
+        "inbox": [
+            "wss://relay.primal.net",
+            "wss://relay.ditto.pub"
+        ],
+        "outbox": [
+            "wss://relay.primal.net",
+            "wss://relay.ditto.pub"
+        ],
+        "dm": [
+            "wss://relay.damus.io",
+            "wss://relay.primal.net"
+        ]
+    }
+}

@@ -1,0 +1,108 @@
+[
+  {
+    "name": "valid event parses",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [["p", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]]
+    },
+    "valid": true
+  },
+  {
+    "name": "valid event with empty tags",
+    "input": {
+      "kind": 0,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": true
+  },
+  {
+    "name": "missing kind returns null",
+    "input": {
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "missing pubkey returns null",
+    "input": {
+      "kind": 1,
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "missing created_at returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "missing tags returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100
+    },
+    "valid": false
+  },
+  {
+    "name": "uppercase pubkey returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "short pubkey returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "deadbeef",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "non-integer kind returns null",
+    "input": {
+      "kind": "1",
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "tag with non-string element returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [["p", 42]]
+    },
+    "valid": false
+  },
+  {
+    "name": "tags not an array returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": "not an array"
+    },
+    "valid": false
+  }
+]

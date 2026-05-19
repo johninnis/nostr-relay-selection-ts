@@ -1,0 +1,110 @@
+[
+  {
+    "name": "clearnet wss is none of onion/loopback/localAddr/insecure",
+    "source": "rust-nostr nostr-gossip-test-suite::gossip_unit_tests::test_selection_with_allowed_relays",
+    "input": "wss://relay.damus.io",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
+  },
+  {
+    "name": "ws:// clearnet is insecure but not onion/local",
+    "source": "rust-nostr nostr-gossip-test-suite::tests::test_allowed_relays",
+    "input": "ws://relay.example.com",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": true
+  },
+  {
+    "name": "192.168.x private-IP host is localAddr (and insecure since ws://)",
+    "source": "rust-nostr nostr-gossip-test-suite::tests::test_allowed_relays",
+    "input": "ws://192.168.1.11:7777",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": ".onion host is onion (insecure ws:// scheme is expected for tor and not flagged as insecure)",
+    "source": "rust-nostr nostr-gossip-test-suite::tests::test_allowed_relays",
+    "input": "ws://oxtrdevav64z64yb7x6rjg4ntzqjhedm5b5zjqulugknhzr46ny2qbad.onion",
+    "isOnion": true,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
+  },
+  {
+    "name": "localhost is loopback (and localAddr by definition)",
+    "input": "ws://localhost:7000",
+    "isOnion": false,
+    "isLoopback": true,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "127.0.0.1 is loopback",
+    "input": "ws://127.0.0.1",
+    "isOnion": false,
+    "isLoopback": true,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "127.5.4.3 anywhere in 127.0.0.0/8 is loopback",
+    "input": "ws://127.5.4.3",
+    "isOnion": false,
+    "isLoopback": true,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "10.x is private IP",
+    "input": "ws://10.0.0.5",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "172.16.x is private IP (lower bound of 172.16/12)",
+    "input": "ws://172.16.0.1",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "172.20.x is private IP (middle of 172.16/12)",
+    "input": "ws://172.20.0.1",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "172.31.x is private IP (upper bound of 172.16/12)",
+    "input": "ws://172.31.0.1",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": true
+  },
+  {
+    "name": "172.32.x is NOT private IP (boundary just outside 172.16/12)",
+    "input": "ws://172.32.0.1",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": true
+  },
+  {
+    "name": ".local mDNS hostname is localAddr",
+    "input": "wss://my-host.local",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": true,
+    "isInsecure": false
+  }
+]

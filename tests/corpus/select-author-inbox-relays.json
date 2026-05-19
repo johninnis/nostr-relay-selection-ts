@@ -1,0 +1,126 @@
+[
+    {
+        "name": "author has kind 10002 with inbox entries",
+        "context": {
+            "authorPubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://author-inbox.example.com",
+                            "read"
+                        ],
+                        [
+                            "r",
+                            "wss://author-write.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ]
+        },
+        "expected": [
+            "wss://author-inbox.example.com"
+        ]
+    },
+    {
+        "name": "author has kind 10002 with only write entries returns empty",
+        "context": {
+            "authorPubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://author-write.example.com",
+                            "write"
+                        ]
+                    ]
+                }
+            ]
+        },
+        "expected": []
+    },
+    {
+        "name": "unmarked r tag treated as both (inbox and outbox)",
+        "context": {
+            "authorPubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "relayListEvents": [
+                {
+                    "kind": 10002,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "r",
+                            "wss://author-both.example.com"
+                        ]
+                    ]
+                }
+            ]
+        },
+        "expected": [
+            "wss://author-both.example.com"
+        ]
+    },
+    {
+        "name": "author has no cached relay list returns empty",
+        "context": {
+            "authorPubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "relayListEvents": []
+        },
+        "expected": []
+    },
+    {
+        "name": "rust-nostr fixture: kind-10002 inbox extraction (unmarked r-tags = read+write)",
+        "source": "input event from tests/corpus/external-fixtures/rust-nostr/kind-10002-nip65-relay-list.json",
+        "context": {
+            "authorPubkey": "68d81165918100b7da43fc28f7d1fc12554466e1115886b9e7bb326f65ec4272",
+            "relayListEvents": [
+                {
+                    "id": "0a49bed4a1eb0973a68a0d43b7ca62781ffd4e052b91bbadef09e5cf756f6e68",
+                    "pubkey": "68d81165918100b7da43fc28f7d1fc12554466e1115886b9e7bb326f65ec4272",
+                    "created_at": 1759351841,
+                    "kind": 10002,
+                    "tags": [
+                        [
+                            "alt",
+                            "Relay list to discover the user's content"
+                        ],
+                        [
+                            "r",
+                            "wss://relay.damus.io/"
+                        ],
+                        [
+                            "r",
+                            "wss://nostr.wine/"
+                        ],
+                        [
+                            "r",
+                            "wss://nostr.oxtr.dev/"
+                        ],
+                        [
+                            "r",
+                            "wss://relay.nostr.wirednet.jp/"
+                        ]
+                    ],
+                    "content": "",
+                    "sig": "f5bc6c18b0013214588d018c9086358fb76a529aa10867d4d02a75feb239412ae1c94ac7c7917f6e6e2303d72f00dc4e9b03b168ef98f3c3c0dec9a457ce0304"
+                }
+            ]
+        },
+        "expected": [
+            "wss://relay.damus.io",
+            "wss://nostr.wine",
+            "wss://nostr.oxtr.dev",
+            "wss://relay.nostr.wirednet.jp"
+        ]
+    }
+]

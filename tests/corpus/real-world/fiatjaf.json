@@ -1,0 +1,26 @@
+{
+    "name": "fiatjaf",
+    "pubkey": "3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d",
+    "events": [
+        {"kind":10002,"id":"42769c8d182bfeeb52d1b36618eaf601206479de7b23162132dd0f38d7549380","pubkey":"3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d","created_at":1772650754,"tags":[["r","wss://inbox.relays.land/","read"],["r","wss://pyramid.fiatjaf.com/","write"],["r","wss://pyramid.fiatjaf.com/inbox","read"],["r","wss://relay.44billion.net/","write"],["r","wss://basspistol.org/","write"],["r","wss://spatia-arcana.com/","write"],["r","wss://spatia-arcana.com/inbox","read"],["r","wss://lightning.red/inbox","read"]],"content":"","sig":"7d8882229416126d250d4a58892bea36736ae70ca2ccc608543797136b155123fe8bab1f9d256ace4a8b1ccbc750dba2dcc8e67fd07e0c4a1b9e5a805cde1590"},
+        {"kind":10050,"id":"d2df2f0e006bcbf4867cdc8ecb4ccfd2904e1e77f4cb72b7427c5cf8261fa47b","pubkey":"3bf0c63fcb93463407af97a5e5ee64fa883d107ef9e558472c4eb9aaaefa459d","created_at":1776875038,"tags":[["relay","wss://pyramid.fiatjaf.com/inbox"],["relay","wss://auth.nostr1.com/"],["client","nostria"]],"content":"","sig":"1897cfc51c9d2e100aa6ea4f3fa732e4bc269c3fed6e0550b64b3beabb39a41a0ce6000e0ed792001350942d3f4d4e14332a53c25d2a4cffba0cf6dbe94edaee"}
+    ],
+    "expected": {
+        "inbox": [
+            "wss://inbox.relays.land",
+            "wss://pyramid.fiatjaf.com/inbox",
+            "wss://spatia-arcana.com/inbox",
+            "wss://lightning.red/inbox"
+        ],
+        "outbox": [
+            "wss://pyramid.fiatjaf.com",
+            "wss://relay.44billion.net",
+            "wss://basspistol.org",
+            "wss://spatia-arcana.com"
+        ],
+        "dm": [
+            "wss://pyramid.fiatjaf.com/inbox",
+            "wss://auth.nostr1.com"
+        ]
+    }
+}

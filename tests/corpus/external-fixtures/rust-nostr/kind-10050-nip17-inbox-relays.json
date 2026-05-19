@@ -1,0 +1,16 @@
+{
+  "source": "rust-nostr/nostr gossip/nostr-gossip-test-suite/src/lib.rs::gossip_unit_tests::test_process_nip17_inbox_relays",
+  "event": {
+    "id": "8d9b40907f80bd7d5014bdc6a2541227b92f4ae20cbff59792b4746a713da81e",
+    "pubkey": "68d81165918100b7da43fc28f7d1fc12554466e1115886b9e7bb326f65ec4272",
+    "created_at": 1756718818,
+    "kind": 10050,
+    "tags": [
+      ["relay", "wss://auth.nostr1.com/"],
+      ["relay", "wss://nostr.oxtr.dev/"],
+      ["relay", "wss://nip17.com"]
+    ],
+    "content": "",
+    "sig": "05611df32f5c4e55bb8d74ab2840378b7707ad162f785a78f8bdaecee5b872667e4e43bcbbf3c6c638335c637f001155b48b7a7040ce2695660467be62f142d5"
+  }
+}

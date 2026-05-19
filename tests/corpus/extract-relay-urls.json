@@ -1,0 +1,251 @@
+[
+    {
+        "function": "extractInboxRelayUrls",
+        "name": "returns read and both markers from r tags",
+        "tags": [
+            [
+                "r",
+                "wss://read.example.com",
+                "read"
+            ],
+            [
+                "r",
+                "wss://write.example.com",
+                "write"
+            ],
+            [
+                "r",
+                "wss://both.example.com",
+                "both"
+            ],
+            [
+                "r",
+                "wss://implicit-both.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://read.example.com",
+            "wss://both.example.com",
+            "wss://implicit-both.example.com"
+        ]
+    },
+    {
+        "function": "extractInboxRelayUrls",
+        "name": "normalises URLs",
+        "tags": [
+            [
+                "r",
+                "WSS://Read.Example.COM:443/",
+                "read"
+            ]
+        ],
+        "expected": [
+            "wss://read.example.com"
+        ]
+    },
+    {
+        "function": "extractInboxRelayUrls",
+        "name": "ignores non-r tags",
+        "tags": [
+            [
+                "p",
+                "feedbeef"
+            ],
+            [
+                "r",
+                "wss://relay.example.com",
+                "read"
+            ],
+            [
+                "t",
+                "hashtag"
+            ]
+        ],
+        "expected": [
+            "wss://relay.example.com"
+        ]
+    },
+    {
+        "function": "extractOutboxRelayUrls",
+        "name": "returns write and both markers from r tags",
+        "tags": [
+            [
+                "r",
+                "wss://read.example.com",
+                "read"
+            ],
+            [
+                "r",
+                "wss://write.example.com",
+                "write"
+            ],
+            [
+                "r",
+                "wss://both.example.com",
+                "both"
+            ],
+            [
+                "r",
+                "wss://implicit-both.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://write.example.com",
+            "wss://both.example.com",
+            "wss://implicit-both.example.com"
+        ]
+    },
+    {
+        "function": "extractOutboxRelayUrls",
+        "name": "empty when no write/both markers",
+        "tags": [
+            [
+                "r",
+                "wss://read.example.com",
+                "read"
+            ]
+        ],
+        "expected": []
+    },
+    {
+        "function": "extractDmRelayUrls",
+        "name": "parses kind-10050 relay tags",
+        "tags": [
+            [
+                "relay",
+                "wss://dm-a.example.com"
+            ],
+            [
+                "relay",
+                "wss://dm-b.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://dm-a.example.com",
+            "wss://dm-b.example.com"
+        ]
+    },
+    {
+        "function": "extractDmRelayUrls",
+        "name": "normalises and ignores non-relay tags",
+        "tags": [
+            [
+                "d",
+                "hubstr/something"
+            ],
+            [
+                "relay",
+                "WSS://Dm.Example.COM:443/"
+            ],
+            [
+                "r",
+                "wss://wrong-tag.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://dm.example.com"
+        ]
+    },
+    {
+        "function": "extractBlockedRelayUrls",
+        "name": "parses kind-10006 relay tags",
+        "tags": [
+            [
+                "relay",
+                "wss://blocked-a.example.com"
+            ],
+            [
+                "relay",
+                "wss://blocked-b.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://blocked-a.example.com",
+            "wss://blocked-b.example.com"
+        ]
+    },
+    {
+        "function": "extractBlockedRelayUrls",
+        "name": "normalises and ignores non-relay tags",
+        "tags": [
+            [
+                "d",
+                "blocked-list"
+            ],
+            [
+                "relay",
+                "WSS://Blocked.Example.COM:443/"
+            ],
+            [
+                "r",
+                "wss://wrong-tag.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://blocked.example.com"
+        ]
+    },
+    {
+        "function": "extractSearchRelayUrls",
+        "name": "parses kind-10007 relay tags",
+        "tags": [
+            [
+                "relay",
+                "wss://search-a.example.com"
+            ],
+            [
+                "relay",
+                "wss://search-b.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://search-a.example.com",
+            "wss://search-b.example.com"
+        ]
+    },
+    {
+        "function": "extractSearchRelayUrls",
+        "name": "normalises and ignores non-relay tags",
+        "tags": [
+            [
+                "d",
+                "search-list"
+            ],
+            [
+                "relay",
+                "WSS://Search.Example.COM:443/"
+            ],
+            [
+                "r",
+                "wss://wrong-tag.example.com"
+            ]
+        ],
+        "expected": [
+            "wss://search.example.com"
+        ]
+    },
+    {
+        "function": "extractDmRelayUrls",
+        "name": "rust-nostr fixture: kind-10050 inbox-relays event",
+        "source": "input tags from tests/corpus/external-fixtures/rust-nostr/kind-10050-nip17-inbox-relays.json",
+        "tags": [
+            [
+                "relay",
+                "wss://auth.nostr1.com/"
+            ],
+            [
+                "relay",
+                "wss://nostr.oxtr.dev/"
+            ],
+            [
+                "relay",
+                "wss://nip17.com"
+            ]
+        ],
+        "expected": [
+            "wss://auth.nostr1.com",
+            "wss://nostr.oxtr.dev",
+            "wss://nip17.com"
+        ]
+    }
+]

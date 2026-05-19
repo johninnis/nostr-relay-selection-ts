@@ -1,0 +1,45 @@
+[
+  {
+    "name": "both zapper and recipient have inbox relays",
+    "context": {
+      "zapperPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "recipientPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://zapper-inbox.example.com", "read"]] },
+        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 1, "tags": [["r", "wss://recipient-inbox.example.com", "read"]] }
+      ]
+    },
+    "expected": ["wss://zapper-inbox.example.com", "wss://recipient-inbox.example.com"]
+  },
+  {
+    "name": "only zapper has a relay list",
+    "context": {
+      "zapperPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "recipientPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://zapper-inbox.example.com", "read"]] }
+      ]
+    },
+    "expected": ["wss://zapper-inbox.example.com"]
+  },
+  {
+    "name": "only recipient has a relay list",
+    "context": {
+      "zapperPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "recipientPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 1, "tags": [["r", "wss://recipient-inbox.example.com", "read"]] }
+      ]
+    },
+    "expected": ["wss://recipient-inbox.example.com"]
+  },
+  {
+    "name": "neither has a relay list returns empty",
+    "context": {
+      "zapperPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "recipientPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": []
+    },
+    "expected": []
+  }
+]

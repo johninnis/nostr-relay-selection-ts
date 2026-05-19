@@ -1,0 +1,423 @@
+[
+    {
+        "name": "general: merges userRelayUrls + callerRelays when no search and no gift-wrap #p",
+        "context": {
+            "userRelayUrls": [
+                "wss://user-write.example.com",
+                "wss://user-read.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ],
+                    "authors": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://user-write.example.com",
+                "wss://user-read.example.com",
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "general: empty userRelayUrls and callerRelays yields empty",
+        "context": {
+            "userRelayUrls": [],
+            "callerRelays": [],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": []
+        }
+    },
+    {
+        "name": "general: duplicates collapse preserving insertion order",
+        "context": {
+            "userRelayUrls": [
+                "wss://shared.example.com",
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://shared.example.com",
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://shared.example.com",
+                "wss://user.example.com",
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "search: filter with .search returns caller relays only, ignoring userRelayUrls",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "search": "hello"
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "search",
+            "relays": [
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "search: any filter with .search routes to search branch",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ]
+                },
+                {
+                    "search": "needle"
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "search",
+            "relays": [
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "dmInbox: kind 1059 with single #p and cached kind 10050 returns DM relays",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ],
+                    "#p": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                }
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10050,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "relay",
+                            "wss://dm-inbox-1.example.com"
+                        ],
+                        [
+                            "relay",
+                            "wss://dm-inbox-2.example.com"
+                        ]
+                    ]
+                }
+            ]
+        },
+        "expected": {
+            "branch": "dmInbox",
+            "relays": [
+                "wss://dm-inbox-1.example.com",
+                "wss://dm-inbox-2.example.com"
+            ]
+        }
+    },
+    {
+        "name": "dmInbox: kind 1059 with single #p and no cached kind 10050 returns null (no fallback to caller or user relays)",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ],
+                    "#p": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "dmInbox",
+            "relays": null
+        }
+    },
+    {
+        "name": "dmInbox: kind 1059 with zero #p falls through to general",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://user.example.com",
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "dmInbox: kind 1059 with two #p entries falls through to general",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ],
+                    "#p": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://user.example.com"
+            ]
+        }
+    },
+    {
+        "name": "dmInbox: multi-filter batch mixing gift-wrap with non-gift-wrap falls through to general",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ],
+                    "#p": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                },
+                {
+                    "kinds": [
+                        1
+                    ]
+                }
+            ],
+            "relayListEvents": []
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://user.example.com",
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "blockedRelays removes a user-blocked relay from the general branch",
+        "context": {
+            "userRelayUrls": [
+                "wss://user.example.com",
+                "wss://blocked.example.com"
+            ],
+            "callerRelays": [
+                "wss://caller.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ]
+                }
+            ],
+            "relayListEvents": [],
+            "blockedRelays": [
+                "wss://blocked.example.com"
+            ]
+        },
+        "expected": {
+            "branch": "general",
+            "relays": [
+                "wss://user.example.com",
+                "wss://caller.example.com"
+            ]
+        }
+    },
+    {
+        "name": "searchRelays union into the Search branch when filter has search",
+        "context": {
+            "userRelayUrls": [],
+            "callerRelays": [
+                "wss://caller-search.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ],
+                    "search": "hello"
+                }
+            ],
+            "relayListEvents": [],
+            "searchRelays": [
+                "wss://nostr.wine",
+                "wss://search.nos.today"
+            ]
+        },
+        "expected": {
+            "branch": "search",
+            "relays": [
+                "wss://nostr.wine",
+                "wss://search.nos.today",
+                "wss://caller-search.example.com"
+            ]
+        }
+    },
+    {
+        "name": "searchRelays still respects blockedRelays in the Search branch",
+        "context": {
+            "userRelayUrls": [],
+            "callerRelays": [
+                "wss://caller-search.example.com"
+            ],
+            "filters": [
+                {
+                    "kinds": [
+                        1
+                    ],
+                    "search": "hello"
+                }
+            ],
+            "relayListEvents": [],
+            "searchRelays": [
+                "wss://nostr.wine",
+                "wss://blocked-search.example.com"
+            ],
+            "blockedRelays": [
+                "wss://blocked-search.example.com"
+            ]
+        },
+        "expected": {
+            "branch": "search",
+            "relays": [
+                "wss://nostr.wine",
+                "wss://caller-search.example.com"
+            ]
+        }
+    },
+    {
+        "name": "blockedRelays applies in the dmInbox branch",
+        "context": {
+            "userRelayUrls": [],
+            "callerRelays": [],
+            "filters": [
+                {
+                    "kinds": [
+                        1059
+                    ],
+                    "#p": [
+                        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    ]
+                }
+            ],
+            "relayListEvents": [
+                {
+                    "kind": 10050,
+                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "created_at": 1,
+                    "tags": [
+                        [
+                            "relay",
+                            "wss://alice-dm.example.com"
+                        ],
+                        [
+                            "relay",
+                            "wss://blocked-dm.example.com"
+                        ]
+                    ]
+                }
+            ],
+            "blockedRelays": [
+                "wss://blocked-dm.example.com"
+            ]
+        },
+        "expected": {
+            "branch": "dmInbox",
+            "relays": [
+                "wss://alice-dm.example.com"
+            ]
+        }
+    }
+]

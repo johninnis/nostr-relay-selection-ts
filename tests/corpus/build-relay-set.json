@@ -1,0 +1,27 @@
+[
+  {
+    "name": "concatenates sources in order",
+    "input": [["wss://a.example.com"], ["wss://b.example.com"], ["wss://c.example.com"]],
+    "expected": ["wss://a.example.com", "wss://b.example.com", "wss://c.example.com"]
+  },
+  {
+    "name": "deduplicates across sources using normalised form",
+    "input": [["wss://a.example.com"], ["WSS://A.Example.COM:443/"], ["wss://a.example.com/"]],
+    "expected": ["wss://a.example.com"]
+  },
+  {
+    "name": "drops URLs that cannot be normalised",
+    "input": [["", "wss://valid.example.com"]],
+    "expected": ["wss://valid.example.com"]
+  },
+  {
+    "name": "no sources returns empty",
+    "input": [],
+    "expected": []
+  },
+  {
+    "name": "all-empty sources returns empty",
+    "input": [[], [], []],
+    "expected": []
+  }
+]

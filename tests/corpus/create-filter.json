@@ -1,0 +1,61 @@
+[
+  {
+    "name": "empty filter is valid",
+    "input": {},
+    "valid": true
+  },
+  {
+    "name": "kinds-only filter is valid",
+    "input": { "kinds": [1, 6, 7] },
+    "valid": true
+  },
+  {
+    "name": "p-tag-only filter is valid",
+    "input": { "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+    "valid": true
+  },
+  {
+    "name": "search-only filter is valid",
+    "input": { "search": "hello" },
+    "valid": true
+  },
+  {
+    "name": "all fields combined is valid",
+    "input": {
+      "kinds": [1059],
+      "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+      "search": "needle"
+    },
+    "valid": true
+  },
+  {
+    "name": "non-integer kind returns null",
+    "input": { "kinds": [1, "2", 3] },
+    "valid": false
+  },
+  {
+    "name": "kinds not an array returns null",
+    "input": { "kinds": "1" },
+    "valid": false
+  },
+  {
+    "name": "uppercase pubkey in #p returns null",
+    "input": { "#p": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"] },
+    "valid": false
+  },
+  {
+    "name": "non-string pubkey in #p returns null",
+    "input": { "#p": [42] },
+    "valid": false
+  },
+  {
+    "name": "#p not an array returns null",
+    "input": { "#p": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    "valid": false
+  },
+  {
+    "name": "non-string search returns null",
+    "input": { "search": 42 },
+    "valid": false
+  }
+]

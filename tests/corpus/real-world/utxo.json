@@ -1,0 +1,32 @@
+{
+    "name": "UTXO",
+    "pubkey": "e2ccf7cf20403f3f2a4a55b328f0de3be38558a7d5f33632fdaaefc726c1c8eb",
+    "events": [
+        {"kind":10002,"id":"7424974247e6b6782b5fe2fd491ce6a50c05ea6935156777ccaf19d97e45d20f","pubkey":"e2ccf7cf20403f3f2a4a55b328f0de3be38558a7d5f33632fdaaefc726c1c8eb","created_at":1778802223,"tags":[["r","wss://relay.bitcoinpark.com","write"],["r","wss://relay.utxo.one/inbox","read"],["r","wss://relay.primal.net"],["r","wss://relay.damus.io"],["r","wss://relay.utxo.one/outbox","write"],["r","wss://nos.lol"],["r","wss://relay.wisp.talk"],["r","wss://wot.utxo.one"]],"content":"","sig":"e7f9e08fb6316bea475aae671f0eb81f7ee1d8285791c0b12ba811ef05a5ba72137af8e87ca6ae76c7060f52d79f5823e590582161c640f0beb94d42d240147a"},
+        {"kind":10050,"id":"b24fde49d0c128666b200e5d5966e373842fad54a435a6445b06351a19ca5758","pubkey":"e2ccf7cf20403f3f2a4a55b328f0de3be38558a7d5f33632fdaaefc726c1c8eb","created_at":1776441661,"tags":[["relay","wss://auth.nostr1.com"],["relay","wss://relay.utxo.one/chat"],["relay","wss://chat.wisp.talk"]],"content":"","sig":"235d18ee61747321e713931824b0f1b69c882bcba7c9cab57156982a0d345a85616965f0d76eb1f07e1e8deb3ed82e69b5f0e228e44c89cb7988941c2fcd2dd0"}
+    ],
+    "expected": {
+        "inbox": [
+            "wss://relay.utxo.one/inbox",
+            "wss://relay.primal.net",
+            "wss://relay.damus.io",
+            "wss://nos.lol",
+            "wss://relay.wisp.talk",
+            "wss://wot.utxo.one"
+        ],
+        "outbox": [
+            "wss://relay.bitcoinpark.com",
+            "wss://relay.primal.net",
+            "wss://relay.damus.io",
+            "wss://relay.utxo.one/outbox",
+            "wss://nos.lol",
+            "wss://relay.wisp.talk",
+            "wss://wot.utxo.one"
+        ],
+        "dm": [
+            "wss://auth.nostr1.com",
+            "wss://relay.utxo.one/chat",
+            "wss://chat.wisp.talk"
+        ]
+    }
+}

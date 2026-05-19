@@ -1,0 +1,8 @@
+.claude/
+deno.lock
+
+*.swp
+/.idea
+.vscode/
+
+.#*

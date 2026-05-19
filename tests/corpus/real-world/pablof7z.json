@@ -1,0 +1,25 @@
+{
+    "name": "PABLOF7z",
+    "pubkey": "fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52",
+    "events": [
+        {"kind":10002,"id":"37f0d7de10c49abf412d5ee49a89aa056811fb9bb336bea291541929ae8a7fdd","pubkey":"fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52","created_at":1774366333,"tags":[["r","wss://relay.damus.io/","read"],["r","wss://relay.primal.net/","read"],["r","wss://pyramid.fiatjaf.com/","write"],["r","wss://140.f7z.io/","write"],["r","wss://r.f7z.io/"]],"content":"","sig":"1b3cd15cebe1eff796797d3ffea37fb14206270d92de8114039045414313ebdc835c06a155065ed3bf049a51462cf43e89f5a58de7b54743ebca58545e6242d6"},
+        {"kind":10050,"id":"645dd4eab84b406c30fd158be6b6d49efe7f1a04c4359a841bf3e601cf58935c","pubkey":"fa984bd7dbb282f07e16e7ae87b26a2a7b9b90b7246a44771f0cf5ae58018f52","created_at":1732788405,"tags":[["relay","wss://auth.nostr1.com/"],["relay","wss://relay.0xchat.com/"],["relay","wss://nos.lol/"],["alt","Relay list to receive private messages"]],"content":"","sig":"a3d0f7643e6a754ad7df94d1cd00c9ebac3fb067d21c8f5cbb89953c0ede3edde4e13cb7840c63c79bc5edb8c0519c011db70bb860d4b9552de56233a97c7a04"}
+    ],
+    "expected": {
+        "inbox": [
+            "wss://relay.damus.io",
+            "wss://relay.primal.net",
+            "wss://r.f7z.io"
+        ],
+        "outbox": [
+            "wss://pyramid.fiatjaf.com",
+            "wss://140.f7z.io",
+            "wss://r.f7z.io"
+        ],
+        "dm": [
+            "wss://auth.nostr1.com",
+            "wss://relay.0xchat.com",
+            "wss://nos.lol"
+        ]
+    }
+}

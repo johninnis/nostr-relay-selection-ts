@@ -1,0 +1,155 @@
+[
+    {
+        "name": "all p-tagged pubkeys have a matching kind 10002 returns empty",
+        "event": {
+            "kind": 1,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "p",
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ],
+                [
+                    "p",
+                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                ]
+            ]
+        },
+        "relayListEvents": [
+            {
+                "kind": 10002,
+                "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "created_at": 1,
+                "tags": [
+                    [
+                        "r",
+                        "wss://x.example.com",
+                        "read"
+                    ]
+                ]
+            },
+            {
+                "kind": 10002,
+                "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "created_at": 1,
+                "tags": [
+                    [
+                        "r",
+                        "wss://x.example.com",
+                        "read"
+                    ]
+                ]
+            }
+        ],
+        "expected": []
+    },
+    {
+        "name": "returns exactly the missing ones",
+        "event": {
+            "kind": 1,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "p",
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ],
+                [
+                    "p",
+                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                ]
+            ]
+        },
+        "relayListEvents": [
+            {
+                "kind": 10002,
+                "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "created_at": 1,
+                "tags": [
+                    [
+                        "r",
+                        "wss://x.example.com",
+                        "read"
+                    ]
+                ]
+            }
+        ],
+        "expected": [
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+    },
+    {
+        "name": "p-tag with a position-[2] hint but no kind 10002 is still flagged as missing",
+        "event": {
+            "kind": 1,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "p",
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "wss://hint.example.com"
+                ]
+            ]
+        },
+        "relayListEvents": [],
+        "expected": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+    },
+    {
+        "name": "event with no p-tags returns empty",
+        "event": {
+            "kind": 1,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "e",
+                    "deadbeef"
+                ]
+            ]
+        },
+        "relayListEvents": [],
+        "expected": []
+    },
+    {
+        "name": "event kind not in INBOX_FANOUT_KINDS returns empty (no fan-out, nothing to be missing)",
+        "event": {
+            "kind": 0,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "p",
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ]
+            ]
+        },
+        "relayListEvents": [],
+        "expected": []
+    },
+    {
+        "name": "p-tag with malformed pubkey is silently filtered (never reported as missing)",
+        "event": {
+            "kind": 1,
+            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+            "created_at": 100,
+            "tags": [
+                [
+                    "p",
+                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                ],
+                [
+                    "p",
+                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                ]
+            ]
+        },
+        "relayListEvents": [],
+        "expected": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+    }
+]

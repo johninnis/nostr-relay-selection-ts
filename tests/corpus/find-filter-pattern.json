@@ -1,0 +1,78 @@
+[
+  {
+    "name": "no filters classify as General",
+    "filters": [],
+    "expected": "general"
+  },
+  {
+    "name": "filter with search field classifies as Search",
+    "filters": [{ "kinds": [1], "search": "hello" }],
+    "expected": "search"
+  },
+  {
+    "name": "any filter having search wins, even if others would be DmInbox-shaped",
+    "filters": [
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+      { "kinds": [1], "search": "hello" }
+    ],
+    "expected": "search"
+  },
+  {
+    "name": "single gift-wrap filter with one #p classifies as DmInbox",
+    "filters": [
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "dmInbox"
+  },
+  {
+    "name": "multiple gift-wrap filters sharing the same single recipient classify as DmInbox",
+    "filters": [
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "dmInbox"
+  },
+  {
+    "name": "gift-wrap filters with different recipients do NOT classify as DmInbox",
+    "filters": [
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+      { "kinds": [1059], "#p": ["bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"] }
+    ],
+    "expected": "general"
+  },
+  {
+    "name": "gift-wrap filter with multiple #p values is not single-recipient DmInbox",
+    "filters": [
+      {
+        "kinds": [1059],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      }
+    ],
+    "expected": "general"
+  },
+  {
+    "name": "gift-wrap filter without #p is not DmInbox",
+    "filters": [{ "kinds": [1059] }],
+    "expected": "general"
+  },
+  {
+    "name": "non-gift-wrap filter (kind 1) with #p is General",
+    "filters": [
+      { "kinds": [1], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "general"
+  },
+  {
+    "name": "mixed kinds in one filter (1059 plus something) is not DmInbox",
+    "filters": [
+      {
+        "kinds": [1059, 1],
+        "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+      }
+    ],
+    "expected": "general"
+  }
+]

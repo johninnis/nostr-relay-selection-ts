@@ -1,0 +1,70 @@
+[
+  {
+    "name": "picks overlap of target inbox and user outbox",
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [["r", "wss://shared.example.com", "write"], ["r", "wss://user-only.example.com", "write"]]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [["r", "wss://shared.example.com", "read"], ["r", "wss://target-only.example.com", "read"]]
+        }
+      ]
+    },
+    "expected": "wss://shared.example.com"
+  },
+  {
+    "name": "no overlap: falls back to first entry of target's inbox",
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://user-only.example.com", "write"]] },
+        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 1, "tags": [["r", "wss://target-a.example.com", "read"], ["r", "wss://target-b.example.com", "read"]] }
+      ]
+    },
+    "expected": "wss://target-a.example.com"
+  },
+  {
+    "name": "target has no inbox: falls back to first entry of user's outbox",
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://user-a.example.com", "write"], ["r", "wss://user-b.example.com", "write"]] }
+      ]
+    },
+    "expected": "wss://user-a.example.com"
+  },
+  {
+    "name": "neither side has relays: returns null",
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": []
+    },
+    "expected": null
+  },
+  {
+    "name": "newest kind 10002 per pubkey wins (replaceable-event semantics)",
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+      "relayListEvents": [
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 100, "tags": [["r", "wss://user-old.example.com", "write"]] },
+        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 200, "tags": [["r", "wss://user-new.example.com", "write"]] },
+        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 100, "tags": [["r", "wss://target-old.example.com", "read"]] },
+        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 200, "tags": [["r", "wss://target-new.example.com", "read"]] }
+      ]
+    },
+    "expected": "wss://target-new.example.com"
+  }
+]

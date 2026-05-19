@@ -1,0 +1,25 @@
+{
+    "name": "Vitor",
+    "pubkey": "460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c",
+    "events": [
+        {"kind":10002,"id":"487c1162e8145676881dbd82b685a3d096db47c52ea70d904033df3c74c31509","pubkey":"460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c","created_at":1778641198,"tags":[["client","Amethyst"],["r","wss://vitor.nostr1.com/"],["r","wss://nostr.mom/"],["r","wss://nostr.wine/","write"],["r","wss://nos.lol/","read"]],"content":"","sig":"622e2cb759b5739114679151fc3ea5da001624f4bc8a53fe53cef93318761afe112ae1dc2ad53d698c28a4c3deb93fae23e8229700828f484b4b10133502a3b7"},
+        {"kind":10050,"id":"6eb0f633c1a7f321835ab989274086057639bbb7fe23bf1f08fbef9c0324eaad","pubkey":"460c25e682fda7832b52d1f22d3d22b3176d972f60dcdc3212ed8c92ef85065c","created_at":1771974252,"tags":[["relay","wss://vitor.nostr1.com/"],["relay","wss://inbox.nostr.wine/"],["relay","wss://auth.nostr1.com/"]],"content":"","sig":"d9169a6c8d8febaffd3570ea060daf29e02063c42267e53ee13633982f10be01c69b2be6f19109dccae6c1216882c38f8f4c379d0a5fcdde80e61f2b4e2d8260"}
+    ],
+    "expected": {
+        "inbox": [
+            "wss://vitor.nostr1.com",
+            "wss://nostr.mom",
+            "wss://nos.lol"
+        ],
+        "outbox": [
+            "wss://vitor.nostr1.com",
+            "wss://nostr.mom",
+            "wss://nostr.wine"
+        ],
+        "dm": [
+            "wss://vitor.nostr1.com",
+            "wss://inbox.nostr.wine",
+            "wss://auth.nostr1.com"
+        ]
+    }
+}
