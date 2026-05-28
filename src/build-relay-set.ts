@@ -30,5 +30,5 @@ export const subtractRelays = (
   if (!blocked || blocked.length === 0) return relays
   const blockedSet = new Set<RelayUrl>(blocked)
   if (blockedSet.size === 0) return relays
-  return relays.filter(url => !blockedSet.has(url))
+  return relays.filter((url) => !blockedSet.has(url))
 }

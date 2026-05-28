@@ -27,8 +27,18 @@
       "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
       "relayListEvents": [
-        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://user-only.example.com", "write"]] },
-        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 1, "tags": [["r", "wss://target-a.example.com", "read"], ["r", "wss://target-b.example.com", "read"]] }
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [["r", "wss://user-only.example.com", "write"]]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [["r", "wss://target-a.example.com", "read"], ["r", "wss://target-b.example.com", "read"]]
+        }
       ]
     },
     "expected": "wss://target-a.example.com"
@@ -39,7 +49,12 @@
       "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
       "relayListEvents": [
-        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 1, "tags": [["r", "wss://user-a.example.com", "write"], ["r", "wss://user-b.example.com", "write"]] }
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [["r", "wss://user-a.example.com", "write"], ["r", "wss://user-b.example.com", "write"]]
+        }
       ]
     },
     "expected": "wss://user-a.example.com"
@@ -59,10 +74,30 @@
       "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
       "relayListEvents": [
-        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 100, "tags": [["r", "wss://user-old.example.com", "write"]] },
-        { "kind": 10002, "pubkey": "1111111111111111111111111111111111111111111111111111111111111111", "created_at": 200, "tags": [["r", "wss://user-new.example.com", "write"]] },
-        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 100, "tags": [["r", "wss://target-old.example.com", "read"]] },
-        { "kind": 10002, "pubkey": "2222222222222222222222222222222222222222222222222222222222222222", "created_at": 200, "tags": [["r", "wss://target-new.example.com", "read"]] }
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 100,
+          "tags": [["r", "wss://user-old.example.com", "write"]]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 200,
+          "tags": [["r", "wss://user-new.example.com", "write"]]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 100,
+          "tags": [["r", "wss://target-old.example.com", "read"]]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 200,
+          "tags": [["r", "wss://target-new.example.com", "read"]]
+        }
       ]
     },
     "expected": "wss://target-new.example.com"

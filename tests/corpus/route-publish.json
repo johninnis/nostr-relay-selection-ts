@@ -1,1526 +1,1526 @@
 [
-    {
-        "name": "kind 1 with p-tags and cached kind 10002 fans out to recipient inboxes",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ],
-                [
-                    "p",
-                    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://bob-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://alice-inbox.example.com",
-                "wss://bob-inbox.example.com"
-            ]
-        }
+  {
+    "name": "kind 1 with p-tags and cached kind 10002 fans out to recipient inboxes",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      ]
     },
-    {
-        "name": "p-tag position-[2] hint is used as fallback inbox when kind 10002 is missing",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "wss://alice-hint.example.com"
-                ]
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
             ]
+          ]
         },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-hint.example.com"
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
             ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://bob-inbox.example.com",
+              "read"
+            ]
+          ]
         }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
     },
-    {
-        "name": "no kind 10002 and no hint means the recipient contributes nothing",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": []
-        }
-    },
-    {
-        "name": "kind 10002 wins over a position-[2] hint",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "wss://ignored-hint.example.com"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "duplicate p-tags for the same pubkey use the first occurrence's hint",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "wss://first-hint.example.com"
-                ],
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "wss://second-hint.example.com"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://first-hint.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 24 public message fans out to recipient inbox via kind 10002",
-        "event": {
-            "kind": 24,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 7 reaction fans out to target's kind 10002 inbox",
-        "event": {
-            "kind": 7,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ],
-                [
-                    "e",
-                    "deadbeef"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 6 repost fans out to target's kind 10002 inbox",
-        "event": {
-            "kind": 6,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ],
-                [
-                    "e",
-                    "deadbeef"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 0 profile metadata is not in fan-out: user outbox only",
-        "event": {
-            "kind": 0,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "unknown kind (kind 5 shown as example) routes to user outbox only - no helper distinguishes it",
-        "event": {
-            "kind": 5,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "e",
-                    "deadbeef"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 30024 draft with privateContentRelays routes exclusively to those",
-        "event": {
-            "kind": 30024,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [
-                "wss://private.example.com"
-            ],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://private.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 30024 draft with empty privateContentRelays falls back to userOutbox",
-        "event": {
-            "kind": 30024,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 30403 classified listing draft with privateContentRelays routes exclusively to those",
-        "event": {
-            "kind": 30403,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [
-                "wss://private.example.com"
-            ],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://private.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 30403 classified listing draft with empty privateContentRelays falls back to userOutbox",
-        "event": {
-            "kind": 30403,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 31234 draft wrap with privateContentRelays routes exclusively to those",
-        "event": {
-            "kind": 31234,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "d",
-                    "some-identifier"
-                ],
-                [
-                    "k",
-                    "30023"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [
-                "wss://private.example.com"
-            ],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://private.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 31234 draft wrap with empty privateContentRelays falls back to userOutbox",
-        "event": {
-            "kind": 31234,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "d",
-                    "some-identifier"
-                ],
-                [
-                    "k",
-                    "1"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "privateContentRelays dedupes multiple entries into a single set",
-        "event": {
-            "kind": 31234,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "d",
-                    "identifier"
-                ],
-                [
-                    "k",
-                    "1"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [
-                "wss://private-a.example.com",
-                "wss://private-b.example.com",
-                "wss://private-a.example.com"
-            ],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://private-a.example.com",
-                "wss://private-b.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 1059 gift wrap routes to recipient's kind 10050 relays",
-        "event": {
-            "kind": 1059,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10050,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "relay",
-                            "wss://alice-dm-a.example.com"
-                        ],
-                        [
-                            "relay",
-                            "wss://alice-dm-b.example.com"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "dm",
-            "relays": [
-                "wss://alice-dm-a.example.com",
-                "wss://alice-dm-b.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 1059 gift wrap with no kind 10050 for recipient returns null (NIP-17: do not try, no fallback)",
-        "event": {
-            "kind": 1059,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "dm",
-            "relays": null
-        }
-    },
-    {
-        "name": "self-p-tag dedupes against user outbox; user's relay appears once",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "1111111111111111111111111111111111111111111111111111111111111111"
-                ],
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-relay.example.com",
-                            "both"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-relay.example.com",
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "default perRecipientCap of 3 truncates per-recipient fan-out",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-1.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-2.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-3.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-4.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-5.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-1.example.com",
-                "wss://alice-2.example.com",
-                "wss://alice-3.example.com"
-            ]
-        }
-    },
-    {
-        "name": "custom perRecipientCap 1 caps per-recipient fan-out",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-1.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-2.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-3.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [],
-            "perRecipientCap": 1
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://alice-1.example.com"
-            ]
-        }
-    },
-    {
-        "name": "newest kind 10002 by created_at wins (replaceable-event semantics)",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 100,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://old-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 200,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://new-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://new-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 10002 relay list publishes to user outbox plus indexer relays",
-        "event": {
-            "kind": 10002,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "r",
-                    "wss://user-write.example.com",
-                    "write"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es",
-                "wss://relay.nos.social"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://purplepag.es",
-                "wss://relay.nos.social"
-            ]
-        }
-    },
-    {
-        "name": "first kind 10002 (no prior outbox) publishes to indexer relays alone",
-        "event": {
-            "kind": 10002,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "r",
-                    "wss://new-relay.example.com",
-                    "write"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://purplepag.es"
-            ]
-        }
-    },
-    {
-        "name": "kind 10050 DM relay list publishes to user outbox plus indexer relays",
-        "event": {
-            "kind": 10050,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "relay",
-                    "wss://my-dm.example.com"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://purplepag.es"
-            ]
-        }
-    },
-    {
-        "name": "kind 10002 with empty indexer relays publishes to user outbox only",
-        "event": {
-            "kind": 10002,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "r",
-                    "wss://user-write.example.com",
-                    "write"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "non-list kind ignores indexer relays even when supplied",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "blockedRelays removes a user-blocked relay from the publish set",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ],
-                        [
-                            "r",
-                            "wss://blocked.example.com",
-                            "write"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ],
-                        [
-                            "r",
-                            "wss://blocked.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [],
-            "blockedRelays": [
-                "wss://blocked.example.com"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://alice-inbox.example.com"
-            ]
-        }
-    },
-    {
-        "name": "blockedRelays applies in the dm branch too",
-        "event": {
-            "kind": 1059,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10050,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "relay",
-                            "wss://alice-dm.example.com"
-                        ],
-                        [
-                            "relay",
-                            "wss://blocked-dm.example.com"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [],
-            "blockedRelays": [
-                "wss://blocked-dm.example.com"
-            ]
-        },
-        "expected": {
-            "branch": "dm",
-            "relays": [
-                "wss://alice-dm.example.com"
-            ]
-        }
-    },
-    {
-        "name": "blockedRelays applies to the draft branch privateContentRelays",
-        "event": {
-            "kind": 30024,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [],
-            "privateContentRelays": [
-                "wss://drafts.example.com",
-                "wss://blocked-draft.example.com"
-            ],
-            "indexerRelays": [],
-            "blockedRelays": [
-                "wss://blocked-draft.example.com"
-            ]
-        },
-        "expected": {
-            "branch": "draft",
-            "relays": [
-                "wss://drafts.example.com"
-            ]
-        }
-    },
-    {
-        "name": "kind 0 profile metadata unions indexerRelays into output (indexers harvest profiles)",
-        "event": {
-            "kind": 0,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es",
-                "wss://user.kindpag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://purplepag.es",
-                "wss://user.kindpag.es"
-            ]
-        }
-    },
-    {
-        "name": "kind 3 follow list unions indexerRelays into output (indexers harvest follow lists)",
-        "event": {
-            "kind": 3,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://purplepag.es"
-            ]
-        }
-    },
-    {
-        "name": "kind 1 short note ignores indexerRelays (only indexed kinds get them)",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": []
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": [
-                "wss://purplepag.es"
-            ]
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com"
-            ]
-        }
-    },
-    {
-        "name": "write-only kind 10002 (no read/both relays) falls back to position-[2] hint",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "wss://alice-hint.example.com"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-write-only-a.example.com",
-                            "write"
-                        ],
-                        [
-                            "r",
-                            "wss://alice-write-only-b.example.com",
-                            "write"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://alice-hint.example.com"
-            ]
-        }
-    },
-    {
-        "name": "p-tag with malformed pubkey is silently skipped (only valid recipients contribute)",
-        "event": {
-            "kind": 1,
-            "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "created_at": 100,
-            "tags": [
-                [
-                    "p",
-                    "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-                    "wss://ignored-hint.example.com"
-                ],
-                [
-                    "p",
-                    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                ]
-            ]
-        },
-        "context": {
-            "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-            "relayListEvents": [
-                {
-                    "kind": 10002,
-                    "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://user-write.example.com",
-                            "write"
-                        ]
-                    ]
-                },
-                {
-                    "kind": 10002,
-                    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                    "created_at": 1,
-                    "tags": [
-                        [
-                            "r",
-                            "wss://alice-inbox.example.com",
-                            "read"
-                        ]
-                    ]
-                }
-            ],
-            "privateContentRelays": [],
-            "indexerRelays": []
-        },
-        "expected": {
-            "branch": "general",
-            "relays": [
-                "wss://user-write.example.com",
-                "wss://alice-inbox.example.com"
-            ]
-        }
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com",
+        "wss://bob-inbox.example.com"
+      ]
     }
+  },
+  {
+    "name": "p-tag position-[2] hint is used as fallback inbox when kind 10002 is missing",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-hint.example.com"
+      ]
+    }
+  },
+  {
+    "name": "no kind 10002 and no hint means the recipient contributes nothing",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": []
+    }
+  },
+  {
+    "name": "kind 10002 wins over a position-[2] hint",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://ignored-hint.example.com"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "duplicate p-tags for the same pubkey use the first occurrence's hint",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://first-hint.example.com"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://second-hint.example.com"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://first-hint.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 24 public message fans out to recipient inbox via kind 10002",
+    "event": {
+      "kind": 24,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 7 reaction fans out to target's kind 10002 inbox",
+    "event": {
+      "kind": 7,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "e",
+          "deadbeef"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 6 repost fans out to target's kind 10002 inbox",
+    "event": {
+      "kind": 6,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "e",
+          "deadbeef"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 0 profile metadata is not in fan-out: user outbox only",
+    "event": {
+      "kind": 0,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "unknown kind (kind 5 shown as example) routes to user outbox only - no helper distinguishes it",
+    "event": {
+      "kind": 5,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "e",
+          "deadbeef"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 30024 draft with privateContentRelays routes exclusively to those",
+    "event": {
+      "kind": 30024,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 30024 draft with empty privateContentRelays falls back to userOutbox",
+    "event": {
+      "kind": 30024,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 30403 classified listing draft with privateContentRelays routes exclusively to those",
+    "event": {
+      "kind": 30403,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 30403 classified listing draft with empty privateContentRelays falls back to userOutbox",
+    "event": {
+      "kind": 30403,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 31234 draft wrap with privateContentRelays routes exclusively to those",
+    "event": {
+      "kind": 31234,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "some-identifier"
+        ],
+        [
+          "k",
+          "30023"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 31234 draft wrap with empty privateContentRelays falls back to userOutbox",
+    "event": {
+      "kind": 31234,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "some-identifier"
+        ],
+        [
+          "k",
+          "1"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "privateContentRelays dedupes multiple entries into a single set",
+    "event": {
+      "kind": 31234,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "identifier"
+        ],
+        [
+          "k",
+          "1"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [
+        "wss://private-a.example.com",
+        "wss://private-b.example.com",
+        "wss://private-a.example.com"
+      ],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private-a.example.com",
+        "wss://private-b.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 1059 gift wrap routes to recipient's kind 10050 relays",
+    "event": {
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm-a.example.com"
+            ],
+            [
+              "relay",
+              "wss://alice-dm-b.example.com"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "dm",
+      "relays": [
+        "wss://alice-dm-a.example.com",
+        "wss://alice-dm-b.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 1059 gift wrap with no kind 10050 for recipient returns null (NIP-17: do not try, no fallback)",
+    "event": {
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "dm",
+      "relays": null
+    }
+  },
+  {
+    "name": "self-p-tag dedupes against user outbox; user's relay appears once",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "1111111111111111111111111111111111111111111111111111111111111111"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-relay.example.com",
+              "both"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-relay.example.com",
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "default perRecipientCap of 3 truncates per-recipient fan-out",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-3.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-4.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-5.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-1.example.com",
+        "wss://alice-2.example.com",
+        "wss://alice-3.example.com"
+      ]
+    }
+  },
+  {
+    "name": "custom perRecipientCap 1 caps per-recipient fan-out",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-3.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "perRecipientCap": 1
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-1.example.com"
+      ]
+    }
+  },
+  {
+    "name": "newest kind 10002 by created_at wins (replaceable-event semantics)",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://old-inbox.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 200,
+          "tags": [
+            [
+              "r",
+              "wss://new-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://new-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 10002 relay list publishes to user outbox plus indexer relays",
+    "event": {
+      "kind": 10002,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "r",
+          "wss://user-write.example.com",
+          "write"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es",
+        "wss://relay.nos.social"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://purplepag.es",
+        "wss://relay.nos.social"
+      ]
+    }
+  },
+  {
+    "name": "first kind 10002 (no prior outbox) publishes to indexer relays alone",
+    "event": {
+      "kind": 10002,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "r",
+          "wss://new-relay.example.com",
+          "write"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://purplepag.es"
+      ]
+    }
+  },
+  {
+    "name": "kind 10050 DM relay list publishes to user outbox plus indexer relays",
+    "event": {
+      "kind": 10050,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "relay",
+          "wss://my-dm.example.com"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://purplepag.es"
+      ]
+    }
+  },
+  {
+    "name": "kind 10002 with empty indexer relays publishes to user outbox only",
+    "event": {
+      "kind": 10002,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "r",
+          "wss://user-write.example.com",
+          "write"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "non-list kind ignores indexer relays even when supplied",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "blockedRelays removes a user-blocked relay from the publish set",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://blocked.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://blocked.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "blockedRelays": [
+        "wss://blocked.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "blockedRelays applies in the dm branch too",
+    "event": {
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm.example.com"
+            ],
+            [
+              "relay",
+              "wss://blocked-dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "blockedRelays": [
+        "wss://blocked-dm.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "dm",
+      "relays": [
+        "wss://alice-dm.example.com"
+      ]
+    }
+  },
+  {
+    "name": "blockedRelays applies to the draft branch privateContentRelays",
+    "event": {
+      "kind": 30024,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [],
+      "privateContentRelays": [
+        "wss://drafts.example.com",
+        "wss://blocked-draft.example.com"
+      ],
+      "indexerRelays": [],
+      "blockedRelays": [
+        "wss://blocked-draft.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://drafts.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 0 profile metadata unions indexerRelays into output (indexers harvest profiles)",
+    "event": {
+      "kind": 0,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es",
+        "wss://user.kindpag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://purplepag.es",
+        "wss://user.kindpag.es"
+      ]
+    }
+  },
+  {
+    "name": "kind 3 follow list unions indexerRelays into output (indexers harvest follow lists)",
+    "event": {
+      "kind": 3,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://purplepag.es"
+      ]
+    }
+  },
+  {
+    "name": "kind 1 short note ignores indexerRelays (only indexed kinds get them)",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "write-only kind 10002 (no read/both relays) falls back to position-[2] hint",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-write-only-a.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://alice-write-only-b.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://alice-hint.example.com"
+      ]
+    }
+  },
+  {
+    "name": "p-tag with malformed pubkey is silently skipped (only valid recipients contribute)",
+    "event": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "wss://ignored-hint.example.com"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "context": {
+      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "relayListEvents": [
+        {
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  }
 ]

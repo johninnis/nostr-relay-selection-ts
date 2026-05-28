@@ -44,5 +44,9 @@ export const createFilter = (raw: unknown): Filter | null => {
     result.search = raw.search
   }
 
+  // Branded-type factory: every field above has been validated as it was placed
+  // into `result`, so this `as` is the single legitimate construction point for
+  // the `Filter` shape.
+  // deno-lint-ignore innis/no-type-assertions
   return result as Filter
 }

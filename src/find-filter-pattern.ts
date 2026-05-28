@@ -2,7 +2,7 @@ import type { Filter, PublicKey, ReadBranch } from "./types.ts"
 import { KIND_GIFT_WRAP } from "./kinds.ts"
 
 const hasSearchFilter = (filters: ReadonlyArray<Filter>): boolean =>
-  filters.some(f => typeof f.search === "string" && f.search.length > 0)
+  filters.some((f) => typeof f.search === "string" && f.search.length > 0)
 
 /**
  * If every filter is exactly `{kinds: [1059], "#p": [singleRecipient]}` with

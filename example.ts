@@ -1,20 +1,22 @@
+// deno-lint-ignore-file no-console
+
 import {
+  type AuthorReadRouteContext,
+  type AuthorRelaysContext,
   createPublicKey,
+  type Event,
   KIND_SHORT_NOTE,
   normaliseRelayUrl,
+  type PublicKey,
+  type PublishContext,
+  type RelayHintContext,
+  type RelayUrl,
   routeAuthorReads,
   routePublish,
   selectAuthorDmRelays,
   selectAuthorInboxRelays,
   selectAuthorOutboxRelays,
   selectRelayHint,
-  type AuthorReadRouteContext,
-  type AuthorRelaysContext,
-  type Event,
-  type PublicKey,
-  type PublishContext,
-  type RelayHintContext,
-  type RelayUrl,
 } from "./mod.ts"
 
 const relayUrl = (raw: string): RelayUrl => {
@@ -41,13 +43,22 @@ interface RealWorldFixture {
   readonly events: ReadonlyArray<Event>
 }
 
+const isRawFixture = (value: unknown): value is RawFixture => {
+  if (typeof value !== "object" || value === null) return false
+  if (!("name" in value) || typeof value.name !== "string") return false
+  if (!("pubkey" in value) || typeof value.pubkey !== "string") return false
+  if (!("events" in value) || !Array.isArray(value.events)) return false
+  return true
+}
+
 const loadAuthors = (): ReadonlyArray<RealWorldFixture> => {
   const dir = new URL("./tests/corpus/real-world/", import.meta.url)
   const fixtures: Array<RealWorldFixture> = []
   for (const entry of Deno.readDirSync(dir)) {
     if (!entry.isFile || !entry.name.endsWith(".json")) continue
     const text = Deno.readTextFileSync(new URL(entry.name, dir))
-    const raw = JSON.parse(text) as RawFixture
+    const raw: unknown = JSON.parse(text)
+    if (!isRawFixture(raw)) throw new Error(`Fixture ${entry.name} is not a valid RawFixture`)
     fixtures.push({
       name: raw.name,
       pubkey: publicKey(raw.pubkey),
@@ -76,13 +87,13 @@ const printRelays = (label: string, relays: ReadonlyArray<RelayUrl> | null): voi
 }
 
 const authorName = (pubkey: PublicKey, authors: ReadonlyArray<RealWorldFixture>): string => {
-  const match = authors.find(a => a.pubkey === pubkey)
+  const match = authors.find((a) => a.pubkey === pubkey)
   return match?.name ?? `${pubkey.slice(0, 8)}...`
 }
 
 const authors = loadAuthors()
-const byName = new Map(authors.map(a => [a.name, a]))
-const allRelayListEvents = authors.flatMap(a => [...a.events])
+const byName = new Map(authors.map((a) => [a.name, a]))
+const allRelayListEvents = authors.flatMap((a) => [...a.events])
 
 const derek = byName.get("Derek Ross")
 const fiatjaf = byName.get("fiatjaf")
@@ -134,7 +145,7 @@ console.log("smallest number of relays that reach every author with the configur
 console.log("redundancy (default 3).\n")
 
 const readContext: AuthorReadRouteContext = {
-  authorPubkeys: authors.map(a => a.pubkey),
+  authorPubkeys: authors.map((a) => a.pubkey),
   relayListEvents: allRelayListEvents,
   fallbackRelays: [relayUrl("wss://relay.damus.io/"), relayUrl("wss://nos.lol/")],
 }
@@ -144,7 +155,7 @@ routes.forEach((route, i) => {
   console.log(`  Route ${i + 1}:`)
   console.log(`    relays: ${route.relays.join(", ")}`)
   for (const chunk of route.authorChunks) {
-    const names = chunk.map(pk => authorName(pk, authors))
+    const names = chunk.map((pk) => authorName(pk, authors))
     console.log(`    authors: ${names.join(", ")}`)
   }
   console.log()

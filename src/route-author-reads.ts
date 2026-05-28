@@ -27,9 +27,7 @@ export const routeAuthorReads = (
 ): ReadonlyArray<AuthorReadRoute> => {
   const uniqueAuthors = [...new Set(context.authorPubkeys)]
   const cap = context.maxAuthorsPerFilter ?? DEFAULT_MAX_AUTHORS_PER_FILTER
-  const target = context.redundancy === null
-    ? Number.POSITIVE_INFINITY
-    : context.redundancy ?? DEFAULT_REDUNDANCY
+  const target = context.redundancy === null ? Number.POSITIVE_INFINITY : context.redundancy ?? DEFAULT_REDUNDANCY
   const blockedSet = new Set<RelayUrl>(context.blockedRelays ?? [])
 
   const relayToAuthors = new Map<RelayUrl, Set<PublicKey>>()
@@ -44,7 +42,10 @@ export const routeAuthorReads = (
     for (const url of outbox) {
       if (blockedSet.has(url)) continue
       let set = relayToAuthors.get(url)
-      if (!set) { set = new Set(); relayToAuthors.set(url, set) }
+      if (!set) {
+        set = new Set()
+        relayToAuthors.set(url, set)
+      }
       set.add(pubkey)
       recorded = true
     }
@@ -87,7 +88,7 @@ export const routeAuthorReads = (
     routes.push({ relays: [relay], authorChunks: chunkArray(authors, cap) })
   }
 
-  const pubkeysWithoutRelays = uniqueAuthors.filter(pk => !pubkeysWithRelays.has(pk))
+  const pubkeysWithoutRelays = uniqueAuthors.filter((pk) => !pubkeysWithRelays.has(pk))
   if (pubkeysWithoutRelays.length > 0) {
     const fallback = subtractRelays(context.fallbackRelays, context.blockedRelays)
     routes.push({ relays: fallback, authorChunks: chunkArray(pubkeysWithoutRelays, cap) })

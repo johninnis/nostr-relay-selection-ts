@@ -2,17 +2,13 @@ import type { Event, PublicKey, PublishBranch, PublishContext, RelayUrl } from "
 import {
   DRAFT_KINDS,
   INBOX_FANOUT_KINDS,
+  INDEXED_KINDS,
   KIND_DM_RELAY_LIST,
   KIND_GIFT_WRAP,
   KIND_RELAY_LIST,
-  INDEXED_KINDS,
 } from "./kinds.ts"
 import { buildRelaySet, subtractRelays } from "./build-relay-set.ts"
-import {
-  extractDmRelayUrls,
-  extractInboxRelayUrls,
-  extractOutboxRelayUrls,
-} from "./relay-list.ts"
+import { extractDmRelayUrls, extractInboxRelayUrls, extractOutboxRelayUrls } from "./relay-list.ts"
 import { normaliseRelayUrl } from "./normalise-url.ts"
 import { newestEventByPubkeyAndKind } from "./event-utils.ts"
 import { createPublicKey } from "./create-public-key.ts"
@@ -84,9 +80,7 @@ const recipientInboxFanout = (
 
 const generalRelays = (event: Event, context: PublishContext): ReadonlyArray<RelayUrl> => {
   const cap = context.perRecipientCap ?? DEFAULT_PER_RECIPIENT_CAP
-  const inbox = INBOX_FANOUT_KINDS.has(event.kind)
-    ? recipientInboxFanout(event, context.relayListEvents, cap)
-    : []
+  const inbox = INBOX_FANOUT_KINDS.has(event.kind) ? recipientInboxFanout(event, context.relayListEvents, cap) : []
   const indexers = INDEXED_KINDS.has(event.kind) ? context.indexerRelays : []
   return buildRelaySet(userOutboxOf(context), inbox, indexers)
 }
@@ -117,11 +111,7 @@ const draftRelays = (context: PublishContext): ReadonlyArray<RelayUrl> => {
  * `indexerRelays`). `blockedRelays` is subtracted from every output uniformly.
  */
 export const routePublish = (event: Event, context: PublishContext): PublishRoute => {
-  const branch: PublishBranch = event.kind === KIND_GIFT_WRAP
-    ? "dm"
-    : DRAFT_KINDS.has(event.kind)
-    ? "draft"
-    : "general"
+  const branch: PublishBranch = event.kind === KIND_GIFT_WRAP ? "dm" : DRAFT_KINDS.has(event.kind) ? "draft" : "general"
   if (branch === "dm") {
     const relays = dmRelays(event, context)
     if (relays === null) return { branch, relays: null }

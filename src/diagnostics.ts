@@ -27,5 +27,5 @@ export const missingRelayListPubkeys = (
     if (ptagged.has(e.pubkey)) withRelayList.add(e.pubkey)
   }
 
-  return [...ptagged].filter(pk => !withRelayList.has(pk))
+  return [...ptagged].filter((pk) => !withRelayList.has(pk))
 }

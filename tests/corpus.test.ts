@@ -1,13 +1,17 @@
 import { assertEquals } from "@std/assert"
 import {
+  type AuthorReadRouteContext,
+  type AuthorRelaysContext,
   buildRelaySet,
   createEvent,
   createFilter,
+  type Event,
   extractBlockedRelayUrls,
   extractDmRelayUrls,
   extractInboxRelayUrls,
   extractOutboxRelayUrls,
   extractSearchRelayUrls,
+  type Filter,
   findFilterPattern,
   isInsecureUrl,
   isLocalAddrUrl,
@@ -15,27 +19,23 @@ import {
   isOnionUrl,
   missingRelayListPubkeys,
   normaliseRelayUrl,
+  type PublishContext,
+  type ReadContext,
+  type RelayHintContext,
+  type RelayUrl,
   routeAuthorReads,
   routePublish,
   routeRead,
   selectAuthorInboxRelays,
   selectRelayHint,
   selectZapRequestRelays,
-  type AuthorRelaysContext,
-  type AuthorReadRouteContext,
-  type Event,
-  type Filter,
-  type PublicKey,
-  type PublishContext,
-  type ReadContext,
-  type RelayHintContext,
-  type RelayUrl,
   type ZapRequestContext,
 } from "../mod.ts"
 
 const loadCorpus = <T>(filename: string): ReadonlyArray<T> => {
   const url = new URL(`./corpus/${filename}`, import.meta.url)
   const text = Deno.readTextFileSync(url)
+  // deno-lint-ignore innis/no-type-assertions
   return JSON.parse(text) as ReadonlyArray<T>
 }
 
@@ -84,7 +84,10 @@ interface ExtractVector {
   readonly expected: ReadonlyArray<string>
 }
 
-const extractors: Record<ExtractVector["function"], (tags: ReadonlyArray<ReadonlyArray<string>>) => ReadonlyArray<RelayUrl>> = {
+const extractors: Record<
+  ExtractVector["function"],
+  (tags: ReadonlyArray<ReadonlyArray<string>>) => ReadonlyArray<RelayUrl>
+> = {
   extractInboxRelayUrls,
   extractOutboxRelayUrls,
   extractDmRelayUrls,
@@ -205,13 +208,13 @@ interface RouteAuthorReadsVector {
 for (const v of loadCorpus<RouteAuthorReadsVector>("route-author-reads.json")) {
   Deno.test(`corpus: routeAuthorReads — ${v.name}`, () => {
     const actual = routeAuthorReads(v.context)
-    const normalised = actual.map(p => ({
+    const normalised = actual.map((p) => ({
       relays: [...p.relays],
-      authorChunks: p.authorChunks.map(chunk => [...chunk]),
+      authorChunks: p.authorChunks.map((chunk) => [...chunk]),
     }))
-    const expected = v.expected.map(p => ({
+    const expected = v.expected.map((p) => ({
       relays: [...p.relays],
-      authorChunks: p.authorChunks.map(chunk => [...chunk]),
+      authorChunks: p.authorChunks.map((chunk) => [...chunk]),
     }))
     assertEquals(normalised, expected)
   })
@@ -238,7 +241,7 @@ interface MissingVector {
 
 for (const v of loadCorpus<MissingVector>("missing-relay-list-pubkeys.json")) {
   Deno.test(`corpus: missingRelayListPubkeys — ${v.name}`, () => {
-    const actual = missingRelayListPubkeys(v.event, v.relayListEvents) as ReadonlyArray<PublicKey>
+    const actual = missingRelayListPubkeys(v.event, v.relayListEvents)
     assertEquals([...actual], [...v.expected])
   })
 }

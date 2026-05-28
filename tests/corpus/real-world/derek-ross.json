@@ -1,32 +1,64 @@
 {
-    "name": "Derek Ross",
-    "pubkey": "3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24",
-    "events": [
-        {"kind":10002,"id":"6d2dfbc815314d0fc728cde8c21e6ef30d937112638b45e4476d02afc8f98936","pubkey":"3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24","created_at":1777853682,"tags":[["r","wss://nos.lol/"],["r","wss://nostr.wine/"],["r","wss://nostrelites.org/"],["r","wss://relay.ditto.pub/"],["r","wss://nostr-relay.derekross.me/inbox","read"],["r","wss://relay.damus.io/","read"],["r","wss://relay.nostrplebs.com/","write"],["r","wss://nostr-relay.derekross.me/","write"],["r","wss://pyramid.fiatjaf.com/","write"],["client","relayopti.shakespeare.wtf"]],"content":"","sig":"5483307ee070af24792f4111635f39bb6f692d6254b54e42f50d4bcf66f90de31042bdce31952677880453626ede88d5b3b6e452dea6e8ed6bded5146cb744b0"},
-        {"kind":10050,"id":"09230e4b3e42814279069ab2ba7471e8a0c25cf4da384777d0fed009dc99d58a","pubkey":"3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24","created_at":1777853688,"tags":[["relay","wss://nostr-relay.derekross.me/chat"],["relay","wss://auth.nostr1.com/"],["relay","wss://relay.0xchat.com/"],["client","relayopti.shakespeare.wtf"]],"content":"","sig":"d278c3d46d0ac802c81b369cdcd927d43d9aa9e3026e2616a236de6c211574e7985e7eba52c4cd965a51ba7e6c6b47e86fe215d21be06da315e6b758d2406fbe"}
-    ],
-    "expected": {
-        "inbox": [
-            "wss://nos.lol",
-            "wss://nostr.wine",
-            "wss://nostrelites.org",
-            "wss://relay.ditto.pub",
-            "wss://nostr-relay.derekross.me/inbox",
-            "wss://relay.damus.io"
-        ],
-        "outbox": [
-            "wss://nos.lol",
-            "wss://nostr.wine",
-            "wss://nostrelites.org",
-            "wss://relay.ditto.pub",
-            "wss://relay.nostrplebs.com",
-            "wss://nostr-relay.derekross.me",
-            "wss://pyramid.fiatjaf.com"
-        ],
-        "dm": [
-            "wss://nostr-relay.derekross.me/chat",
-            "wss://auth.nostr1.com",
-            "wss://relay.0xchat.com"
-        ]
+  "name": "Derek Ross",
+  "pubkey": "3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24",
+  "events": [
+    {
+      "kind": 10002,
+      "id": "6d2dfbc815314d0fc728cde8c21e6ef30d937112638b45e4476d02afc8f98936",
+      "pubkey": "3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24",
+      "created_at": 1777853682,
+      "tags": [
+        ["r", "wss://nos.lol/"],
+        ["r", "wss://nostr.wine/"],
+        ["r", "wss://nostrelites.org/"],
+        ["r", "wss://relay.ditto.pub/"],
+        ["r", "wss://nostr-relay.derekross.me/inbox", "read"],
+        ["r", "wss://relay.damus.io/", "read"],
+        ["r", "wss://relay.nostrplebs.com/", "write"],
+        ["r", "wss://nostr-relay.derekross.me/", "write"],
+        ["r", "wss://pyramid.fiatjaf.com/", "write"],
+        ["client", "relayopti.shakespeare.wtf"]
+      ],
+      "content": "",
+      "sig": "5483307ee070af24792f4111635f39bb6f692d6254b54e42f50d4bcf66f90de31042bdce31952677880453626ede88d5b3b6e452dea6e8ed6bded5146cb744b0"
+    },
+    {
+      "kind": 10050,
+      "id": "09230e4b3e42814279069ab2ba7471e8a0c25cf4da384777d0fed009dc99d58a",
+      "pubkey": "3f770d65d3a764a9c5cb503ae123e62ec7598ad035d836e2a810f3877a745b24",
+      "created_at": 1777853688,
+      "tags": [
+        ["relay", "wss://nostr-relay.derekross.me/chat"],
+        ["relay", "wss://auth.nostr1.com/"],
+        ["relay", "wss://relay.0xchat.com/"],
+        ["client", "relayopti.shakespeare.wtf"]
+      ],
+      "content": "",
+      "sig": "d278c3d46d0ac802c81b369cdcd927d43d9aa9e3026e2616a236de6c211574e7985e7eba52c4cd965a51ba7e6c6b47e86fe215d21be06da315e6b758d2406fbe"
     }
+  ],
+  "expected": {
+    "inbox": [
+      "wss://nos.lol",
+      "wss://nostr.wine",
+      "wss://nostrelites.org",
+      "wss://relay.ditto.pub",
+      "wss://nostr-relay.derekross.me/inbox",
+      "wss://relay.damus.io"
+    ],
+    "outbox": [
+      "wss://nos.lol",
+      "wss://nostr.wine",
+      "wss://nostrelites.org",
+      "wss://relay.ditto.pub",
+      "wss://relay.nostrplebs.com",
+      "wss://nostr-relay.derekross.me",
+      "wss://pyramid.fiatjaf.com"
+    ],
+    "dm": [
+      "wss://nostr-relay.derekross.me/chat",
+      "wss://auth.nostr1.com",
+      "wss://relay.0xchat.com"
+    ]
+  }
 }

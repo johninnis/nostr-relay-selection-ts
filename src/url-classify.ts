@@ -33,5 +33,4 @@ export const isLocalAddrUrl = (url: RelayUrl): boolean => {
 }
 
 /** `ws://` and not an onion host. */
-export const isInsecureUrl = (url: RelayUrl): boolean =>
-  url.startsWith("ws://") && !isOnionUrl(url)
+export const isInsecureUrl = (url: RelayUrl): boolean => url.startsWith("ws://") && !isOnionUrl(url)

@@ -75,5 +75,8 @@ export const normaliseRelayUrl = (url: string | null | undefined): RelayUrl | nu
   const afterHost = normalised.slice(normalised.indexOf(hostname) + hostname.length)
   if (CONCATENATED_WSS_REGEX.test(afterHost)) return null
 
+  // Branded-type factory: every check above is a validation gate, so this `as`
+  // is the single legitimate construction point for the `RelayUrl` brand.
+  // deno-lint-ignore innis/no-type-assertions
   return normalised as RelayUrl
 }
