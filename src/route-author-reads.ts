@@ -60,6 +60,9 @@ export const routeAuthorReads = (
   }
 
   const coverByAuthor = new Map<PublicKey, number>()
+  // Authors whose coverage reached min(target, maxCover) are permanently done (cover never
+  // decreases); they are pruned from the shared sets lazily so later rounds stop rescoring them.
+  const saturated = new Set<PublicKey>()
   const remaining = new Map(relayToAuthors)
   const pickedRelays: Array<{ readonly relay: RelayUrl; readonly authors: ReadonlyArray<PublicKey> }> = []
 
@@ -69,8 +72,15 @@ export const routeAuthorReads = (
     for (const [url, authors] of remaining) {
       const needed: Array<PublicKey> = []
       for (const pk of authors) {
-        const authorTarget = Math.min(target, maxCoverByAuthor.get(pk) ?? 0)
-        if ((coverByAuthor.get(pk) ?? 0) < authorTarget) needed.push(pk)
+        if (saturated.has(pk)) {
+          authors.delete(pk)
+          continue
+        }
+        needed.push(pk)
+      }
+      if (authors.size === 0) {
+        remaining.delete(url)
+        continue
       }
       if (needed.length > bestAuthors.length) {
         bestUrl = url
@@ -80,7 +90,11 @@ export const routeAuthorReads = (
     if (bestUrl === null || bestAuthors.length === 0) break
     pickedRelays.push({ relay: bestUrl, authors: bestAuthors })
     remaining.delete(bestUrl)
-    for (const pk of bestAuthors) coverByAuthor.set(pk, (coverByAuthor.get(pk) ?? 0) + 1)
+    for (const pk of bestAuthors) {
+      const next = (coverByAuthor.get(pk) ?? 0) + 1
+      coverByAuthor.set(pk, next)
+      if (next >= Math.min(target, maxCoverByAuthor.get(pk) ?? 0)) saturated.add(pk)
+    }
   }
 
   const routes: Array<AuthorReadRoute> = []
