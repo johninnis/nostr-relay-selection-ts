@@ -101,16 +101,33 @@ const draftRelays = (context: PublishContext): ReadonlyArray<RelayUrl> => {
   return buildRelaySet(userOutboxOf(context))
 }
 
+// NIP-29 group tag: ["h", "<group-id>", "<relay-hint>?"]. The relay hint is optional, so the group's
+// relays come from the hint when present, the caller-supplied `groupRelays` otherwise (or both).
+const groupTagOf = (event: Event): ReadonlyArray<string> | undefined =>
+  event.tags.find((tag) => tag[0] === "h" && typeof tag[1] === "string" && tag[1].length > 0)
+
+const groupRelaysFor = (groupTag: ReadonlyArray<string>, context: PublishContext): ReadonlyArray<RelayUrl> => {
+  const hint = typeof groupTag[2] === "string" ? normaliseRelayUrl(groupTag[2]) : null
+  return buildRelaySet(hint ? [hint] : [], context.groupRelays ?? [])
+}
+
 /**
- * Decide which relays to publish an event to. Dispatches on event kind into one
- * of three branches: `"dm"` (kind 1059, NIP-17 gift-wrap; targets recipients'
- * kind 10050 inboxes, or `null` if none); `"draft"` (kinds 30024 / 30403 /
- * 31234; targets `privateContentRelays` or falls back to the user's outbox);
- * `"general"` (everything else; user's outbox plus, for `INBOX_FANOUT_KINDS`,
- * recipient inbox fanout capped per recipient, plus, for `INDEXED_KINDS`,
- * `indexerRelays`). `blockedRelays` is subtracted from every output uniformly.
+ * Decide which relays to publish an event to. Dispatches into one of four branches:
+ * `"group"` (NIP-29 — any event carrying an `h` tag whose group relays are known, from the tag's
+ * optional relay hint and/or the caller-supplied `groupRelays`; targets those relays only, no outbox
+ * fan-out); `"dm"` (kind 1059, NIP-17 gift-wrap; targets recipients' kind 10050 inboxes, or `null`
+ * if none); `"draft"` (kinds 30024 / 30403 / 31234; targets `privateContentRelays` or falls back to
+ * the user's outbox); `"general"` (everything else; user's outbox plus, for `INBOX_FANOUT_KINDS`,
+ * recipient inbox fanout capped per recipient, plus, for `INDEXED_KINDS`, `indexerRelays`). An
+ * `h`-tagged event with no resolvable group relay falls through to its kind's normal branch.
+ * `blockedRelays` is subtracted from every output uniformly.
  */
 export const routePublish = (event: Event, context: PublishContext): PublishRoute => {
+  const groupTag = groupTagOf(event)
+  if (groupTag) {
+    const groupRelays = groupRelaysFor(groupTag, context)
+    if (groupRelays.length > 0) return { branch: "group", relays: subtractRelays(groupRelays, context.blockedRelays) }
+  }
   const branch: PublishBranch = event.kind === KIND_GIFT_WRAP ? "dm" : DRAFT_KINDS.has(event.kind) ? "draft" : "general"
   if (branch === "dm") {
     const relays = dmRelays(event, context)

@@ -6,7 +6,7 @@ declare const relayUrlBrand: unique symbol
 export type RelayUrl = string & { readonly [relayUrlBrand]: void }
 
 /** Discriminator returned by `routePublish` identifying which policy branch produced the route. */
-export type PublishBranch = "general" | "dm" | "draft"
+export type PublishBranch = "general" | "dm" | "draft" | "group"
 
 /** Discriminator returned by `routeRead` / `findFilterPattern` identifying which policy branch matched the filter set. */
 export type ReadBranch = "search" | "dmInbox" | "general"
@@ -48,6 +48,12 @@ export interface PublishContext {
   readonly indexerRelays: ReadonlyArray<RelayUrl>
   readonly perRecipientCap?: number
   readonly blockedRelays?: ReadonlyArray<RelayUrl>
+  /**
+   * Relays hosting the NIP-29 group an `h`-tagged event belongs to, resolved by the caller (the
+   * `h` tag carries the group id but not its relay). When set and the event has an `h` tag,
+   * `routePublish` returns the `"group"` branch targeting these relays only.
+   */
+  readonly groupRelays?: ReadonlyArray<RelayUrl>
 }
 
 /** Typed input for `routeRead`. See README for field semantics. */

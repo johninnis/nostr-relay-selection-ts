@@ -83,6 +83,7 @@ Given an event and the user's relay-list events (kind 10002 / 10050), decide whi
 - `"general"` — NIP-65 outbox routing for kind 1/6/7/16/24/1111/9802 etc. Fans out to recipient inboxes (capped per recipient). Adds `indexerRelays` for indexed kinds (0, 3, 10002, 10050) — the events indexers like `purplepag.es` harvest.
 - `"dm"` — NIP-17 routing for kind 1059 gift-wraps. Targets recipients' kind-10050 inbox relays only. **Returns `branch: "dm"` with `relays: null` if no recipient has a kind 10050 (or every DM relay is blocked)** — per NIP-17, clients SHOULD NOT publish if the recipient has not signalled readiness. There is no fallback.
 - `"draft"` — kinds 30024, 30403, 31234. Routes to caller-supplied `privateContentRelays` if any; otherwise falls back to the user's outbox.
+- `"group"` — NIP-29 relay-based groups. Any event carrying an `h` tag, when the caller supplies the group's `groupRelays`. Targets those relays only — no outbox fan-out — because a group lives on the relay that hosts it. The `h` tag carries the group id but not its relay, so the caller resolves group→relay and passes it in (see NIP-29 note below).
 
 ```ts
 import { routePublish, type PublishContext } from "@innis/nostr-relay-selection"
@@ -90,9 +91,10 @@ import { routePublish, type PublishContext } from "@innis/nostr-relay-selection"
 const context: PublishContext = {
   userPubkey,
   relayListEvents: cachedKind10002And10050Events,
-  privateContentRelays: [],   // caller's pre-extracted kind 10013 URLs (see NIP-37 note below)
+  privateContentRelays: [],   // caller's pre-extracted kind 10013 URLs (see NIP-37/51 note below)
   indexerRelays: [],
-  blockedRelays: callerBlockedRelays,   // caller's pre-extracted kind 10006 URLs
+  blockedRelays: callerBlockedRelays,   // caller's pre-extracted kind 10006 URLs (see NIP-51 note below)
+  groupRelays: [],            // caller-resolved relays for this event's NIP-29 group (h tag)
 }
 
 const route = routePublish(event, context)
@@ -100,13 +102,20 @@ switch (route.branch) {
   case "general": /* NIP-65 outbox fan-out */ break
   case "dm":      /* NIP-17 DM inboxes (or null if recipient has no 10050) */ break
   case "draft":   /* private content relays or user outbox fallback */ break
+  case "group":   /* NIP-29 group relays only */ break
 }
 for (const relay of route.relays ?? []) {
   await pool.publish(relay, event)
 }
 ```
 
-The lib does **not** implement NIP-37 itself — kind 10013's relay list is NIP-44-encrypted inside `content`, and decryption requires a signer + crypto, both out of scope here. Callers that want NIP-37-aware draft routing must fetch and decrypt kind 10013 themselves and pass the resulting URLs into `PublishContext.privateContentRelays`.
+This lib treats relay lists as **pre-extracted URLs, not raw events**, for the lists that can be encrypted — it never decrypts, so it cannot read them from events itself:
+
+- **`blockedRelays`** — the user's blocked-relays set (kind 10006, NIP-51). NIP-51 list entries may live in the **NIP-44-encrypted `content`** rather than public tags, so the caller must decrypt (when needed) and pass the resulting URLs in. They are subtracted from every route uniformly.
+- **`privateContentRelays`** — private/draft relays (kind 10013, NIP-37; also a NIP-51 private list). The relay list is **NIP-44-encrypted inside `content`**; the lib does **not** implement NIP-37/51 decryption (it needs a signer + crypto, both out of scope). Callers wanting NIP-37/51-aware draft routing must fetch and decrypt kind 10013 themselves and pass the URLs into `privateContentRelays`.
+- **`groupRelays`** — NIP-29 group relays for an `h`-tagged event. The event names the group (`h` tag) but not its host relay, so the caller resolves the mapping (e.g. from where it discovered the group) and passes the relays in.
+
+The plain (unencrypted) relay lists — kind 10002 (NIP-65) and 10050 (NIP-17) — are read from `relayListEvents` directly.
 
 ### Route a read
 

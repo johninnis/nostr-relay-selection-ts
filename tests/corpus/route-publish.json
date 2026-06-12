@@ -1522,5 +1522,106 @@
         "wss://alice-inbox.example.com"
       ]
     }
+  },
+  {
+    "name": "real-world: kind 9 group message with relay hint in h tag routes to the hinted relay",
+    "event": {
+      "kind": 9,
+      "id": "a207aaed674a8621cf625b85ff09fe6bcf677958ad554cae495390fe99504e28",
+      "pubkey": "c230edd34ca5c8318bf4592ac056cde37519d395c0904c37ea1c650b8ad4a712",
+      "created_at": 1766243286,
+      "tags": [
+        [
+          "h",
+          "9044358308956086",
+          "wss://spatia-arcana.com"
+        ]
+      ],
+      "content": "generally a good idea :)",
+      "sig": "d517eb86613897095b39b481468b5e381cadf68ad26bf9acc9f471225b59a885ba702a74969326d45ebc7b8fa42e46028b61313af47d1508a84a750621f55226"
+    },
+    "context": {
+      "userPubkey": "c230edd34ca5c8318bf4592ac056cde37519d395c0904c37ea1c650b8ad4a712",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://spatia-arcana.com"
+      ]
+    }
+  },
+  {
+    "name": "real-world: kind 9 group message without relay hint uses caller-supplied groupRelays",
+    "event": {
+      "kind": 9,
+      "id": "fc1620efb3ba29a79ad2781e594467372a1e0110920146f8f4751e7215a616f3",
+      "pubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+      "created_at": 1767110672,
+      "tags": [
+        [
+          "h",
+          "9044358308956086"
+        ],
+        [
+          "-"
+        ],
+        [
+          "q",
+          "bba0bed150fa194f91fc9d3da439e6d58939b308c9c6e79935c9cb29554573e2",
+          "wss://basspistol.org/",
+          "3f11abb2e235da2d4dda5d6deb2f123173476a745a3ca56895a1d0f632a42f40"
+        ]
+      ],
+      "content": "nostr:nevent1q... I like https://nak.nostr.com/ and its cli :)",
+      "sig": "a35aa6e7c9f28d3bcf5c8e02f4f0afd1bc457bd6bd184ed4eec8cdcb001c03a5629e7dbfe125898b8e108f56a9af20fb3569237d559cc34730b01498cca27faa"
+    },
+    "context": {
+      "userPubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [
+        "wss://spatia-arcana.com"
+      ]
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://spatia-arcana.com"
+      ]
+    }
+  },
+  {
+    "name": "real-world: kind 9 group message with no relay hint and no groupRelays falls through to general",
+    "event": {
+      "kind": 9,
+      "id": "8d0f60327e886d7bc96d35a6c0a937fb63ac17617720c396a70840aeffab2f17",
+      "pubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+      "created_at": 1767246618,
+      "tags": [
+        [
+          "h",
+          "9044358308956086"
+        ],
+        [
+          "-"
+        ]
+      ],
+      "content": "Happy New Year, Spatia Arcana 🎊",
+      "sig": "6f7351378e9dd5cdfafaac906e624e7b47c99a0f52b106b33ea4cba13ff078923c46dc2498f72debed71cd968ae1983c934fd969b3f5202af978d32e1c6cec20"
+    },
+    "context": {
+      "userPubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+      "relayListEvents": [],
+      "privateContentRelays": [],
+      "indexerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": []
+    }
   }
 ]

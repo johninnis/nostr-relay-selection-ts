@@ -106,7 +106,7 @@ interface RoutePublishVector {
   readonly event: Event
   readonly context: PublishContext
   readonly expected: {
-    readonly branch: "general" | "dm" | "draft"
+    readonly branch: "general" | "dm" | "draft" | "group"
     readonly relays: ReadonlyArray<string> | null
   }
 }
