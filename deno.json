@@ -1,6 +1,9 @@
 {
   "name": "@innis/nostr-relay-selection",
   "version": "0.1.3",
+  "publish": {
+    "exclude": ["tests/", "deno.lock", ".github/"]
+  },
   "license": "MIT",
   "exports": "./mod.ts",
   "compilerOptions": {
