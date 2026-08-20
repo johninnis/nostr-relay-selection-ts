@@ -1,8 +1,8 @@
-# Nostr Relay Selection
+# @innis/nostr-relay-selection
 
 [![CI](https://github.com/johninnis/nostr-relay-selection-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/johninnis/nostr-relay-selection-ts/actions/workflows/ci.yml)
 
-A TypeScript library for routing Nostr events to and from relays. Implements outbox-model publish routing, read routing, author-set-cover, relay hint selection, NIP-65 inbox/outbox/DM list parsing, NIP-17 DM-inbox handling, and URL classification — as pure functions, with zero runtime dependencies.
+Deterministic outbox-model relay routing for Nostr. Publish routing, read routing, author-set-cover, relay hint selection, NIP-65 inbox/outbox and NIP-17 DM-inbox list parsing, and URL classification — as pure functions, with zero runtime dependencies. A policy spec locked to a shared test corpus, not an engine.
 
 ## Why this library?
 

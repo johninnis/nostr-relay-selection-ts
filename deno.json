@@ -9,6 +9,7 @@
     "exclude": ["jsr:@innis/*"]
   },
   "license": "MIT",
+  "description": "Deterministic outbox-model relay routing for Nostr: publish routing, read routing, author-set-cover, relay hints, NIP-65 inbox/outbox and NIP-17 DM-inbox list parsing. Pure functions, zero dependencies — a policy spec locked to a shared test corpus, not an engine.",
   "exports": "./mod.ts",
   "compilerOptions": {
     "strict": true,
