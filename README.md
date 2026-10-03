@@ -89,7 +89,7 @@ directory.blocked // the blocklist, deduplicated
 
   | Role | Kind | Tags read |
   | --- | --- | --- |
-  | `"inbox"` | 10002 (NIP-65) | `r` tags not marked `write` (unmarked, `read`, `both` or any other marker), a relay named twice being the union ([ADR-0016](docs/adr/0016-a-relays-nip65-marker-is-read-across-every-r-tag-naming-it-and-an-undefined-marker-is-both.md)) |
+  | `"inbox"` | 10002 (NIP-65) | `r` tags not marked `write` (unmarked, `read`, `both` or any other marker), a relay named twice being the union ([ADR-0016](docs/adr/0016-a-relays-nip65-marker-is-read-across-every-r-tag-naming-it-and-an-undefined-marker.md)) |
   | `"outbox"` | 10002 (NIP-65) | `r` tags not marked `read` (unmarked, `write`, `both` or any other marker), a relay named twice being the union |
   | `"dm"` | 10050 (NIP-17) | `relay` tags |
   | `"search"` | 10007 (NIP-51) | `relay` tags |
@@ -162,7 +162,7 @@ for (const route of routeAuthorReads(followed, directory, { fallbackRelays, maxA
 | `unionRelays(...sources)` | Union already-normalised URLs into a `RelaySet`. |
 | `subtractRelays(relays, blocked)` | The relays not in `blocked`, deduplicated, in order. |
 | `normaliseRelayUrl(url)` | Normalise a relay URL, or `null`. The rules are pinned by `tests/corpus/normalise-url.json`, shared with `@innis/nostr-core`. |
-| `isOnionUrl` / `isLoopbackUrl` / `isLocalAddrUrl` / `isInsecureUrl` | URL predicates for your own filtering; routing never applies them. Address ranges match IPv4 dotted quads only, so `wss://10.example.com` is not local; no relay URL holds an IPv6 literal ([ADR-0017](docs/adr/0017-the-url-classifiers-read-only-names-and-ipv4-addresses-because-no-relay-url-holds-an-ipv6-literal.md)). |
+| `isOnionUrl` / `isLoopbackUrl` / `isLocalAddrUrl` / `isInsecureUrl` | URL predicates for your own filtering; routing never applies them. Address ranges match IPv4 dotted quads only, so `wss://10.example.com` is not local; no relay URL holds an IPv6 literal ([ADR-0017](docs/adr/0017-the-url-classifiers-read-only-names-and-ipv4-addresses-because-no-relay-url-holds.md)). |
 | `isGiftWrapKind` / `isDraftKind` / `isIndexedKind` / `isPubkeyDataKind` | The kind groupings routing branches on ([ADR-0015](docs/adr/0015-kind-sets-are-exposed-only-as-predicates.md)). |
 | `KIND_*` | The kinds routing distinguishes, and only those ([ADR-0014](docs/adr/0014-a-kind-is-named-only-when-routing-branches-on-it.md)). |
 
@@ -189,7 +189,7 @@ Three lists can be partly or wholly encrypted, so you pass their relays in rathe
 - The publish outbox is the event author's (`event.pubkey`), not a caller-supplied user key: `PublishContext.userPubkey` is gone ([ADR-0018](docs/adr/0018-a-public-event-is-also-sent-to-every-inbox-relay-of-each-user-it-tags.md)). The read branch derives the user's relays from the directory.
 - NIP-29 group routing (the `"group"` branch) now comes after the DM and draft branches, so an `h`-tagged gift wrap or draft is never sent to a group relay ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)).
 - Kinds take nostr-core's names: `KIND_PROFILE_METADATA` becomes `KIND_METADATA`, `KIND_BLOCKED_RELAY_LIST` `KIND_BLOCKED_RELAYS_LIST`, `KIND_SEARCH_RELAY_LIST` `KIND_SEARCH_RELAYS_LIST` and `KIND_LONGFORM_DRAFT` `KIND_LONGFORM_CONTENT_DRAFT` ([ADR-0014](docs/adr/0014-a-kind-is-named-only-when-routing-branches-on-it.md)).
-- An `r` tag with a marker other than `read` or `write` now counts as both instead of being dropped, and a relay named by several `r` tags is the union of them ([ADR-0016](docs/adr/0016-a-relays-nip65-marker-is-read-across-every-r-tag-naming-it-and-an-undefined-marker-is-both.md)).
+- An `r` tag with a marker other than `read` or `write` now counts as both instead of being dropped, and a relay named by several `r` tags is the union of them ([ADR-0016](docs/adr/0016-a-relays-nip65-marker-is-read-across-every-r-tag-naming-it-and-an-undefined-marker.md)).
 - Kind 21059 (the NIP-59 ephemeral gift wrap) is routed like kind 1059: published to the recipients' kind 10050 relays or refused, and a read asking only for gift-wrap kinds with one `#p` is a `"dmInbox"` read. `findFilterPattern` returns a `FilterPattern` object (`{ branch }`, with `recipient` on `"dmInbox"`) instead of a branch string, and `sharedGiftWrapRecipient` is gone.
 - Blocked relays are removed before any choice is made, so a blocklist can change the branch, not only the relays: a recipient's inbox is deduplicated and cleared of blocked relays before the cap, a recipient whose inbox is all blocked falls back to the `p`-tag hint, and a draft or group whose relays are all blocked falls back ([ADR-0010](docs/adr/0010-blocked-relays-are-removed-before-any-choice-is-made.md)). `routeAuthorReads` omits the fallback route when no fallback relay remains instead of returning one with no relays ([ADR-0012](docs/adr/0012-only-a-dm-route-can-be-refused-and-a-refusal-is-a-value.md)).
 - `recipientsWithoutInbox` reports every recipient publish routing cannot reach through an inbox (no kind 10002, a list with no read entries, or every inbox relay blocked), where `missingRelayListPubkeys` reported only those with no kind 10002.
@@ -198,7 +198,7 @@ Three lists can be partly or wholly encrypted, so you pass their relays in rathe
 - A `"general"` read whose filters name users in `#p` reads those users' inbox relays, and the user's own relays only when a filter has no `#p` or a tagged user has no inbox ([ADR-0019](docs/adr/0019-a-read-about-tagged-users-goes-to-their-inbox-relays.md)).
 - Sending the author's kind 10002 to the relays an event went to (NIP-65) is the caller's job.
 - `selectRelayHint`'s `target` is `{ pubkey, seenOn? }`, and every hint names a relay where its target's events are found: `seenOn` (a relay you received the event, or an event by the tagged user, from), then the target's outbox, then the user's inbox, where 0.1 took the user's outbox relay in the target's inbox, then the target's inbox, then the user's outbox. `pubkey` is the referenced event's author for an `e` / `q` / `a` tag and the tagged user for a `p` tag ([ADR-0020](docs/adr/0020-a-relay-hint-names-where-its-target-is-found-and-prefers-the-relay-it-was-seen-on.md)).
-- `isLoopbackUrl` no longer names `::1`: no relay URL can hold an IPv6 literal, so it never matched ([ADR-0017](docs/adr/0017-the-url-classifiers-read-only-names-and-ipv4-addresses-because-no-relay-url-holds-an-ipv6-literal.md)).
+- `isLoopbackUrl` no longer names `::1`: no relay URL can hold an IPv6 literal, so it never matched ([ADR-0017](docs/adr/0017-the-url-classifiers-read-only-names-and-ipv4-addresses-because-no-relay-url-holds.md)).
 
 ## Testing
 
