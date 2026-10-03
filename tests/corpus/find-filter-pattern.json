@@ -74,5 +74,49 @@
       }
     ],
     "expected": "general"
+  },
+  {
+    "name": "single ephemeral gift-wrap filter (kind 21059) with one #p classifies as DmInbox",
+    "filters": [
+      { "kinds": [21059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "dmInbox"
+  },
+  {
+    "name": "gift-wrap and ephemeral gift-wrap kinds in one filter with one #p classify as DmInbox",
+    "filters": [
+      { "kinds": [1059, 21059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "dmInbox"
+  },
+  {
+    "name": "separate kind 1059 and kind 21059 filters sharing the same single recipient classify as DmInbox",
+    "filters": [
+      { "kinds": [1059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+      { "kinds": [21059], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "dmInbox"
+  },
+  {
+    "name": "ephemeral gift-wrap filter without #p is not DmInbox",
+    "filters": [{ "kinds": [21059] }],
+    "expected": "general"
+  },
+  {
+    "name": "mixed kinds in one filter (21059 plus something) is not DmInbox",
+    "filters": [
+      {
+        "kinds": [21059, 1],
+        "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+      }
+    ],
+    "expected": "general"
+  },
+  {
+    "name": "filter with an empty kinds list and one #p is not DmInbox",
+    "filters": [
+      { "kinds": [], "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] }
+    ],
+    "expected": "general"
   }
 ]

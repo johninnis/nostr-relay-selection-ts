@@ -2,16 +2,23 @@
   {
     "name": "valid event parses",
     "input": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
-      "tags": [["p", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]]
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
     },
     "valid": true
   },
   {
     "name": "valid event with empty tags",
     "input": {
+      "id": "2bbf274fe1957d32c485ed489a652cadbbf3492e6704f8bb6ae3e400797fe55c",
       "kind": 0,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -22,6 +29,7 @@
   {
     "name": "missing kind returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
@@ -31,6 +39,7 @@
   {
     "name": "missing pubkey returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": 1,
       "created_at": 100,
       "tags": []
@@ -40,6 +49,7 @@
   {
     "name": "missing created_at returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "tags": []
@@ -49,6 +59,7 @@
   {
     "name": "missing tags returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100
@@ -58,6 +69,7 @@
   {
     "name": "uppercase pubkey returns null",
     "input": {
+      "id": "3107e5fdc66538a8c1d8b5ad362ae401b3aef366ee80c4206974c6cca1647edf",
       "kind": 1,
       "pubkey": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
       "created_at": 100,
@@ -68,6 +80,7 @@
   {
     "name": "short pubkey returns null",
     "input": {
+      "id": "19907a57d8ad6bbb113f9176af32d75ffab1897eeb0658eb357ea5383257f7f9",
       "kind": 1,
       "pubkey": "deadbeef",
       "created_at": 100,
@@ -78,6 +91,7 @@
   {
     "name": "non-integer kind returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": "1",
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -88,20 +102,102 @@
   {
     "name": "tag with non-string element returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
-      "tags": [["p", 42]]
+      "tags": [
+        [
+          "p",
+          42
+        ]
+      ]
     },
     "valid": false
   },
   {
     "name": "tags not an array returns null",
     "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": "not an array"
+    },
+    "valid": false
+  },
+  {
+    "name": "missing id returns null",
+    "input": {
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "uppercase id returns null",
+    "input": {
+      "id": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "short id returns null",
+    "input": {
+      "id": "deadbeef",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "non-string id returns null",
+    "input": {
+      "id": 42,
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "tags as a JSON object returns null",
+    "input": {
+      "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": {
+        "first": [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "a tag that is a JSON object returns null",
+    "input": {
+      "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        {
+          "name": "p",
+          "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
     },
     "valid": false
   }

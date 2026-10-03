@@ -1,6 +1,6 @@
 [
   {
-    "function": "extractInboxRelayUrls",
+    "role": "inbox",
     "name": "returns read and both markers from r tags",
     "tags": [
       [
@@ -30,7 +30,7 @@
     ]
   },
   {
-    "function": "extractInboxRelayUrls",
+    "role": "inbox",
     "name": "normalises URLs",
     "tags": [
       [
@@ -44,7 +44,7 @@
     ]
   },
   {
-    "function": "extractInboxRelayUrls",
+    "role": "inbox",
     "name": "ignores non-r tags",
     "tags": [
       [
@@ -66,7 +66,7 @@
     ]
   },
   {
-    "function": "extractOutboxRelayUrls",
+    "role": "outbox",
     "name": "returns write and both markers from r tags",
     "tags": [
       [
@@ -96,7 +96,7 @@
     ]
   },
   {
-    "function": "extractOutboxRelayUrls",
+    "role": "outbox",
     "name": "empty when no write/both markers",
     "tags": [
       [
@@ -108,7 +108,7 @@
     "expected": []
   },
   {
-    "function": "extractDmRelayUrls",
+    "role": "dm",
     "name": "parses kind-10050 relay tags",
     "tags": [
       [
@@ -126,7 +126,7 @@
     ]
   },
   {
-    "function": "extractDmRelayUrls",
+    "role": "dm",
     "name": "normalises and ignores non-relay tags",
     "tags": [
       [
@@ -147,7 +147,7 @@
     ]
   },
   {
-    "function": "extractBlockedRelayUrls",
+    "role": "blocked",
     "name": "parses kind-10006 relay tags",
     "tags": [
       [
@@ -165,7 +165,7 @@
     ]
   },
   {
-    "function": "extractBlockedRelayUrls",
+    "role": "blocked",
     "name": "normalises and ignores non-relay tags",
     "tags": [
       [
@@ -186,7 +186,7 @@
     ]
   },
   {
-    "function": "extractSearchRelayUrls",
+    "role": "search",
     "name": "parses kind-10007 relay tags",
     "tags": [
       [
@@ -204,7 +204,7 @@
     ]
   },
   {
-    "function": "extractSearchRelayUrls",
+    "role": "search",
     "name": "normalises and ignores non-relay tags",
     "tags": [
       [
@@ -225,7 +225,7 @@
     ]
   },
   {
-    "function": "extractDmRelayUrls",
+    "role": "dm",
     "name": "rust-nostr fixture: kind-10050 inbox-relays event",
     "source": "input tags from tests/corpus/external-fixtures/rust-nostr/kind-10050-nip17-inbox-relays.json",
     "tags": [
@@ -246,6 +246,128 @@
       "wss://auth.nostr1.com",
       "wss://nostr.oxtr.dev",
       "wss://nip17.com"
+    ]
+  },
+  {
+    "role": "dm",
+    "name": "duplicate entries collapse to one, first-seen order kept",
+    "tags": [
+      [
+        "relay",
+        "wss://dm-a.example.com"
+      ],
+      [
+        "relay",
+        "WSS://DM-A.example.com/"
+      ],
+      [
+        "relay",
+        "wss://dm-b.example.com"
+      ]
+    ],
+    "expected": [
+      "wss://dm-a.example.com",
+      "wss://dm-b.example.com"
+    ]
+  },
+  {
+    "role": "inbox",
+    "name": "a marker NIP-65 does not define reads as both: kept as an inbox",
+    "tags": [
+      [
+        "r",
+        "wss://readwrite.example.com",
+        "readwrite"
+      ],
+      [
+        "r",
+        "wss://other.example.com",
+        "sometimes"
+      ],
+      [
+        "r",
+        "wss://read.example.com",
+        "read"
+      ],
+      [
+        "r",
+        "wss://write.example.com",
+        "write"
+      ]
+    ],
+    "expected": [
+      "wss://readwrite.example.com",
+      "wss://other.example.com",
+      "wss://read.example.com"
+    ]
+  },
+  {
+    "role": "outbox",
+    "name": "a marker NIP-65 does not define reads as both: kept as an outbox",
+    "tags": [
+      [
+        "r",
+        "wss://readwrite.example.com",
+        "readwrite"
+      ],
+      [
+        "r",
+        "wss://other.example.com",
+        "sometimes"
+      ],
+      [
+        "r",
+        "wss://read.example.com",
+        "read"
+      ],
+      [
+        "r",
+        "wss://write.example.com",
+        "write"
+      ]
+    ],
+    "expected": [
+      "wss://readwrite.example.com",
+      "wss://other.example.com",
+      "wss://write.example.com"
+    ]
+  },
+  {
+    "role": "inbox",
+    "name": "a relay's marker is the union of every r tag naming it, by canonical URL: read",
+    "tags": [
+      [
+        "r",
+        "wss://split.example.com",
+        "read"
+      ],
+      [
+        "r",
+        "WSS://Split.Example.COM:443/",
+        "write"
+      ]
+    ],
+    "expected": [
+      "wss://split.example.com"
+    ]
+  },
+  {
+    "role": "outbox",
+    "name": "a relay's marker is the union of every r tag naming it, by canonical URL: write",
+    "tags": [
+      [
+        "r",
+        "wss://split.example.com",
+        "read"
+      ],
+      [
+        "r",
+        "WSS://Split.Example.COM:443/",
+        "write"
+      ]
+    ],
+    "expected": [
+      "wss://split.example.com"
     ]
   }
 ]

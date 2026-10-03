@@ -1,0 +1,619 @@
+[
+  {
+    "name": "all p-tagged pubkeys have an inbox returns empty",
+    "event": {
+      "id": "b3bd64ed0a180335d6a29ceea378df7fbb0565b49319a2fcac1096210fce5ba4",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "d716663eb117a71bcc479749422231974c4be8534d2046606a854fdf913bb61f",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://x.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "46b5a5aa2dda4692aa768c4003992aabf7e1917c218cbcbb832cae24dfc651f1",
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://x.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "returns exactly the missing ones",
+    "event": {
+      "id": "b3bd64ed0a180335d6a29ceea378df7fbb0565b49319a2fcac1096210fce5ba4",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "d716663eb117a71bcc479749422231974c4be8534d2046606a854fdf913bb61f",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://x.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ]
+  },
+  {
+    "name": "p-tag with a position-[2] hint but no kind 10002 is still reported",
+    "event": {
+      "id": "1fca0cd6e23cbe597cf3ce8b59051c67fd710eb51f02c7c542ad546178441801",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "event with no p-tags returns empty",
+    "event": {
+      "id": "f241061c3bebfe8f414fd6a63a08e1e83f357c50baced7e9bc9e9a1f3f61390a",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "e",
+          "deadbeef"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 0 recipient with no inbox is reported: every kind fans out",
+    "event": {
+      "id": "0462047ab85d74e3fe7e98818d003e4ad6749d4497794620623423dd9cb9d4cf",
+      "kind": 0,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "p-tag with malformed pubkey is silently filtered (never reported)",
+    "event": {
+      "id": "4875caf7a14c928ab16fb6ea8fba4789feadbb35d7c77ba8fb4f38d77f01f8f0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "a write-only kind 10002 has no inbox, so the recipient is reported (routing falls back to the hint)",
+    "event": {
+      "id": "b9ed04ee7e07e891a7ea435c4555b5156eb0ce21f7d42e763e2491f7ebfc6946",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "7689963bdd882ef2dcb2baf308e641d6a68f7dfe7425c83538c9f12165733bf2",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "a recipient whose every inbox relay is blocked is reported",
+    "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://alice-inbox.example.com"
+      ]
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "a recipient p-tagged twice is reported once",
+    "event": {
+      "id": "8fa17efefff10e06ddfc50a6e497bd577b3346c104093c53a782d378b2154ca5",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "a gift wrap reports nothing: private content never fans out",
+    "event": {
+      "id": "9fe3a614a372c5247257a523c9c4c9a879feb35b32c550539b9a3b8e29abc529",
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a draft reports nothing: private content never fans out",
+    "event": {
+      "id": "0151b8005abf610b64fba685d14affef20217aca171e2a0ef41b054409fa4f3c",
+      "kind": 31234,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 3 follow list reports nothing: its p tags are data, not mentions (NIP-02)",
+    "event": {
+      "id": "764eb150dd3714318f285c9dd0aa2d8b10fcf88ea181e9d1cb08c4af9fb6ae80",
+      "kind": 3,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 1984 report reports nothing: its p tags are data, not mentions (NIP-56)",
+    "event": {
+      "id": "39eb15c48f2328ea19dc70e65a57500b9e795fb16e4feeff69549febfd4ead07",
+      "kind": 1984,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "spam"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10000 mute list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "92798bc290132525bf2cbc5f18184d12d116406d0cda92708e5e34ac23d0db63",
+      "kind": 10000,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10017 git authors list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "347b447fc15f3855e722651a3a7c3188b8d6e6074fef7aef8ece0c7444582271",
+      "kind": 10017,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10020 media follows list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "360d725724d5a9c2fce74d8936c0dbab2fe7bea54381c5c10fa9601de03fe1b2",
+      "kind": 10020,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10054 favourite podcasts list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "533d101735dca254f21db20e8539bcd15fd2c3c3335f00b2546f8ee43d3432d9",
+      "kind": 10054,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10064 authored podcasts list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "f937573cd6d0fcc2d389615e576769e21fbe4e93842b44ceff460ea60e67e3a0",
+      "kind": 10064,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 10101 good wiki authors list reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "d257f2a2f9cbf3ecb4ed202a9e66d71fb84541ab7b6dae755055fa06d2e6372d",
+      "kind": 10101,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 30000 follow set reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "1b56b1c2471d1fc72081d66a0540e749ec2d97444dcee25c8d0d33f26b461255",
+      "kind": 30000,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "friends"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 30007 kind mute set reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "91bd66714486f4ea1b18051b8c87201fa27dc151fa67d6643e32ada626d2f6ab",
+      "kind": 30007,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "1"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 39089 starter pack reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "4c23868131e20768249a018ae2d36ca1183d18f4b5d1acd7b955466698808bc5",
+      "kind": 39089,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "pack"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 39092 media starter pack reports nothing: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "e3651ec0e945c198e5e9202638190e9a36c72954003314f990cd291f4de05fea",
+      "kind": 39092,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "pack"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "a kind 30023 article with a recipient who has no inbox reports them: its p tags are mentions",
+    "event": {
+      "id": "7c8e028effd07361439dd39c0f0f4323807c9f012b8672cf7c7c646ea1bfbeeb",
+      "kind": 30023,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "article"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  }
+]

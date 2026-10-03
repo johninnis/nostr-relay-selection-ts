@@ -1,47 +1,54 @@
-import type { PublicKey, ReadBranch, ReadContext, RelayUrl } from "./types.ts"
-import { KIND_DM_RELAY_LIST } from "./kinds.ts"
-import { buildRelaySet, subtractRelays } from "./build-relay-set.ts"
-import { extractDmRelayUrls } from "./relay-list.ts"
-import { newestEventByPubkeyAndKind } from "./event-utils.ts"
-import { findFilterPattern, sharedGiftWrapRecipient } from "./find-filter-pattern.ts"
+import type { Filter, NoDmRelaysFailure, PublicKey, ReadPolicy, ReadRoute, RelayDirectory, RelaySet } from "./types.ts"
+import { findFilterPattern } from "./filter-pattern.ts"
+import { NO_DM_RELAYS } from "./no-dm-relays.ts"
 
-/**
- * Result of `routeRead`. `branch` discriminates the policy that applied;
- * `relays` is the target list (which may be `null` for the `"dmInbox"` branch
- * when the recipient has no DM-inbox route).
- */
-export interface ReadRoute {
-  readonly branch: ReadBranch
-  readonly relays: ReadonlyArray<RelayUrl> | null
-}
+const taggedOf = (filter: Filter): ReadonlyArray<PublicKey> => filter["#p"] ?? []
 
-const dmInboxRelays = (context: ReadContext, recipient: PublicKey | null): ReadonlyArray<RelayUrl> | null => {
-  if (recipient === null) return null
-  const list = newestEventByPubkeyAndKind(context.relayListEvents, recipient, KIND_DM_RELAY_LIST)
-  if (!list) return null
-  const relays = buildRelaySet(extractDmRelayUrls(list.tags))
-  return relays.length === 0 ? null : relays
+const generalRelays = (filters: ReadonlyArray<Filter>, directory: RelayDirectory, policy: ReadPolicy): RelaySet => {
+  const tagged = [...new Set(filters.flatMap(taggedOf))]
+  const taggedInboxes = tagged.map((pubkey) => directory.relaysOf(pubkey, "inbox"))
+  const needsUserRelays = tagged.length === 0 ||
+    filters.some((filter) => taggedOf(filter).length === 0) ||
+    taggedInboxes.some((inbox) => inbox.length === 0)
+  const userRelays = needsUserRelays
+    ? [directory.relaysOf(policy.userPubkey, "inbox"), directory.relaysOf(policy.userPubkey, "outbox")]
+    : []
+  return directory.permitted(...taggedInboxes, ...userRelays, policy.callerRelays ?? [])
 }
 
 /**
- * Decide which relays to subscribe to for a set of filters. Dispatches on
- * filter shape into one of three branches: `"search"` (any filter has a
- * non-empty `search` field; unions `searchRelays` with `callerRelays`);
- * `"dmInbox"` (every filter is `{kinds: [1059], "#p": [singleRecipient]}` with
- * a shared recipient; targets the recipient's kind 10050 inboxes, or `null`);
- * `"general"` (everything else; unions `userRelayUrls` with `callerRelays`).
- * `blockedRelays` is subtracted from every output uniformly.
+ * Decide which relays to subscribe to for a set of filters, by the branch
+ * `findFilterPattern` selects:
+ *
+ * - `"search"`: the user's kind 10007 search relays, then `callerRelays`.
+ * - `"dmInbox"`: the recipient's kind 10050 relays; with none, returns
+ *   `NoDmRelaysFailure` (no fallback).
+ * - `"general"`: the kind 10002 inbox relays of every `#p`-tagged user (NIP-65:
+ *   events about a user are read from that user's read relays), then the user's
+ *   kind 10002 inbox and outbox, then `callerRelays`. The user's own relays are
+ *   included only when NIP-65 names nothing better: when no filter has a `#p`,
+ *   when a filter has none, or when a tagged user has no inbox left after
+ *   blocking.
+ *
+ * Blocked relays are never returned.
  */
-export const routeRead = (context: ReadContext): ReadRoute => {
-  const branch = findFilterPattern(context.filters)
-  if (branch === "dmInbox") {
-    const relays = dmInboxRelays(context, sharedGiftWrapRecipient(context.filters))
-    if (relays === null) return { branch, relays: null }
-    const afterBlock = subtractRelays(relays, context.blockedRelays)
-    return { branch, relays: afterBlock.length === 0 ? null : afterBlock }
+export const routeRead = (
+  filters: ReadonlyArray<Filter>,
+  directory: RelayDirectory,
+  policy: ReadPolicy,
+): ReadRoute | NoDmRelaysFailure => {
+  const pattern = findFilterPattern(filters)
+  switch (pattern.branch) {
+    case "dmInbox": {
+      const relays = directory.relaysOf(pattern.recipient, "dm")
+      return relays.length > 0 ? { branch: "dmInbox", relays } : NO_DM_RELAYS
+    }
+    case "search":
+      return {
+        branch: "search",
+        relays: directory.permitted(directory.relaysOf(policy.userPubkey, "search"), policy.callerRelays ?? []),
+      }
+    case "general":
+      return { branch: "general", relays: generalRelays(filters, directory, policy) }
   }
-  const relays = branch === "search"
-    ? buildRelaySet(context.searchRelays ?? [], context.callerRelays)
-    : buildRelaySet(context.userRelayUrls, context.callerRelays)
-  return { branch, relays: subtractRelays(relays, context.blockedRelays) }
 }

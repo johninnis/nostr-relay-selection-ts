@@ -1,106 +1,140 @@
 declare const relayUrlBrand: unique symbol
 /**
- * Normalised relay URL. Branded so raw `string` cannot be passed where a
+ * Normalised relay URL. Branded so a raw `string` cannot be passed where a
  * validated relay URL is expected. Construct via `normaliseRelayUrl`.
  */
 export type RelayUrl = string & { readonly [relayUrlBrand]: void }
 
-/** Discriminator returned by `routePublish` identifying which policy branch produced the route. */
-export type PublishBranch = "general" | "dm" | "draft" | "group"
-
-/** Discriminator returned by `routeRead` / `findFilterPattern` identifying which policy branch matched the filter set. */
-export type ReadBranch = "search" | "dmInbox" | "general"
-
 declare const publicKeyBrand: unique symbol
 /**
- * 64-character lowercase hex public key. Branded so raw `string` cannot be
+ * 64-character lowercase hex public key. Branded so a raw `string` cannot be
  * passed where a validated pubkey is expected. Construct via `createPublicKey`.
  */
 export type PublicKey = string & { readonly [publicKeyBrand]: void }
 
-/** Protocol-only Nostr event shape. Narrow by design — the lib reads `kind`, `pubkey`, `tags`, `created_at` and nothing else. */
+declare const eventIdBrand: unique symbol
+/**
+ * 64-character lowercase hex event id. Branded so a raw `string` cannot be
+ * passed where a validated id is expected. Construct via `createEventId`.
+ */
+export type EventId = string & { readonly [eventIdBrand]: void }
+
+/**
+ * Protocol-only Nostr event: the five fields relay routing reads. `id` is read
+ * only to break a `created_at` tie between two relay lists (NIP-01: the lowest
+ * id wins). Construct from untrusted JSON via `createEvent`.
+ */
 export interface Event {
+  readonly id: EventId
   readonly kind: number
   readonly pubkey: PublicKey
-  readonly tags: ReadonlyArray<ReadonlyArray<string>>
   readonly created_at: number
+  readonly tags: ReadonlyArray<ReadonlyArray<string>>
 }
 
-// The lib's Filter shape covers exactly the fields the routing policy
-// consults: kinds, the #p tag, and the NIP-50 search field. NIP-01 defines
-// other filter fields (authors, ids, limit, since, until, #e, #a, #d, #t, etc.)
-// but none of them affect relay selection. Callers passing wider wire-format
-// filters can either project them down to this shape via createFilter, or cast
-// directly (`wireFilter as unknown as Filter`) — extra fields are harmless at
-// runtime, the lib just won't consult them.
-/** Protocol-only filter shape covering the fields the routing policy consults: `kinds`, `#p`, and the NIP-50 `search` field. */
+/**
+ * Protocol-only filter: the fields read routing consults, `kinds`, `#p` and the
+ * NIP-50 `search` field. Construct from untrusted JSON via `createFilter`.
+ */
 export interface Filter {
   readonly kinds?: ReadonlyArray<number>
   readonly "#p"?: ReadonlyArray<PublicKey>
   readonly search?: string
 }
 
-/** Typed input for `routePublish`. See README for field semantics. */
-export interface PublishContext {
-  readonly userPubkey: PublicKey
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly privateContentRelays: ReadonlyArray<RelayUrl>
-  readonly indexerRelays: ReadonlyArray<RelayUrl>
-  readonly perRecipientCap?: number
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
-  /**
-   * Relays hosting the NIP-29 group an `h`-tagged event belongs to, resolved by the caller (the
-   * `h` tag carries the group id but not its relay). When set and the event has an `h` tag,
-   * `routePublish` returns the `"group"` branch targeting these relays only.
-   */
+/**
+ * Relay URLs with no duplicates, in first-seen order. Every relay list the
+ * library returns is a `RelaySet`; build one with `buildRelaySet` (raw strings)
+ * or `unionRelays` (already-normalised URLs).
+ */
+export type RelaySet = ReadonlyArray<RelayUrl>
+
+/**
+ * What a relay list is for. Each role owns the kind it is read from and its tag
+ * rule: `"inbox"` and `"outbox"` read kind 10002 `r` tags by marker (any marker
+ * other than `read` or `write` counts as both), `"dm"` reads kind 10050,
+ * `"search"` kind 10007 and
+ * `"blocked"` kind 10006 `relay` tags.
+ */
+export type RelayRole = "inbox" | "outbox" | "dm" | "search" | "blocked"
+
+/**
+ * Every author's newest relay lists and the caller's blocklist, indexed once.
+ * Built by `createRelayDirectory`; a snapshot of the events it was given.
+ */
+export interface RelayDirectory {
+  /** The caller's blocked relays, subtracted from everything the directory returns. */
+  readonly blocked: RelaySet
+  /** The pubkey's relays for a role, from their newest list of the role's kind, minus blocked relays. */
+  readonly relaysOf: (pubkey: PublicKey, role: RelayRole) => RelaySet
+  /** Union the sources in order, dropping duplicates and blocked relays. */
+  readonly permitted: (...sources: ReadonlyArray<ReadonlyArray<RelayUrl>>) => RelaySet
+}
+
+/** Discriminator on a `PublishRoute` naming the policy branch that produced it. */
+export type PublishBranch = "general" | "dm" | "draft" | "group"
+
+/** Discriminator on a `ReadRoute` naming the policy branch that matched the filters. */
+export type ReadBranch = "search" | "dmInbox" | "general"
+
+/** Result of `routePublish`: the branch that applied and the relays to publish to. */
+export interface PublishRoute {
+  readonly branch: PublishBranch
+  readonly relays: RelaySet
+}
+
+/** Result of `routeRead`: the branch that applied and the relays to subscribe to. */
+export interface ReadRoute {
+  readonly branch: ReadBranch
+  readonly relays: RelaySet
+}
+
+/**
+ * Returned instead of a route when a gift wrap (publish) or a DM-inbox read has
+ * no DM relay to go to. NIP-17: do not publish or subscribe; there is no fallback.
+ */
+export interface NoDmRelaysFailure {
+  readonly failure: "noDmRelays"
+}
+
+/** Result of `findFilterPattern`: the read branch a filter set selects, with the recipient for `"dmInbox"`. */
+export type FilterPattern =
+  | { readonly branch: "search" }
+  | { readonly branch: "dmInbox"; readonly recipient: PublicKey }
+  | { readonly branch: "general" }
+
+/** Caller-supplied inputs to `routePublish` beyond the event and the directory. */
+export interface PublishPolicy {
+  /** Private relays for draft kinds (e.g. decrypted NIP-37 kind 10013 entries). */
+  readonly privateContentRelays?: ReadonlyArray<RelayUrl>
+  /** Indexer relays unioned in when publishing an indexed kind (0, 3, 10002, 10050). */
+  readonly indexerRelays?: ReadonlyArray<RelayUrl>
+  /** Caller-resolved relays hosting the NIP-29 group of an `h`-tagged event. */
   readonly groupRelays?: ReadonlyArray<RelayUrl>
+  /** Most inbox relays taken per recipient; a positive integer or `Infinity` for all, default all (NIP-65). */
+  readonly perRecipientCap?: number | undefined
 }
 
-/** Typed input for `routeRead`. See README for field semantics. */
-export interface ReadContext {
-  readonly userRelayUrls: ReadonlyArray<RelayUrl>
-  readonly callerRelays: ReadonlyArray<RelayUrl>
-  readonly filters: ReadonlyArray<Filter>
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
-  readonly searchRelays?: ReadonlyArray<RelayUrl>
-}
-
-/** Typed input for `routeAuthorReads`. See README for field semantics. */
-export interface AuthorReadRouteContext {
-  readonly authorPubkeys: ReadonlyArray<PublicKey>
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly fallbackRelays: ReadonlyArray<RelayUrl>
-  readonly maxAuthorsPerFilter?: number
-  readonly redundancy?: number | null
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
-}
-
-/** One entry in the `routeAuthorReads` output: a relay set and the author pubkey chunks to query on it. */
-export interface AuthorReadRoute {
-  readonly relays: ReadonlyArray<RelayUrl>
-  readonly authorChunks: ReadonlyArray<ReadonlyArray<PublicKey>>
-}
-
-/** Typed input for `selectRelayHint`. See README for field semantics. */
-export interface RelayHintContext {
-  readonly targetPubkey: PublicKey
+/** Caller-supplied inputs to `routeRead` beyond the filters and the directory. */
+export interface ReadPolicy {
+  /** Whose relay lists back the `"general"` and `"search"` branches; for `#p` filters, only as described on `routeRead`. */
   readonly userPubkey: PublicKey
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
+  /** Relays the query itself names, unioned into the `"general"` and `"search"` branches. */
+  readonly callerRelays?: ReadonlyArray<RelayUrl>
 }
 
-/** Typed input for `selectZapRequestRelays` (NIP-57). See README for field semantics. */
-export interface ZapRequestContext {
-  readonly zapperPubkey: PublicKey
-  readonly recipientPubkey: PublicKey
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
+/** Caller-supplied inputs to `routeAuthorReads` beyond the authors and the directory. */
+export interface AuthorReadPolicy {
+  /** Relays for authors with no usable outbox; no fallback route is emitted when this is empty after blocking. */
+  readonly fallbackRelays?: ReadonlyArray<RelayUrl>
+  /** Most authors per filter chunk; a positive integer, default 200. */
+  readonly maxAuthorsPerFilter?: number | undefined
+  /** Relays each author should be read from; a positive integer or `Infinity` for all, default 3. */
+  readonly redundancy?: number | undefined
 }
 
-/** Typed input for `selectAuthorInboxRelays` / `selectAuthorOutboxRelays` / `selectAuthorDmRelays`. */
-export interface AuthorRelaysContext {
-  readonly authorPubkey: PublicKey
-  readonly relayListEvents: ReadonlyArray<Event>
-  readonly blockedRelays?: ReadonlyArray<RelayUrl>
+/** One entry in the `routeAuthorReads` output: a relay set and the author chunks to query on it. */
+export interface AuthorReadRoute {
+  readonly relays: RelaySet
+  readonly authorChunks: ReadonlyArray<ReadonlyArray<PublicKey>>
 }

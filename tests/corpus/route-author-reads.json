@@ -1,13 +1,14 @@
 [
   {
     "name": "authors all have kind 10002: one plan per distinct outbox relay, no fallback plan",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "7ba615a4148db17d4ec4bf3c30a5ba485d3b870f4533237c3cec821737b56769",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -25,6 +26,7 @@
           ]
         },
         {
+          "id": "67c116367f9689153cc7367aa1249a5831a5f36b791c503f2ba5dc2822c0b9b1",
           "kind": 10002,
           "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "created_at": 1,
@@ -37,6 +39,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -67,12 +72,15 @@
   },
   {
     "name": "authors all missing kind 10002: single fallback plan with every author chunked",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback-a.example.com",
         "wss://fallback-b.example.com"
@@ -95,14 +103,15 @@
   },
   {
     "name": "mixed: per-outbox plans plus a fallback plan for authors lacking kind 10002",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "e6fe0081c85dc44415d21ea8a31781c5d53482331d6b70dcbb28924f38e3b11a",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -115,6 +124,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -145,13 +157,16 @@
   },
   {
     "name": "duplicate input pubkeys are deduplicated",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -171,12 +186,13 @@
   },
   {
     "name": "newest kind 10002 per pubkey wins (replaceable-event semantics)",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "848709087fe47b485d9cb65d30f3ce81d0a229c6ddd3144a925bee49260c6442",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 100,
@@ -189,6 +205,7 @@
           ]
         },
         {
+          "id": "e6b9e0fbd8cd8a4e4470170d581d548e06046c6d50f1d1c13717bc49f4a57a20",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 200,
@@ -201,6 +218,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -220,12 +240,13 @@
   },
   {
     "name": "read-only relay list means no outbox: author goes to fallback",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "737e1eefe754053362d1321aa50a379a5a2270505bbf56b352ada664512f88d0",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -238,6 +259,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -257,16 +281,17 @@
   },
   {
     "name": "maxAuthorsPerFilter chunks a crowded outbox relay",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "aa97cd95ba67547913310139122b1e1ac7fc27bbab0bf5ef4affa92f975bf274",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa01",
           "created_at": 1,
@@ -279,6 +304,7 @@
           ]
         },
         {
+          "id": "d4b509f9b2959581bbb08f67eadc607ebccda8a6ecb5a83f520bec788a4176a8",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa02",
           "created_at": 1,
@@ -291,6 +317,7 @@
           ]
         },
         {
+          "id": "0cf1a55c25b012d6758fd624f64e10cda9ba096576646a78345f802737e28024",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa03",
           "created_at": 1,
@@ -303,6 +330,7 @@
           ]
         },
         {
+          "id": "0a452b78d4f1816f952eeb3218f0174aa19e0dd6affec981ddcdd4d1c3d82d2d",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa04",
           "created_at": 1,
@@ -315,6 +343,7 @@
           ]
         },
         {
+          "id": "1057dcde8afce9d1404ad76ac072afae83acbc922d4c3af08600055a015a5027",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa05",
           "created_at": 1,
@@ -327,6 +356,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ],
@@ -355,9 +387,12 @@
   },
   {
     "name": "no authors returns no plans",
-    "context": {
-      "authorPubkeys": [],
+    "authors": [],
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [
         "wss://fallback.example.com"
       ]
@@ -366,14 +401,15 @@
   },
   {
     "name": "redundancy=1 picks the minimal cover (one relay per author when possible)",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "640b44deca88dc8cf127d37835cea6adae92bfc86361927e843cf93f93be6adf",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -396,6 +432,7 @@
           ]
         },
         {
+          "id": "ad55307692a02b787bb3f9ee7febd86a7cbdc3194ea7c928e77b029ffd2d2d02",
           "kind": 10002,
           "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "created_at": 1,
@@ -413,6 +450,7 @@
           ]
         },
         {
+          "id": "78c926712582860a9c5027cdc6f5189fc2066305b9d34c55bbb2435f30371196",
           "kind": 10002,
           "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
           "created_at": 1,
@@ -425,6 +463,9 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [],
       "redundancy": 1
     },
@@ -444,15 +485,16 @@
     ]
   },
   {
-    "name": "redundancy=null covers every author at every relay they have (unbounded)",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-      ],
+    "name": "redundancy \"all\" covers every author at every relay they have (unbounded)",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "640b44deca88dc8cf127d37835cea6adae92bfc86361927e843cf93f93be6adf",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -475,6 +517,7 @@
           ]
         },
         {
+          "id": "ad55307692a02b787bb3f9ee7febd86a7cbdc3194ea7c928e77b029ffd2d2d02",
           "kind": 10002,
           "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "created_at": 1,
@@ -492,6 +535,7 @@
           ]
         },
         {
+          "id": "78c926712582860a9c5027cdc6f5189fc2066305b9d34c55bbb2435f30371196",
           "kind": 10002,
           "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
           "created_at": 1,
@@ -504,8 +548,11 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [],
-      "redundancy": null
+      "redundancy": "all"
     },
     "expected": [
       {
@@ -544,17 +591,18 @@
     ]
   },
   {
-    "name": "maxAuthorsPerFilter=0 disables chunking (single chunk regardless of author count)",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-        "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-        "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-      ],
+    "name": "maxAuthorsPerFilter 0 is rejected rather than silently disabling chunking",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "f3918b41bd3c1f912e921834dc38aa4b09954e3f76e2da81b23ecbb19078118d",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -567,6 +615,7 @@
           ]
         },
         {
+          "id": "16ea5caf0c4abc1759c62a5cd758e142222aecaef8d928a5d18f88a068e57333",
           "kind": 10002,
           "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "created_at": 1,
@@ -579,6 +628,7 @@
           ]
         },
         {
+          "id": "78c926712582860a9c5027cdc6f5189fc2066305b9d34c55bbb2435f30371196",
           "kind": 10002,
           "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
           "created_at": 1,
@@ -591,6 +641,7 @@
           ]
         },
         {
+          "id": "c203a97c012640c748daee6b7de7095d870927593cefa2bc22db49052eccbc2c",
           "kind": 10002,
           "pubkey": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
           "created_at": 1,
@@ -603,6 +654,7 @@
           ]
         },
         {
+          "id": "629b946b438a9285a64d736a09df23701928e3feea47e206f05984016ca2d2d4",
           "kind": 10002,
           "pubkey": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
           "created_at": 1,
@@ -615,34 +667,25 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "fallbackRelays": [],
       "maxAuthorsPerFilter": 0
     },
-    "expected": [
-      {
-        "relays": [
-          "wss://r1.example.com"
-        ],
-        "authorChunks": [
-          [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-            "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          ]
-        ]
-      }
-    ]
+    "expected": {
+      "error": "invalidArgument"
+    }
   },
   {
     "name": "author whose entire outbox is blocked falls through to fallback relays, not silently dropped",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "96eaef2045d8fdd98ba9e5ddf938ad4d65382d20cde757f060872af2c6c6a935",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -660,12 +703,14 @@
           ]
         }
       ],
-      "fallbackRelays": [
-        "wss://fallback.example.com"
-      ],
       "blockedRelays": [
         "wss://blocked-1.example.com",
         "wss://blocked-2.example.com"
+      ]
+    },
+    "policy": {
+      "fallbackRelays": [
+        "wss://fallback.example.com"
       ]
     },
     "expected": [
@@ -683,12 +728,13 @@
   },
   {
     "name": "redundancy is reached using available relays only, never counting a blocked relay toward the target",
-    "context": {
-      "authorPubkeys": [
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "5152886f689266cd3d4d21aa4c9d3965659e37354949ac1782fb27f188779e70",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -711,11 +757,13 @@
           ]
         }
       ],
-      "fallbackRelays": [
-        "wss://fallback.example.com"
-      ],
       "blockedRelays": [
         "wss://blocked.example.com"
+      ]
+    },
+    "policy": {
+      "fallbackRelays": [
+        "wss://fallback.example.com"
       ],
       "redundancy": 2
     },
@@ -741,5 +789,236 @@
         ]
       }
     ]
+  },
+  {
+    "name": "maxAuthorsPerFilter equal to the author count keeps a single chunk",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "a449af40caadbceca252e1d291f303333ef96c78b22b818ad56a8926b845d36d",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://r1.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "dbe91e5b16b807ccc8aeeacbeda3a8f66d6d1c798ae799f796554ff935470299",
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://r1.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "a0bfd64b476d1c8683ce0841fb00a15d866a1f1b79cfe601f9362697526a727a",
+          "kind": 10002,
+          "pubkey": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://r1.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0cb4096fe122d8a9f5a6cf0e97562e1a23b4b7fd690487b8270ef57b103124ec",
+          "kind": 10002,
+          "pubkey": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://r1.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "c515dd55a50b6d01ddabb9b62133031f6ad66b3f3bea1dfadd523ceb2b4a9ec3",
+          "kind": 10002,
+          "pubkey": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://r1.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "fallbackRelays": [],
+      "maxAuthorsPerFilter": 5
+    },
+    "expected": [
+      {
+        "relays": [
+          "wss://r1.example.com"
+        ],
+        "authorChunks": [
+          [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "negative maxAuthorsPerFilter is rejected",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
+      "fallbackRelays": [
+        "wss://fallback.example.com"
+      ],
+      "maxAuthorsPerFilter": -1
+    },
+    "expected": {
+      "error": "invalidArgument"
+    }
+  },
+  {
+    "name": "redundancy 0 is rejected rather than dropping every author",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "25992329c3b380fb5580270d2ef29eeb8b00793fd36aacc9c72905950f3508d9",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "fallbackRelays": [],
+      "redundancy": 0
+    },
+    "expected": {
+      "error": "invalidArgument"
+    }
+  },
+  {
+    "name": "negative redundancy is rejected",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "25992329c3b380fb5580270d2ef29eeb8b00793fd36aacc9c72905950f3508d9",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "fallbackRelays": [],
+      "redundancy": -1
+    },
+    "expected": {
+      "error": "invalidArgument"
+    }
+  },
+  {
+    "name": "no fallback plan is emitted when fallbackRelays is empty",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "25992329c3b380fb5580270d2ef29eeb8b00793fd36aacc9c72905950f3508d9",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "fallbackRelays": []
+    },
+    "expected": [
+      {
+        "relays": [
+          "wss://alice.example.com"
+        ],
+        "authorChunks": [
+          [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "name": "no fallback plan is emitted when every fallback relay is blocked",
+    "authors": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": [
+        "wss://fallback.example.com"
+      ]
+    },
+    "policy": {
+      "fallbackRelays": [
+        "wss://fallback.example.com"
+      ]
+    },
+    "expected": []
   }
 ]

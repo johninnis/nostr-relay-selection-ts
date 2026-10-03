@@ -106,5 +106,37 @@
     "isLoopback": false,
     "isLocalAddr": true,
     "isInsecure": false
+  },
+  {
+    "name": "a hostname starting 127. is not loopback (only a dotted quad is)",
+    "input": "wss://127.example.com",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
+  },
+  {
+    "name": "a hostname starting 10. is not a private address",
+    "input": "wss://10.example.com",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
+  },
+  {
+    "name": "a hostname starting 192.168. is not a private address",
+    "input": "wss://192.168.example.com",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
+  },
+  {
+    "name": "a hostname starting 172.16. is not a private address",
+    "input": "wss://172.16.example.com",
+    "isOnion": false,
+    "isLoopback": false,
+    "isLocalAddr": false,
+    "isInsecure": false
   }
 ]

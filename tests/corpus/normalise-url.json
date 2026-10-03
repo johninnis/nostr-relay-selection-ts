@@ -83,6 +83,16 @@
   { "name": "rejects host ending with dot", "input": "wss://relay.example.com.", "expected": null },
   { "name": "rejects port zero", "input": "wss://relay.example.com:0", "expected": null },
   { "name": "rejects port above 65535", "input": "wss://relay.example.com:70000", "expected": null },
+  { "name": "rejects a plus-signed port", "input": "wss://a.com:+80", "expected": null },
+  { "name": "rejects a plus-signed default port", "input": "wss://a.com:+443", "expected": null },
+  { "name": "rejects a minus-signed port", "input": "wss://a.com:-80", "expected": null },
+  { "name": "rejects a port in exponent notation", "input": "wss://a.com:1e3", "expected": null },
+  { "name": "rejects a space before the port", "input": "wss://a.com: 80", "expected": null },
+  { "name": "drops an empty port", "input": "wss://a.com:", "expected": "wss://a.com" },
+  { "name": "drops an empty port before a path", "input": "wss://a.com:/x", "expected": "wss://a.com/x" },
+  { "name": "rejects an empty authority before the host", "input": "wss:///a.com", "expected": null },
+  { "name": "rejects an empty authority before a path", "input": "ws:////a.com/x", "expected": null },
+  { "name": "rejects an empty authority with a port", "input": "wss://:80/x", "expected": null },
   { "name": "rejects double slashes in path", "input": "wss://relay.example.com//bad", "expected": null },
   {
     "name": "rejects hostname appearing in path",
@@ -99,5 +109,122 @@
     "input": "wss://relay.example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "expected": null
   },
-  { "name": "rejects unicode in host", "input": "wss://⬤ wss//nostr-pub.wellorder.net", "expected": null }
+  { "name": "rejects unicode in host", "input": "wss://⬤ wss//nostr-pub.wellorder.net", "expected": null },
+  {
+    "name": "strips trailing punctuation before a trailing slash",
+    "input": "wss://relay.example.com/nostr./",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  {
+    "name": "strips a comma between trailing slashes",
+    "input": "wss://relay.example.com/,/",
+    "expected": "wss://relay.example.com"
+  },
+  {
+    "name": "strips mixed trailing punctuation and slashes",
+    "input": "wss://relay.example.com/nostr!/.",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  {
+    "name": "strips multiple trailing slashes after a path",
+    "input": "wss://relay.example.com/nostr//",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  { "name": "drops an empty query", "input": "wss://relay.example.com/?", "expected": "wss://relay.example.com" },
+  {
+    "name": "resolves a current-directory segment",
+    "input": "wss://relay.example.com/./nostr",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  {
+    "name": "resolves a parent-directory segment",
+    "input": "wss://relay.example.com/a/../nostr",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  { "name": "rejects a space in the path", "input": "wss://relay.example.com/a b", "expected": null },
+  { "name": "rejects a space in the query", "input": "wss://relay.example.com?a b", "expected": null },
+  { "name": "rejects a tab inside the URL", "input": "wss://relay.exam\tple.com", "expected": null },
+  {
+    "name": "rejects a second URL in the query",
+    "input": "wss://relay.example.com?next=wss://other.relay.com",
+    "expected": null
+  },
+  {
+    "name": "rejects hostname inside a longer path segment",
+    "input": "wss://relay.example.com/relay.example.com-archive",
+    "expected": null
+  },
+  { "name": "rejects an empty fragment", "input": "wss://relay.example.com/nostr#", "expected": null },
+  {
+    "name": "resolves a percent-encoded dot segment",
+    "input": "wss://relay.example.com/%2e/nostr",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  {
+    "name": "resolves a percent-encoded parent segment",
+    "input": "wss://relay.example.com/a/%2E%2e/nostr",
+    "expected": "wss://relay.example.com/nostr"
+  },
+  { "name": "rejects an empty label in the host", "input": "wss://relay..example.com", "expected": null },
+  { "name": "rejects a non-ASCII host", "input": "wss://bücher.example", "expected": null },
+  { "name": "rejects a percent-encoded host", "input": "ws://%41.b/", "expected": null },
+  { "name": "rejects a percent-encoded letter in a host", "input": "wss://relay.ex%61mple.com", "expected": null },
+  { "name": "rejects a percent-encoded dot in a host", "input": "wss://relay%2eexample.com", "expected": null },
+  { "name": "rejects a percent-encoded non-ASCII host", "input": "wss://%E2%82%AC.example", "expected": null },
+  {
+    "name": "keeps a percent-encoded character in the path as written",
+    "input": "wss://relay.example.com/%41",
+    "expected": "wss://relay.example.com/%41"
+  },
+  { "name": "rejects non-ASCII in the path", "input": "wss://relay.example.com/Ä", "expected": null },
+  { "name": "rejects a backslash", "input": "wss://relay.example.com\\nostr", "expected": null },
+  { "name": "rejects a double quote in the path", "input": "wss://relay.example.com/\"x\"", "expected": null },
+  { "name": "rejects an apostrophe in the query", "input": "wss://relay.example.com?a='b'", "expected": null },
+  { "name": "rejects credentials", "input": "wss://user:pw@relay.example.com", "expected": null },
+  { "name": "rejects a percent-encoded tab", "input": "wss://relay.example.com/a%09b", "expected": null },
+  {
+    "name": "rejects a percent-encoded space in the query",
+    "input": "wss://relay.example.com?a=%20",
+    "expected": null
+  },
+  { "name": "rejects IPv4 shorthand", "input": "ws://127.1", "expected": null },
+  { "name": "rejects a hexadecimal IPv4 part", "input": "ws://0x7f.0.0.1", "expected": null },
+  { "name": "rejects an IPv4 octet with a leading zero", "input": "ws://127.0.0.01", "expected": null },
+  { "name": "rejects a numeric top-level label", "input": "wss://relay.example.123", "expected": null },
+  { "name": "rejects a trailing dot after an IPv4 address", "input": "ws://192.168.1.1.", "expected": null },
+  {
+    "name": "keeps an at sign in the path",
+    "input": "wss://relay.example.com/a@b",
+    "expected": "wss://relay.example.com/a@b"
+  },
+  { "name": "rejects an empty credential", "input": "wss://@relay.example.com", "expected": null },
+  {
+    "name": "trims spaces around the URL",
+    "input": "  wss://relay.example.com  ",
+    "expected": "wss://relay.example.com"
+  },
+  {
+    "name": "trims tabs around the URL",
+    "input": "\twss://relay.example.com\t",
+    "expected": "wss://relay.example.com"
+  },
+  {
+    "name": "trims line breaks around the URL",
+    "input": "\r\nwss://relay.example.com\r\n",
+    "expected": "wss://relay.example.com"
+  },
+  {
+    "name": "trims a vertical tab around the URL",
+    "input": "\u000bwss://relay.example.com\u000b",
+    "expected": "wss://relay.example.com"
+  },
+  {
+    "name": "trims NUL around the URL",
+    "input": "\u0000wss://relay.example.com\u0000",
+    "expected": "wss://relay.example.com"
+  },
+  { "name": "rejects a leading form feed", "input": "\fwss://relay.example.com", "expected": null },
+  { "name": "rejects a trailing no-break space", "input": "wss://relay.example.com\u00a0", "expected": null },
+  { "name": "rejects a leading byte order mark", "input": "\ufeffwss://relay.example.com", "expected": null },
+  { "name": "rejects a trailing line separator", "input": "wss://relay.example.com\u2028", "expected": null }
 ]

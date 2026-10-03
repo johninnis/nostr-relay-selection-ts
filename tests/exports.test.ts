@@ -1,32 +1,50 @@
-import { assertEquals } from "@std/assert"
+import { assert, assertEquals, assertThrows } from "@std/assert"
 import {
+  createEventId,
   createPublicKey,
-  DRAFT_KINDS,
+  createRelayDirectory,
   type Event,
-  INBOX_FANOUT_KINDS,
-  INDEXED_KINDS,
+  findFilterPattern,
+  isDraftKind,
+  isGiftWrapKind,
+  isIndexedKind,
+  isPubkeyDataKind,
+  KIND_AUTHORED_PODCASTS_LIST,
+  KIND_BLOCKED_RELAYS_LIST,
   KIND_DM_RELAY_LIST,
   KIND_DRAFT_EVENT,
+  KIND_EPHEMERAL_GIFT_WRAP,
+  KIND_FAVOURITE_PODCASTS_LIST,
   KIND_FOLLOW_LIST,
+  KIND_FOLLOW_SET,
   KIND_GIFT_WRAP,
-  KIND_PROFILE_METADATA,
+  KIND_GIT_AUTHORS_LIST,
+  KIND_GOOD_WIKI_AUTHORS_LIST,
+  KIND_KIND_MUTE_SET,
+  KIND_LONGFORM_CONTENT_DRAFT,
+  KIND_MEDIA_FOLLOWS_LIST,
+  KIND_MEDIA_STARTER_PACK,
+  KIND_METADATA,
+  KIND_MUTE_LIST,
   KIND_RELAY_LIST,
-  KIND_SHORT_NOTE,
-  newestEventByPubkeyAndKind,
+  KIND_REPORTING,
+  KIND_SEARCH_RELAYS_LIST,
+  KIND_STARTER_PACK,
+  NO_DM_RELAYS,
   normaliseRelayUrl,
   type PublicKey,
+  relayListKindOf,
   type RelayUrl,
-  sharedGiftWrapRecipient,
+  routeAuthorReads,
+  routePublish,
   subtractRelays,
+  unionRelays,
 } from "../mod.ts"
 
-const ALICE = "a".repeat(64)
-const BOB = "b".repeat(64)
-
 const requirePublicKey = (hex: string): PublicKey => {
-  const pk = createPublicKey(hex)
-  if (pk === null) throw new Error(`Invalid pubkey ${hex}`)
-  return pk
+  const pubkey = createPublicKey(hex)
+  if (pubkey === null) throw new Error(`Invalid pubkey ${hex}`)
+  return pubkey
 }
 
 const requireRelayUrl = (raw: string): RelayUrl => {
@@ -35,102 +53,141 @@ const requireRelayUrl = (raw: string): RelayUrl => {
   return url
 }
 
-Deno.test("createPublicKey returns a branded PublicKey for valid lowercase 64-hex input", () => {
-  const pk = createPublicKey(ALICE)
-  assertEquals(pk, ALICE)
+const ALICE = requirePublicKey("a".repeat(64))
+const TEXT_NOTE = 1
+const LONG_FORM_ARTICLE = 30023
+const RELAY_A = requireRelayUrl("wss://a.example.com")
+const RELAY_B = requireRelayUrl("wss://b.example.com")
+
+const relayList = (urls: ReadonlyArray<string>): Event => {
+  const id = createEventId("0".repeat(64))
+  if (id === null) throw new Error("Invalid event id")
+  return { id, kind: KIND_RELAY_LIST, pubkey: ALICE, created_at: 1, tags: urls.map((url) => ["r", url]) }
+}
+
+Deno.test("createPublicKey accepts 64 lowercase hex characters", () => {
+  assertEquals(createPublicKey("a".repeat(64)), "a".repeat(64))
 })
 
-Deno.test("createPublicKey returns null for uppercase hex", () => {
-  assertEquals(createPublicKey("A".repeat(64)), null)
+Deno.test("createPublicKey rejects uppercase, short and non-hex input", () => {
+  assertEquals(["A".repeat(64), "a".repeat(63), "z".repeat(64)].map(createPublicKey), [null, null, null])
 })
 
-Deno.test("createPublicKey returns null for wrong length", () => {
-  assertEquals(createPublicKey("a".repeat(63)), null)
+Deno.test("createEventId accepts 64 lowercase hex characters", () => {
+  assertEquals(createEventId("f".repeat(64)), "f".repeat(64))
 })
 
-Deno.test("createPublicKey returns null for non-hex characters", () => {
-  assertEquals(createPublicKey("z".repeat(64)), null)
+Deno.test("createEventId rejects uppercase, short and non-hex input", () => {
+  assertEquals(["F".repeat(64), "f".repeat(63), "g".repeat(64)].map(createEventId), [null, null, null])
 })
 
-Deno.test("INBOX_FANOUT_KINDS contains KIND_SHORT_NOTE and excludes KIND_PROFILE_METADATA", () => {
-  assertEquals(INBOX_FANOUT_KINDS.has(KIND_SHORT_NOTE), true)
-  assertEquals(INBOX_FANOUT_KINDS.has(KIND_PROFILE_METADATA), false)
+Deno.test("isDraftKind is true for a NIP-37 draft and false for a short note", () => {
+  assertEquals([isDraftKind(KIND_DRAFT_EVENT), isDraftKind(TEXT_NOTE)], [true, false])
 })
 
-Deno.test("DRAFT_KINDS contains KIND_DRAFT_EVENT and excludes KIND_SHORT_NOTE", () => {
-  assertEquals(DRAFT_KINDS.has(KIND_DRAFT_EVENT), true)
-  assertEquals(DRAFT_KINDS.has(KIND_SHORT_NOTE), false)
+Deno.test("isGiftWrapKind is true for both NIP-59 gift wraps and false for a short note", () => {
+  assertEquals([KIND_GIFT_WRAP, KIND_EPHEMERAL_GIFT_WRAP, TEXT_NOTE].map(isGiftWrapKind), [true, true, false])
 })
 
-Deno.test("INDEXED_KINDS contains KIND_PROFILE_METADATA, KIND_FOLLOW_LIST, KIND_RELAY_LIST and KIND_DM_RELAY_LIST", () => {
-  assertEquals(INDEXED_KINDS.has(KIND_PROFILE_METADATA), true)
-  assertEquals(INDEXED_KINDS.has(KIND_FOLLOW_LIST), true)
-  assertEquals(INDEXED_KINDS.has(KIND_RELAY_LIST), true)
-  assertEquals(INDEXED_KINDS.has(KIND_DM_RELAY_LIST), true)
-  assertEquals(INDEXED_KINDS.has(KIND_SHORT_NOTE), false)
-})
-
-Deno.test("newestEventByPubkeyAndKind returns the latest event matching pubkey and kind", () => {
-  const alice = requirePublicKey(ALICE)
-  const bob = requirePublicKey(BOB)
-  const older: Event = { kind: KIND_RELAY_LIST, pubkey: alice, tags: [], created_at: 100 }
-  const newer: Event = { kind: KIND_RELAY_LIST, pubkey: alice, tags: [], created_at: 200 }
-  const wrongPubkey: Event = { kind: KIND_RELAY_LIST, pubkey: bob, tags: [], created_at: 300 }
-  const wrongKind: Event = { kind: KIND_SHORT_NOTE, pubkey: alice, tags: [], created_at: 400 }
-
-  const result = newestEventByPubkeyAndKind([older, newer, wrongPubkey, wrongKind], alice, KIND_RELAY_LIST)
-  assertEquals(result, newer)
-})
-
-Deno.test("newestEventByPubkeyAndKind returns null when no event matches", () => {
-  const alice = requirePublicKey(ALICE)
-  assertEquals(newestEventByPubkeyAndKind([], alice, KIND_RELAY_LIST), null)
-})
-
-Deno.test("sharedGiftWrapRecipient returns the recipient when every filter targets the same pubkey", () => {
-  const alice = requirePublicKey(ALICE)
-  const result = sharedGiftWrapRecipient([
-    { kinds: [KIND_GIFT_WRAP], "#p": [alice] },
-    { kinds: [KIND_GIFT_WRAP], "#p": [alice] },
-  ])
-  assertEquals(result, alice)
-})
-
-Deno.test("sharedGiftWrapRecipient returns null when recipients differ", () => {
-  const alice = requirePublicKey(ALICE)
-  const bob = requirePublicKey(BOB)
-  const result = sharedGiftWrapRecipient([
-    { kinds: [KIND_GIFT_WRAP], "#p": [alice] },
-    { kinds: [KIND_GIFT_WRAP], "#p": [bob] },
-  ])
-  assertEquals(result, null)
-})
-
-Deno.test("sharedGiftWrapRecipient returns null for an empty filter set", () => {
-  assertEquals(sharedGiftWrapRecipient([]), null)
-})
-
-Deno.test("sharedGiftWrapRecipient returns null when a filter has the wrong kind", () => {
-  const alice = requirePublicKey(ALICE)
+Deno.test("isIndexedKind covers profile, follow list and both relay lists, not short notes", () => {
   assertEquals(
-    sharedGiftWrapRecipient([{ kinds: [KIND_SHORT_NOTE], "#p": [alice] }]),
-    null,
+    [KIND_METADATA, KIND_FOLLOW_LIST, KIND_RELAY_LIST, KIND_DM_RELAY_LIST, TEXT_NOTE].map(isIndexedKind),
+    [true, true, true, true, false],
   )
 })
 
-Deno.test("subtractRelays removes blocked URLs while preserving order", () => {
-  const a = requireRelayUrl("wss://a.example.com")
-  const b = requireRelayUrl("wss://b.example.com")
-  const c = requireRelayUrl("wss://c.example.com")
-  assertEquals(subtractRelays([a, b, c], [b]), [a, c])
+Deno.test("isPubkeyDataKind covers the follow list, every NIP-51 list and set of people, and the report", () => {
+  const pubkeyDataKinds = [
+    KIND_FOLLOW_LIST,
+    KIND_REPORTING,
+    KIND_MUTE_LIST,
+    KIND_GIT_AUTHORS_LIST,
+    KIND_MEDIA_FOLLOWS_LIST,
+    KIND_FAVOURITE_PODCASTS_LIST,
+    KIND_AUTHORED_PODCASTS_LIST,
+    KIND_GOOD_WIKI_AUTHORS_LIST,
+    KIND_FOLLOW_SET,
+    KIND_KIND_MUTE_SET,
+    KIND_STARTER_PACK,
+    KIND_MEDIA_STARTER_PACK,
+  ]
+  assertEquals(pubkeyDataKinds.map(isPubkeyDataKind), pubkeyDataKinds.map(() => true))
 })
 
-Deno.test("subtractRelays returns the input unchanged when blocked is undefined", () => {
-  const a = requireRelayUrl("wss://a.example.com")
-  assertEquals(subtractRelays([a], undefined), [a])
+Deno.test("isPubkeyDataKind is false for kinds whose p tags are mentions", () => {
+  assertEquals([KIND_METADATA, TEXT_NOTE, LONG_FORM_ARTICLE, KIND_LONGFORM_CONTENT_DRAFT].map(isPubkeyDataKind), [
+    false,
+    false,
+    false,
+    false,
+  ])
 })
 
-Deno.test("subtractRelays returns the input unchanged when blocked is empty", () => {
-  const a = requireRelayUrl("wss://a.example.com")
-  assertEquals(subtractRelays([a], []), [a])
+Deno.test("relayListKindOf names the kind each role is read from", () => {
+  assertEquals(
+    (["inbox", "outbox", "dm", "search", "blocked"] as const).map(relayListKindOf),
+    [KIND_RELAY_LIST, KIND_RELAY_LIST, KIND_DM_RELAY_LIST, KIND_SEARCH_RELAYS_LIST, KIND_BLOCKED_RELAYS_LIST],
+  )
+})
+
+Deno.test("unionRelays keeps the first occurrence of each URL in order", () => {
+  assertEquals(unionRelays([RELAY_B, RELAY_A], [RELAY_A, RELAY_B]), [RELAY_B, RELAY_A])
+})
+
+Deno.test("subtractRelays removes blocked URLs and duplicates, preserving order", () => {
+  assertEquals(subtractRelays([RELAY_A, RELAY_B, RELAY_A], [RELAY_B]), [RELAY_A])
+})
+
+Deno.test("a relay directory is a snapshot: mutating the input array afterwards changes nothing", () => {
+  const events: Array<Event> = [relayList(["wss://a.example.com"])]
+  const directory = createRelayDirectory(events)
+  events.push({ ...relayList(["wss://b.example.com"]), created_at: 2 })
+  assertEquals(directory.relaysOf(ALICE, "inbox"), [RELAY_A])
+})
+
+Deno.test("a relay directory is frozen", () => {
+  assert(Object.isFrozen(createRelayDirectory([])))
+})
+
+Deno.test("a relay directory exposes its blocklist deduplicated", () => {
+  assertEquals(createRelayDirectory([], [RELAY_A, RELAY_A]).blocked, [RELAY_A])
+})
+
+Deno.test("findFilterPattern carries the shared gift-wrap recipient on the dmInbox pattern", () => {
+  assertEquals(findFilterPattern([{ kinds: [KIND_GIFT_WRAP], "#p": [ALICE] }]), {
+    branch: "dmInbox",
+    recipient: ALICE,
+  })
+})
+
+Deno.test("routePublish refuses a gift wrap with no DM relays by returning NO_DM_RELAYS", () => {
+  const event = { ...relayList([]), kind: KIND_GIFT_WRAP, tags: [["p", ALICE]] }
+  assertEquals(routePublish(event, createRelayDirectory([])), NO_DM_RELAYS)
+})
+
+Deno.test("routePublish rejects a fractional perRecipientCap", () => {
+  const event = { ...relayList([]), kind: TEXT_NOTE }
+  assertThrows(() => routePublish(event, createRelayDirectory([]), { perRecipientCap: 1.5 }), RangeError)
+})
+
+Deno.test("routePublish names Infinity among the accepted perRecipientCap values when it rejects one", () => {
+  const event = { ...relayList([]), kind: TEXT_NOTE }
+  assertThrows(
+    () => routePublish(event, createRelayDirectory([]), { perRecipientCap: 0 }),
+    RangeError,
+    "perRecipientCap must be a positive integer or Infinity, got 0",
+  )
+})
+
+Deno.test("routeAuthorReads accepts Infinity as redundancy and reads every author from every relay", () => {
+  const directory = createRelayDirectory([relayList(["wss://a.example.com", "wss://b.example.com"])])
+  const routes = routeAuthorReads([ALICE], directory, { redundancy: Number.POSITIVE_INFINITY })
+  assertEquals(routes.map((route) => route.relays), [[RELAY_A], [RELAY_B]])
+})
+
+Deno.test("routeAuthorReads rejects a fractional, NaN or negative-infinite redundancy", () => {
+  const directory = createRelayDirectory([])
+  for (const redundancy of [2.5, Number.NaN, Number.NEGATIVE_INFINITY]) {
+    assertThrows(() => routeAuthorReads([ALICE], directory, { redundancy }), RangeError)
+  }
 })

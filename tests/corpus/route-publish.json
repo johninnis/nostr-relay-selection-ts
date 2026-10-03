@@ -2,6 +2,7 @@
   {
     "name": "kind 1 with p-tags and cached kind 10002 fans out to recipient inboxes",
     "event": {
+      "id": "b3bd64ed0a180335d6a29ceea378df7fbb0565b49319a2fcac1096210fce5ba4",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -16,10 +17,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -32,6 +33,7 @@
           ]
         },
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -44,6 +46,7 @@
           ]
         },
         {
+          "id": "0f12fca39475e53a7006bc1d4bc45a0b31372d84b1093185630f6aab912be4c9",
           "kind": 10002,
           "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
           "created_at": 1,
@@ -56,8 +59,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -71,6 +78,7 @@
   {
     "name": "p-tag position-[2] hint is used as fallback inbox when kind 10002 is missing",
     "event": {
+      "id": "b9ed04ee7e07e891a7ea435c4555b5156eb0ce21f7d42e763e2491f7ebfc6946",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -82,11 +90,14 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -98,6 +109,7 @@
   {
     "name": "no kind 10002 and no hint means the recipient contributes nothing",
     "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -108,11 +120,14 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -122,6 +137,7 @@
   {
     "name": "kind 10002 wins over a position-[2] hint",
     "event": {
+      "id": "ab2a3553118033fba33cf9a0ce25635f2f68efee1eab0f09964466da83e2fe56",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -133,10 +149,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -149,8 +165,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -162,6 +182,7 @@
   {
     "name": "duplicate p-tags for the same pubkey use the first occurrence's hint",
     "event": {
+      "id": "0ceda56504edfbb55554fd6b212c486f862611103aa1fe82f96090ce74d2289e",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -178,11 +199,14 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -194,6 +218,7 @@
   {
     "name": "kind 24 public message fans out to recipient inbox via kind 10002",
     "event": {
+      "id": "eb41f9368e3cce12ce15122afab60435185ed02876db4ff0929941c58e752be5",
       "kind": 24,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -204,10 +229,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -220,8 +245,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -233,6 +262,7 @@
   {
     "name": "kind 7 reaction fans out to target's kind 10002 inbox",
     "event": {
+      "id": "5da59f5b69630e8e5f1a38ac9b3b9e72b34196c5d76bcba1a5176e95278f2e72",
       "kind": 7,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -247,10 +277,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -263,8 +293,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -276,6 +310,7 @@
   {
     "name": "kind 6 repost fans out to target's kind 10002 inbox",
     "event": {
+      "id": "ee7ef2b0874a60b16d445a24434198ca5b662ab22af98fb959727bcf207d5c3c",
       "kind": 6,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -290,10 +325,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -306,8 +341,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -317,8 +356,9 @@
     }
   },
   {
-    "name": "kind 0 profile metadata is not in fan-out: user outbox only",
+    "name": "kind 0 profile metadata with a p tag fans out to the tagged user's inbox: every kind fans out (NIP-65)",
     "event": {
+      "id": "0462047ab85d74e3fe7e98818d003e4ad6749d4497794620623423dd9cb9d4cf",
       "kind": 0,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -329,10 +369,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -345,6 +385,7 @@
           ]
         },
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -357,19 +398,25 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
       "relays": [
-        "wss://user-write.example.com"
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com"
       ]
     }
   },
   {
-    "name": "unknown kind (kind 5 shown as example) routes to user outbox only - no helper distinguishes it",
+    "name": "unknown kind (kind 5 shown as example) routes to the author's outbox plus each p-tagged user's inbox",
     "event": {
+      "id": "6774b57cb7a1a7287f5e069e37b3b72549abbe48d64c45d5a577e33376f9153f",
       "kind": 5,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -377,13 +424,17 @@
         [
           "e",
           "deadbeef"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -394,30 +445,49 @@
               "write"
             ]
           ]
+        },
+        {
+          "id": "ec12c4174560b28e6a8df65a2a76a63a552a63f7bbdc1c988c75fb5c1cc7fb15",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
       "relays": [
-        "wss://user-write.example.com"
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com"
       ]
     }
   },
   {
     "name": "kind 30024 draft with privateContentRelays routes exclusively to those",
     "event": {
+      "id": "d3cbacff4c9b05be0e4df28c2f27032ffffa88747840cabbe2bf9f160a3ff952",
       "kind": 30024,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -430,10 +500,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [
         "wss://private.example.com"
       ],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -445,15 +519,16 @@
   {
     "name": "kind 30024 draft with empty privateContentRelays falls back to userOutbox",
     "event": {
+      "id": "d3cbacff4c9b05be0e4df28c2f27032ffffa88747840cabbe2bf9f160a3ff952",
       "kind": 30024,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -466,8 +541,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -479,15 +558,16 @@
   {
     "name": "kind 30403 classified listing draft with privateContentRelays routes exclusively to those",
     "event": {
+      "id": "876e0db2cf7765e1af2ce23537e2e8ef762f8b16d9204f5446a67777f533e5c2",
       "kind": 30403,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -500,10 +580,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [
         "wss://private.example.com"
       ],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -515,15 +599,16 @@
   {
     "name": "kind 30403 classified listing draft with empty privateContentRelays falls back to userOutbox",
     "event": {
+      "id": "876e0db2cf7765e1af2ce23537e2e8ef762f8b16d9204f5446a67777f533e5c2",
       "kind": 30403,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -536,8 +621,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -549,6 +638,7 @@
   {
     "name": "kind 31234 draft wrap with privateContentRelays routes exclusively to those",
     "event": {
+      "id": "8de87ad87de22e9036f89e2af5d8fe6415892246ec1f010dac645266fbcdc4b4",
       "kind": 31234,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -563,10 +653,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -579,10 +669,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [
         "wss://private.example.com"
       ],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -594,6 +688,7 @@
   {
     "name": "kind 31234 draft wrap with empty privateContentRelays falls back to userOutbox",
     "event": {
+      "id": "53ed3a12a148e5847fa8e1534e960bc67a7eec9dcd933a620a82616b43991d84",
       "kind": 31234,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -608,10 +703,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -624,8 +719,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -637,6 +736,7 @@
   {
     "name": "privateContentRelays dedupes multiple entries into a single set",
     "event": {
+      "id": "4454feb67b8415e9be726881c3d04382295bcd629f9742487d4408d8f233c534",
       "kind": 31234,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -651,15 +751,18 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [
         "wss://private-a.example.com",
         "wss://private-b.example.com",
         "wss://private-a.example.com"
       ],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -672,6 +775,7 @@
   {
     "name": "kind 1059 gift wrap routes to recipient's kind 10050 relays",
     "event": {
+      "id": "82d12cff0741bc044cd44e75c928aeafab1acdbbb838698398ea795258b762da",
       "kind": 1059,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -682,10 +786,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "8dc9e39548c0dced327765fa39b61e8174540c02c3956fc2602b2212be572978",
           "kind": 10050,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -701,8 +805,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "dm",
@@ -713,8 +821,9 @@
     }
   },
   {
-    "name": "kind 1059 gift wrap with no kind 10050 for recipient returns null (NIP-17: do not try, no fallback)",
+    "name": "kind 1059 gift wrap with no kind 10050 for recipient is refused (NIP-17: do not try, no fallback)",
     "event": {
+      "id": "82d12cff0741bc044cd44e75c928aeafab1acdbbb838698398ea795258b762da",
       "kind": 1059,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -725,10 +834,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -741,17 +850,110 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "failure": "noDmRelays"
+    }
+  },
+  {
+    "name": "kind 21059 ephemeral gift wrap routes to recipient's kind 10050 relays, like kind 1059 (NIP-59)",
+    "event": {
+      "id": "5d6988f79e5895c58d42c3a6e665165aad22f57e826770187e5df22d66e2242a",
+      "kind": 21059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "8dc9e39548c0dced327765fa39b61e8174540c02c3956fc2602b2212be572978",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm-a.example.com"
+            ],
+            [
+              "relay",
+              "wss://alice-dm-b.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "dm",
-      "relays": null
+      "relays": [
+        "wss://alice-dm-a.example.com",
+        "wss://alice-dm-b.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 21059 ephemeral gift wrap with no kind 10050 for recipient is refused, like kind 1059",
+    "event": {
+      "id": "5d6988f79e5895c58d42c3a6e665165aad22f57e826770187e5df22d66e2242a",
+      "kind": 21059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "failure": "noDmRelays"
     }
   },
   {
     "name": "self-p-tag dedupes against user outbox; user's relay appears once",
     "event": {
+      "id": "46aee87076b9e8aa23fce6b2043a0aa0d56298953821871708deb087d3993ce1",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -766,10 +968,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "8336edebe2a071a7c2e41b44b1546e13a9249e32da74db1e839498b71483a122",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -782,6 +984,7 @@
           ]
         },
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -794,8 +997,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -806,8 +1013,9 @@
     }
   },
   {
-    "name": "default perRecipientCap of 3 truncates per-recipient fan-out",
+    "name": "perRecipientCap defaults to all: every inbox relay of a recipient is used (NIP-65)",
     "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -818,10 +1026,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "72cd1268a666a1fe5721e551573235d8cb07708d72c0f8afa4fbb35beb6086c7",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -854,21 +1062,28 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
       "relays": [
         "wss://alice-1.example.com",
         "wss://alice-2.example.com",
-        "wss://alice-3.example.com"
+        "wss://alice-3.example.com",
+        "wss://alice-4.example.com",
+        "wss://alice-5.example.com"
       ]
     }
   },
   {
     "name": "custom perRecipientCap 1 caps per-recipient fan-out",
     "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -879,10 +1094,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "ea95a90a9fda2c79026a6edbee248dfbfa5a89792855371caa84a3093d50cc47",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -905,8 +1120,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [],
+      "groupRelays": [],
       "perRecipientCap": 1
     },
     "expected": {
@@ -919,6 +1138,7 @@
   {
     "name": "newest kind 10002 by created_at wins (replaceable-event semantics)",
     "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -929,10 +1149,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1ee310255b71d763fe747c32af359734172556be435ceefc841c6785a4bba0c1",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 100,
@@ -945,6 +1165,7 @@
           ]
         },
         {
+          "id": "90ac8fc369b65d50c1938ffa8ea2399794c1050bb5209f8ed65d5492e3341f69",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 200,
@@ -957,8 +1178,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -970,6 +1195,7 @@
   {
     "name": "kind 10002 relay list publishes to user outbox plus indexer relays",
     "event": {
+      "id": "b8652f8b2b96b9bc6692f637ad8103cc3683585cee5fb75db85c24e3835850ae",
       "kind": 10002,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -981,10 +1207,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -997,11 +1223,15 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es",
         "wss://relay.nos.social"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1015,6 +1245,7 @@
   {
     "name": "first kind 10002 (no prior outbox) publishes to indexer relays alone",
     "event": {
+      "id": "9e0c721fef45966a1b5db169d2dba472f08038ed030dca5c6b16f16a340368eb",
       "kind": 10002,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1026,13 +1257,16 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1044,6 +1278,7 @@
   {
     "name": "kind 10050 DM relay list publishes to user outbox plus indexer relays",
     "event": {
+      "id": "3aebfdaecf64253bc71696c9e6ef3f2bd11e4a31595d26eb3a099fed3050f70f",
       "kind": 10050,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1054,10 +1289,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1070,10 +1305,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1086,6 +1325,7 @@
   {
     "name": "kind 10002 with empty indexer relays publishes to user outbox only",
     "event": {
+      "id": "b8652f8b2b96b9bc6692f637ad8103cc3683585cee5fb75db85c24e3835850ae",
       "kind": 10002,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1097,10 +1337,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1113,8 +1353,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1126,15 +1370,16 @@
   {
     "name": "non-list kind ignores indexer relays even when supplied",
     "event": {
+      "id": "2ed59083803054fe9efb7e3b8232725ac488bd0d5fcded26e414d6e4725c3452",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1147,10 +1392,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1162,6 +1411,7 @@
   {
     "name": "blockedRelays removes a user-blocked relay from the publish set",
     "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1172,10 +1422,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "6aeeb35407598596301d0afffb795ae18b9fd3d586a3b4c2ca5e7cb1b74979bd",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1193,6 +1443,7 @@
           ]
         },
         {
+          "id": "4533d53bc74be72023cdc8bc7affecc0c053d5c3b0fd116ca7a31e6faf346dd6",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -1210,11 +1461,14 @@
           ]
         }
       ],
-      "privateContentRelays": [],
-      "indexerRelays": [],
       "blockedRelays": [
         "wss://blocked.example.com"
       ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1227,6 +1481,7 @@
   {
     "name": "blockedRelays applies in the dm branch too",
     "event": {
+      "id": "82d12cff0741bc044cd44e75c928aeafab1acdbbb838698398ea795258b762da",
       "kind": 1059,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1237,10 +1492,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "f78ac35f518e495a322f6d7567c0643d1b7839f68591af19e0a14ef86fa6be3b",
           "kind": 10050,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -1256,11 +1511,14 @@
           ]
         }
       ],
-      "privateContentRelays": [],
-      "indexerRelays": [],
       "blockedRelays": [
         "wss://blocked-dm.example.com"
       ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "dm",
@@ -1272,22 +1530,25 @@
   {
     "name": "blockedRelays applies to the draft branch privateContentRelays",
     "event": {
+      "id": "d3cbacff4c9b05be0e4df28c2f27032ffffa88747840cabbe2bf9f160a3ff952",
       "kind": 30024,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": [
+        "wss://blocked-draft.example.com"
+      ]
+    },
+    "policy": {
       "privateContentRelays": [
         "wss://drafts.example.com",
         "wss://blocked-draft.example.com"
       ],
       "indexerRelays": [],
-      "blockedRelays": [
-        "wss://blocked-draft.example.com"
-      ]
+      "groupRelays": []
     },
     "expected": {
       "branch": "draft",
@@ -1299,15 +1560,16 @@
   {
     "name": "kind 0 profile metadata unions indexerRelays into output (indexers harvest profiles)",
     "event": {
+      "id": "2bbf274fe1957d32c485ed489a652cadbbf3492e6704f8bb6ae3e400797fe55c",
       "kind": 0,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1320,11 +1582,15 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es",
         "wss://user.kindpag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1338,15 +1604,16 @@
   {
     "name": "kind 3 follow list unions indexerRelays into output (indexers harvest follow lists)",
     "event": {
+      "id": "9eb02599ff58dc067f211dc664fb740295c8ab5c2a8cfedd440967ac69bafb0a",
       "kind": 3,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1359,10 +1626,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1375,15 +1646,16 @@
   {
     "name": "kind 1 short note ignores indexerRelays (only indexed kinds get them)",
     "event": {
+      "id": "2ed59083803054fe9efb7e3b8232725ac488bd0d5fcded26e414d6e4725c3452",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
       "tags": []
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1396,10 +1668,14 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [
         "wss://purplepag.es"
-      ]
+      ],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1411,6 +1687,7 @@
   {
     "name": "write-only kind 10002 (no read/both relays) falls back to position-[2] hint",
     "event": {
+      "id": "b9ed04ee7e07e891a7ea435c4555b5156eb0ce21f7d42e763e2491f7ebfc6946",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1422,10 +1699,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1438,6 +1715,7 @@
           ]
         },
         {
+          "id": "b27d07d174b5f2fb021209b7a631ee33fd146bb48300643d967cc038103b9fa7",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -1455,8 +1733,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1469,6 +1751,7 @@
   {
     "name": "p-tag with malformed pubkey is silently skipped (only valid recipients contribute)",
     "event": {
+      "id": "c0d81a182d0b6ca108c5be2621f87d16612c7297dc5b4bf376e509731b4099ed",
       "kind": 1,
       "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
       "created_at": 100,
@@ -1484,10 +1767,10 @@
         ]
       ]
     },
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
@@ -1500,6 +1783,7 @@
           ]
         },
         {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
           "kind": 10002,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -1512,8 +1796,12 @@
           ]
         }
       ],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
@@ -1540,11 +1828,14 @@
       "content": "generally a good idea :)",
       "sig": "d517eb86613897095b39b481468b5e381cadf68ad26bf9acc9f471225b59a885ba702a74969326d45ebc7b8fa42e46028b61313af47d1508a84a750621f55226"
     },
-    "context": {
-      "userPubkey": "c230edd34ca5c8318bf4592ac056cde37519d395c0904c37ea1c650b8ad4a712",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "group",
@@ -1578,9 +1869,11 @@
       "content": "nostr:nevent1q... I like https://nak.nostr.com/ and its cli :)",
       "sig": "a35aa6e7c9f28d3bcf5c8e02f4f0afd1bc457bd6bd184ed4eec8cdcb001c03a5629e7dbfe125898b8e108f56a9af20fb3569237d559cc34730b01498cca27faa"
     },
-    "context": {
-      "userPubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
       "indexerRelays": [],
       "groupRelays": [
@@ -1613,15 +1906,1187 @@
       "content": "Happy New Year, Spatia Arcana 🎊",
       "sig": "6f7351378e9dd5cdfafaac906e624e7b47c99a0f52b106b33ea4cba13ff078923c46dc2498f72debed71cd968ae1983c934fd969b3f5202af978d32e1c6cec20"
     },
-    "context": {
-      "userPubkey": "dc4cd086cd7ce5b1832adf4fdd1211289880d2c7e295bcb0e684c01acee77c06",
+    "directory": {
       "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
       "privateContentRelays": [],
-      "indexerRelays": []
+      "indexerRelays": [],
+      "groupRelays": []
     },
     "expected": {
       "branch": "general",
       "relays": []
+    }
+  },
+  {
+    "name": "duplicate inbox entries spend one cap slot: the cap applies after deduplication",
+    "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "5aae91cdef77a9b38140598f33548cfd883e5cafd04922a1f350bb87499effd2",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://b1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b1.example.com/",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b3.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b4.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": 3
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://b1.example.com",
+        "wss://b2.example.com",
+        "wss://b3.example.com"
+      ]
+    }
+  },
+  {
+    "name": "blocked inbox relays are removed before the cap is taken",
+    "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "b87d7ec260e99aece62bc8a5baac9b45cce40cad15e0fc210d633d8be4662250",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://b1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b3.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b4.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://b1.example.com",
+        "wss://b2.example.com",
+        "wss://b3.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": 3
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://b4.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a recipient whose every inbox relay is blocked falls back to the p-tag hint",
+    "event": {
+      "id": "b9ed04ee7e07e891a7ea435c4555b5156eb0ce21f7d42e763e2491f7ebfc6946",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://alice-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "8e764eee31072549029b553c25e9c0b714dbc6261fca7e9b0a838d55f802454c",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://b1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b2.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://b1.example.com",
+        "wss://b2.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-hint.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a blocked p-tag hint contributes nothing",
+    "event": {
+      "id": "072a1e44e306477381067872f7327a14f0993cd728182211ad1093d8af5d0de9",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "wss://blocked-hint.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://blocked-hint.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "perRecipientCap 0 is rejected rather than silently disabling fan-out",
+    "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "3d9ffd61c4ff26d97a215fe798e9fe358dd7a18f1b2f74a652bd16674394534a",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://b1.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": 0
+    },
+    "expected": {
+      "error": "invalidArgument"
+    }
+  },
+  {
+    "name": "negative perRecipientCap is rejected rather than silently dropping relays",
+    "event": {
+      "id": "bae4a113a2125252fb71ff9d6873c3fbcc20e93158b6641c2a40cffaf28500a0",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "8e764eee31072549029b553c25e9c0b714dbc6261fca7e9b0a838d55f802454c",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://b1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://b2.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": -1
+    },
+    "expected": {
+      "error": "invalidArgument"
+    }
+  },
+  {
+    "name": "an h-tagged draft routes to privateContentRelays, not the public group relay",
+    "event": {
+      "id": "1d526e0fe1113ed7beb988e3b676a5034d4fd4a771d373a78ecaf1c77691744b",
+      "kind": 30024,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ],
+        [
+          "d",
+          "draft"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an h-tagged gift wrap routes to the recipient's DM relays, not the group relay",
+    "event": {
+      "id": "79ff053d0e68c3dd824bef5612d723120cc5d8bd39e0fd14b92a4ddf2b005e73",
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "66e7f9037a9839c6d1f1c5c5434d7a6c15dd5a7b9d08207c7494f2aa0f6c1361",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "dm",
+      "relays": [
+        "wss://alice-dm.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a draft whose every privateContentRelays entry is blocked falls back to the user outbox",
+    "event": {
+      "id": "6bccf76fd00b40e83073b5da41ebb386d1eb7f07d43ba37091e7d4497ffad883",
+      "kind": 30024,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "draft"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://private-a.example.com",
+        "wss://private-b.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [
+        "wss://private-a.example.com",
+        "wss://private-b.example.com"
+      ],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a group message whose every group relay is blocked falls through to its kind's normal branch",
+    "event": {
+      "id": "94aeb4da2f8d6444a0c313e6182c7c00ea5c72283ad2c06733790abd227bd87b",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://group.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a gift wrap whose every DM relay is blocked is refused",
+    "event": {
+      "id": "82d12cff0741bc044cd44e75c928aeafab1acdbbb838698398ea795258b762da",
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "66e7f9037a9839c6d1f1c5c5434d7a6c15dd5a7b9d08207c7494f2aa0f6c1361",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://alice-dm.example.com"
+      ]
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "failure": "noDmRelays"
+    }
+  },
+  {
+    "name": "perRecipientCap \"all\" takes every inbox relay of a recipient",
+    "event": {
+      "id": "04389deada7ae83667473fb5de55fcdcc515e5e4e7063293cd1b16f32f6e3283",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "72cd1268a666a1fe5721e551573235d8cb07708d72c0f8afa4fbb35beb6086c7",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-3.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-4.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-5.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": "all"
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-1.example.com",
+        "wss://alice-2.example.com",
+        "wss://alice-3.example.com",
+        "wss://alice-4.example.com",
+        "wss://alice-5.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a kind 3 follow list goes to the author's outbox and indexer relays only: its p tags are follows, not mentions (NIP-02), so no inbox and no p-tag hint",
+    "event": {
+      "id": "f41f496568843f6c80b7156f8649ff13034f90375dd698046d56b03c47e08115",
+      "kind": 3,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        [
+          "p",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "wss://carol-relay.example.com",
+          "carol"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0f12fca39475e53a7006bc1d4bc45a0b31372d84b1093185630f6aab912be4c9",
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://bob-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [
+        "wss://purplepag.es"
+      ],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://purplepag.es"
+      ]
+    }
+  },
+  {
+    "name": "a kind 10000 mute list goes to the author's outbox only: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "0aa3e094facc29bc19dd39bcb22688a0c51f3f43a19114b10c840f719e565545",
+      "kind": 10000,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "wss://carol-relay.example.com"
+        ],
+        [
+          "t",
+          "spam"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a kind 30000 follow set goes to the author's outbox only: its p tags are data, not mentions (NIP-51)",
+    "event": {
+      "id": "643cf9ce8c5e06998edfa5662a85f013eaa9656d097e2acef42eda9fed7475e0",
+      "kind": 30000,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "friends"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "p",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0f12fca39475e53a7006bc1d4bc45a0b31372d84b1093185630f6aab912be4c9",
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://bob-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a kind 1984 report goes to the author's outbox only, never to the reported user's inbox (NIP-56)",
+    "event": {
+      "id": "544dc8710aa920b200c97105b29423a166eaf84880ca483d8df9abbcc3a13a9b",
+      "kind": 1984,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "e",
+          "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "spam"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "spam"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a kind 30023 article still fans out to the users it mentions: only kinds whose p tags are data stay on the outbox",
+    "event": {
+      "id": "7c8e028effd07361439dd39c0f0f4323807c9f012b8672cf7c7c646ea1bfbeeb",
+      "kind": 30023,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "article"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "56e5ee0791863c1ea46832d06b60bb5d4113386754659fcded5e0c6707f4a684",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com",
+        "wss://alice-inbox.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a gift wrap never fans out to the recipient's kind 10002 inbox: DM relays only",
+    "event": {
+      "id": "6752035902664f5309251a4216cd96de33b0c09041f0b25af106f024f6b76bea",
+      "kind": 1059,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "b3b62589b7f59a4bb8362b88ce372c349a1731ba7cbdf469473be88888161432",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "e67a5e93e53f90e34b3542387bdd74df82fde29afae93722c4b0c512e640c807",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "f4806c4d1fd4ef36c7fe315f02ce66060f5bccc734258025dd31032758cd760a",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "dm",
+      "relays": [
+        "wss://alice-dm.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a p-tagged draft never fans out to the tagged user's inbox",
+    "event": {
+      "id": "3518e48bb36178ab2f7e23ed143acb95a04b30abaa2098ee07febddb12b24bfc",
+      "kind": 31234,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "db541c493e7169573f6b581f47c8d738508c9d2db8f14f98b86714f0052f397c",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "77681ba7ad5a8bb567a957e2b491900a89d9181b1837aea001af5d887e27be11",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "draft",
+      "relays": [
+        "wss://private.example.com"
+      ]
+    }
+  },
+  {
+    "name": "a p-tagged group message routes to its group relays only, with no inbox fan-out",
+    "event": {
+      "id": "4dd974e39bfc013b7bbd2b7148450a62fa137b26e23a23067738f8ab82ed1ae6",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "be8cc2ad7fa346aabb9bb48b79cb3c1ee3983e56d9ccad6d640b74c625e03c27",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "1ee30434a1064a7c3ec5c358f3bac58daeb275641cd531715d91bf9b35625d70",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
     }
   }
 ]

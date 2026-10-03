@@ -6,56 +6,155 @@
   },
   {
     "name": "kinds-only filter is valid",
-    "input": { "kinds": [1, 6, 7] },
+    "input": {
+      "kinds": [
+        1,
+        6,
+        7
+      ]
+    },
     "valid": true
   },
   {
     "name": "p-tag-only filter is valid",
-    "input": { "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] },
+    "input": {
+      "#p": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
     "valid": true
   },
   {
     "name": "search-only filter is valid",
-    "input": { "search": "hello" },
+    "input": {
+      "search": "hello"
+    },
     "valid": true
   },
   {
     "name": "all fields combined is valid",
     "input": {
-      "kinds": [1059],
-      "#p": ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+      "kinds": [
+        1059
+      ],
+      "#p": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
       "search": "needle"
     },
     "valid": true
   },
   {
     "name": "non-integer kind returns null",
-    "input": { "kinds": [1, "2", 3] },
+    "input": {
+      "kinds": [
+        1,
+        "2",
+        3
+      ]
+    },
     "valid": false
   },
   {
     "name": "kinds not an array returns null",
-    "input": { "kinds": "1" },
+    "input": {
+      "kinds": "1"
+    },
     "valid": false
   },
   {
     "name": "uppercase pubkey in #p returns null",
-    "input": { "#p": ["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"] },
+    "input": {
+      "#p": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      ]
+    },
     "valid": false
   },
   {
     "name": "non-string pubkey in #p returns null",
-    "input": { "#p": [42] },
+    "input": {
+      "#p": [
+        42
+      ]
+    },
     "valid": false
   },
   {
     "name": "#p not an array returns null",
-    "input": { "#p": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    "input": {
+      "#p": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
     "valid": false
   },
   {
     "name": "non-string search returns null",
-    "input": { "search": 42 },
+    "input": {
+      "search": 42
+    },
+    "valid": false
+  },
+  {
+    "name": "explicit null kinds returns null",
+    "input": {
+      "kinds": null
+    },
+    "valid": false
+  },
+  {
+    "name": "explicit null #p returns null",
+    "input": {
+      "#p": null
+    },
+    "valid": false
+  },
+  {
+    "name": "explicit null search returns null",
+    "input": {
+      "search": null
+    },
+    "valid": false
+  },
+  {
+    "name": "fields routing does not read are ignored",
+    "input": {
+      "kinds": [
+        1
+      ],
+      "authors": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "limit": 20
+    },
+    "valid": true
+  },
+  {
+    "name": "a non-empty JSON array is not a filter",
+    "input": [
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "valid": false
+  },
+  {
+    "name": "kinds as a JSON object returns null",
+    "input": {
+      "kinds": {
+        "first": 1
+      }
+    },
+    "valid": false
+  },
+  {
+    "name": "#p as a JSON object returns null",
+    "input": {
+      "#p": {
+        "first": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
     "valid": false
   }
 ]

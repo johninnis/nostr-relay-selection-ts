@@ -1,140 +1,95 @@
-import type { Event, PublicKey, PublishBranch, PublishContext, RelayUrl } from "./types.ts"
-import {
-  DRAFT_KINDS,
-  INBOX_FANOUT_KINDS,
-  INDEXED_KINDS,
-  KIND_DM_RELAY_LIST,
-  KIND_GIFT_WRAP,
-  KIND_RELAY_LIST,
-} from "./kinds.ts"
-import { buildRelaySet, subtractRelays } from "./build-relay-set.ts"
-import { extractDmRelayUrls, extractInboxRelayUrls, extractOutboxRelayUrls } from "./relay-list.ts"
+import type {
+  Event,
+  NoDmRelaysFailure,
+  PublishPolicy,
+  PublishRoute,
+  RelayDirectory,
+  RelaySet,
+  RelayUrl,
+} from "./types.ts"
+import { isDraftKind, isGiftWrapKind, isIndexedKind } from "./kinds.ts"
 import { normaliseRelayUrl } from "./normalise-url.ts"
-import { newestEventByPubkeyAndKind } from "./event-utils.ts"
-import { createPublicKey } from "./create-public-key.ts"
+import { unionRelays } from "./relay-set.ts"
+import { type Recipient, recipientsOf } from "./recipients.ts"
+import { NO_DM_RELAYS } from "./no-dm-relays.ts"
+import { requireCountOrAll } from "./counts.ts"
 
-const DEFAULT_PER_RECIPIENT_CAP = 3
+interface PublishSettings {
+  readonly privateContentRelays: ReadonlyArray<RelayUrl>
+  readonly indexerRelays: ReadonlyArray<RelayUrl>
+  readonly groupRelays: ReadonlyArray<RelayUrl>
+  readonly perRecipientCap: number
+}
+
+const settingsOf = (policy: PublishPolicy): PublishSettings => ({
+  privateContentRelays: policy.privateContentRelays ?? [],
+  indexerRelays: policy.indexerRelays ?? [],
+  groupRelays: policy.groupRelays ?? [],
+  perRecipientCap: requireCountOrAll("perRecipientCap", policy.perRecipientCap ?? Number.POSITIVE_INFINITY),
+})
+
+const dmRoute = (event: Event, directory: RelayDirectory): PublishRoute | NoDmRelaysFailure => {
+  const relays = unionRelays(...recipientsOf(event).map(({ pubkey }) => directory.relaysOf(pubkey, "dm")))
+  return relays.length > 0 ? { branch: "dm", relays } : NO_DM_RELAYS
+}
+
+const draftRelays = (event: Event, directory: RelayDirectory, settings: PublishSettings): RelaySet => {
+  const privateRelays = directory.permitted(settings.privateContentRelays)
+  return privateRelays.length > 0 ? privateRelays : directory.relaysOf(event.pubkey, "outbox")
+}
+
+const groupRelays = (event: Event, directory: RelayDirectory, settings: PublishSettings): RelaySet => {
+  const groupTag = event.tags.find((tag) => tag[0] === "h" && (tag[1] ?? "").length > 0)
+  if (groupTag === undefined) return []
+  const hint = normaliseRelayUrl(groupTag[2])
+  return directory.permitted(hint === null ? [] : [hint], settings.groupRelays)
+}
+
+const inboxOrHint = (recipient: Recipient, directory: RelayDirectory, cap: number): RelaySet => {
+  const inbox = directory.relaysOf(recipient.pubkey, "inbox")
+  const candidates = inbox.length > 0 ? inbox : directory.permitted(recipient.hint === null ? [] : [recipient.hint])
+  return candidates.slice(0, cap)
+}
+
+const generalRelays = (event: Event, directory: RelayDirectory, settings: PublishSettings): RelaySet => {
+  const fanout = recipientsOf(event).map((recipient) => inboxOrHint(recipient, directory, settings.perRecipientCap))
+  const indexers = isIndexedKind(event.kind) ? directory.permitted(settings.indexerRelays) : []
+  return unionRelays(directory.relaysOf(event.pubkey, "outbox"), ...fanout, indexers)
+}
 
 /**
- * Result of `routePublish`. `branch` discriminates the policy that applied;
- * `relays` is the target list (which may be empty, or `null` for the `"dm"`
- * branch when no DM-relay route exists).
+ * Decide which relays to publish an event to. Branches are tried in order:
+ *
+ * - `"dm"`: kind 1059 and 21059 gift wraps go to every `p`-tagged recipient's kind 10050
+ *   relays; with none to go to, returns `NoDmRelaysFailure` (NIP-17: do not
+ *   publish, no fallback).
+ * - `"draft"`: kinds 30024 / 30403 / 31234 go to `privateContentRelays`, or to
+ *   the author's outbox when none remains after blocking.
+ * - `"group"`: an event with an `h` tag goes to its NIP-29 group relays (the
+ *   tag's relay hint and `groupRelays`) when any remains after blocking.
+ * - `"general"`: the author's outbox (NIP-65 write relays), plus every inbox
+ *   relay (NIP-65 read relays) of each `p`-tagged recipient, plus
+ *   `indexerRelays` for indexed kinds. A recipient with no inbox gets the `p`
+ *   tag's relay hint instead, as a best-effort delivery fallback. A kind whose
+ *   `p` tags are data, not mentions (`isPubkeyDataKind`: follow lists, NIP-51
+ *   lists and sets of people, reports), has no recipients and goes to the
+ *   author's outbox only. `perRecipientCap` limits the inbox relays taken per
+ *   recipient; by default there is no limit.
+ *
+ * Sending the author's kind 10002 to the relays the event went to (NIP-65) is
+ * the caller's job. Blocked relays are removed before any choice is made.
+ * Throws `RangeError` when `perRecipientCap` is neither a positive integer nor
+ * `Infinity`.
  */
-export interface PublishRoute {
-  readonly branch: PublishBranch
-  readonly relays: ReadonlyArray<RelayUrl> | null
-}
-
-interface Recipient {
-  readonly pubkey: PublicKey
-  readonly hint: string | null
-}
-
-const uniqueRecipientsInOrder = (event: Event): ReadonlyArray<Recipient> => {
-  const result: Array<Recipient> = []
-  const seen = new Set<PublicKey>()
-  for (const tag of event.tags) {
-    if (tag[0] !== "p" || typeof tag[1] !== "string") continue
-    const pubkey = createPublicKey(tag[1])
-    if (pubkey === null || seen.has(pubkey)) continue
-    seen.add(pubkey)
-    const hint = typeof tag[2] === "string" && tag[2].length > 0 ? tag[2] : null
-    result.push({ pubkey, hint })
-  }
-  return result
-}
-
-const userOutboxOf = (context: PublishContext): ReadonlyArray<RelayUrl> => {
-  const list = newestEventByPubkeyAndKind(context.relayListEvents, context.userPubkey, KIND_RELAY_LIST)
-  return list ? extractOutboxRelayUrls(list.tags) : []
-}
-
-const recipientInboxRelays = (
-  recipient: Recipient,
-  relayListEvents: ReadonlyArray<Event>,
-  cap: number,
-): ReadonlyArray<RelayUrl> => {
-  const relayList = newestEventByPubkeyAndKind(relayListEvents, recipient.pubkey, KIND_RELAY_LIST)
-  if (relayList) {
-    const inbox = extractInboxRelayUrls(relayList.tags)
-    if (inbox.length > 0) return inbox.slice(0, cap)
-  }
-  if (recipient.hint) {
-    const normalised = normaliseRelayUrl(recipient.hint)
-    if (normalised) return [normalised]
-  }
-  return []
-}
-
-const recipientInboxFanout = (
+export const routePublish = (
   event: Event,
-  relayListEvents: ReadonlyArray<Event>,
-  cap: number,
-): ReadonlyArray<RelayUrl> => {
-  const out: Array<RelayUrl> = []
-  for (const recipient of uniqueRecipientsInOrder(event)) {
-    for (const url of recipientInboxRelays(recipient, relayListEvents, cap)) out.push(url)
-  }
-  return out
-}
-
-const generalRelays = (event: Event, context: PublishContext): ReadonlyArray<RelayUrl> => {
-  const cap = context.perRecipientCap ?? DEFAULT_PER_RECIPIENT_CAP
-  const inbox = INBOX_FANOUT_KINDS.has(event.kind) ? recipientInboxFanout(event, context.relayListEvents, cap) : []
-  const indexers = INDEXED_KINDS.has(event.kind) ? context.indexerRelays : []
-  return buildRelaySet(userOutboxOf(context), inbox, indexers)
-}
-
-const dmRelays = (event: Event, context: PublishContext): ReadonlyArray<RelayUrl> | null => {
-  const out: Array<RelayUrl> = []
-  for (const recipient of uniqueRecipientsInOrder(event)) {
-    const dmList = newestEventByPubkeyAndKind(context.relayListEvents, recipient.pubkey, KIND_DM_RELAY_LIST)
-    if (!dmList) continue
-    for (const url of extractDmRelayUrls(dmList.tags)) out.push(url)
-  }
-  const relays = buildRelaySet(out)
-  return relays.length === 0 ? null : relays
-}
-
-const draftRelays = (context: PublishContext): ReadonlyArray<RelayUrl> => {
-  if (context.privateContentRelays.length > 0) return buildRelaySet(context.privateContentRelays)
-  return buildRelaySet(userOutboxOf(context))
-}
-
-// NIP-29 group tag: ["h", "<group-id>", "<relay-hint>?"]. The relay hint is optional, so the group's
-// relays come from the hint when present, the caller-supplied `groupRelays` otherwise (or both).
-const groupTagOf = (event: Event): ReadonlyArray<string> | undefined =>
-  event.tags.find((tag) => tag[0] === "h" && typeof tag[1] === "string" && tag[1].length > 0)
-
-const groupRelaysFor = (groupTag: ReadonlyArray<string>, context: PublishContext): ReadonlyArray<RelayUrl> => {
-  const hint = typeof groupTag[2] === "string" ? normaliseRelayUrl(groupTag[2]) : null
-  return buildRelaySet(hint ? [hint] : [], context.groupRelays ?? [])
-}
-
-/**
- * Decide which relays to publish an event to. Dispatches into one of four branches:
- * `"group"` (NIP-29 — any event carrying an `h` tag whose group relays are known, from the tag's
- * optional relay hint and/or the caller-supplied `groupRelays`; targets those relays only, no outbox
- * fan-out); `"dm"` (kind 1059, NIP-17 gift-wrap; targets recipients' kind 10050 inboxes, or `null`
- * if none); `"draft"` (kinds 30024 / 30403 / 31234; targets `privateContentRelays` or falls back to
- * the user's outbox); `"general"` (everything else; user's outbox plus, for `INBOX_FANOUT_KINDS`,
- * recipient inbox fanout capped per recipient, plus, for `INDEXED_KINDS`, `indexerRelays`). An
- * `h`-tagged event with no resolvable group relay falls through to its kind's normal branch.
- * `blockedRelays` is subtracted from every output uniformly.
- */
-export const routePublish = (event: Event, context: PublishContext): PublishRoute => {
-  const groupTag = groupTagOf(event)
-  if (groupTag) {
-    const groupRelays = groupRelaysFor(groupTag, context)
-    if (groupRelays.length > 0) return { branch: "group", relays: subtractRelays(groupRelays, context.blockedRelays) }
-  }
-  const branch: PublishBranch = event.kind === KIND_GIFT_WRAP ? "dm" : DRAFT_KINDS.has(event.kind) ? "draft" : "general"
-  if (branch === "dm") {
-    const relays = dmRelays(event, context)
-    if (relays === null) return { branch, relays: null }
-    const afterBlock = subtractRelays(relays, context.blockedRelays)
-    return { branch, relays: afterBlock.length === 0 ? null : afterBlock }
-  }
-  const relays = branch === "draft" ? draftRelays(context) : generalRelays(event, context)
-  return { branch, relays: subtractRelays(relays, context.blockedRelays) }
+  directory: RelayDirectory,
+  policy: PublishPolicy = {},
+): PublishRoute | NoDmRelaysFailure => {
+  const settings = settingsOf(policy)
+  if (isGiftWrapKind(event.kind)) return dmRoute(event, directory)
+  if (isDraftKind(event.kind)) return { branch: "draft", relays: draftRelays(event, directory, settings) }
+  const group = groupRelays(event, directory, settings)
+  if (group.length > 0) return { branch: "group", relays: group }
+  return { branch: "general", relays: generalRelays(event, directory, settings) }
 }

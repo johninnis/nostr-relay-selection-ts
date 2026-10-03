@@ -1,25 +1,42 @@
 [
   {
-    "name": "general: merges userRelayUrls + callerRelays when no search and no gift-wrap #p",
-    "context": {
-      "userRelayUrls": [
-        "wss://user-write.example.com",
-        "wss://user-read.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "name": "general: merges the user's relays and callerRelays when no search and no gift-wrap #p",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "authors": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
-          ],
-          "authors": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          "id": "662c043dd22614697e86999ba404a9fac0aa07ba91cd07c7899eaae59c9c2e85",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "general",
@@ -31,18 +48,21 @@
     }
   },
   {
-    "name": "general: empty userRelayUrls and callerRelays yields empty",
-    "context": {
-      "userRelayUrls": [],
-      "callerRelays": [],
-      "filters": [
-        {
-          "kinds": [
-            1
-          ]
-        }
-      ],
-      "relayListEvents": []
+    "name": "general: no user relay list and no callerRelays yields empty",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
     },
     "expected": {
       "branch": "general",
@@ -51,23 +71,40 @@
   },
   {
     "name": "general: duplicates collapse preserving insertion order",
-    "context": {
-      "userRelayUrls": [
-        "wss://shared.example.com",
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://shared.example.com",
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
+          "id": "e4efa21f41bbc446d7ed191913324bd3979325c91dd9c0c429d4b0e461761ed6",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://shared.example.com"
+            ],
+            [
+              "r",
+              "wss://user.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://shared.example.com",
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "general",
@@ -79,20 +116,34 @@
     }
   },
   {
-    "name": "search: filter with .search returns caller relays only, ignoring userRelayUrls",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "name": "search: filter with .search returns caller relays only, ignoring the user's kind 10002 relays",
+    "filters": [
+      {
+        "search": "hello"
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "search": "hello"
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
+          ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "search",
@@ -103,24 +154,38 @@
   },
   {
     "name": "search: any filter with .search routes to search branch",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1
+        ]
+      },
+      {
+        "search": "needle"
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
           ]
-        },
-        {
-          "search": "needle"
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "search",
@@ -131,23 +196,32 @@
   },
   {
     "name": "dmInbox: kind 1059 with single #p and cached kind 10050 returns DM relays",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [],
-      "filters": [
-        {
-          "kinds": [
-            1059
-          ],
-          "#p": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-          ]
-        }
-      ],
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0b137337bfbe74dcb5b8819f5ca3bc3a0f701f509c8db3ea699954b850ebb4da",
           "kind": 10050,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -162,7 +236,12 @@
             ]
           ]
         }
-      ]
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
     },
     "expected": {
       "branch": "dmInbox",
@@ -173,48 +252,190 @@
     }
   },
   {
-    "name": "dmInbox: kind 1059 with single #p and no cached kind 10050 returns null (no fallback to caller or user relays)",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "name": "dmInbox: kind 21059 addressed to the user reads the user's kind 10050 relays, like kind 1059",
+    "filters": [
+      {
+        "kinds": [
+          21059
+        ],
+        "#p": [
+          "9999999999999999999999999999999999999999999999999999999999999999"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1059
-          ],
-          "#p": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "2e3ea9e1b484e60f0d8fd52f8db6bb83f352b3dbbfe783eb7deaadf9742b5596",
+          "kind": 10050,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://dm-inbox-1.example.com"
+            ],
+            [
+              "relay",
+              "wss://dm-inbox-2.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
     },
     "expected": {
       "branch": "dmInbox",
-      "relays": null
+      "relays": [
+        "wss://dm-inbox-1.example.com",
+        "wss://dm-inbox-2.example.com"
+      ]
+    }
+  },
+  {
+    "name": "dmInbox: kinds 1059 and 21059 in one filter with single #p returns DM relays",
+    "filters": [
+      {
+        "kinds": [
+          1059,
+          21059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0b137337bfbe74dcb5b8819f5ca3bc3a0f701f509c8db3ea699954b850ebb4da",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://dm-inbox-1.example.com"
+            ],
+            [
+              "relay",
+              "wss://dm-inbox-2.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
+    },
+    "expected": {
+      "branch": "dmInbox",
+      "relays": [
+        "wss://dm-inbox-1.example.com",
+        "wss://dm-inbox-2.example.com"
+      ]
+    }
+  },
+  {
+    "name": "dmInbox: kind 1059 with single #p and no cached kind 10050 is refused (no fallback to caller or user relays)",
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "failure": "noDmRelays"
     }
   },
   {
     "name": "dmInbox: kind 1059 with zero #p falls through to general",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1059
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "general",
@@ -226,23 +447,37 @@
   },
   {
     "name": "dmInbox: kind 1059 with two #p entries falls through to general",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1059
-          ],
-          "#p": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
     },
     "expected": {
       "branch": "general",
@@ -253,29 +488,43 @@
   },
   {
     "name": "dmInbox: multi-filter batch mixing gift-wrap with non-gift-wrap falls through to general",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1059
-          ],
-          "#p": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-          ]
-        },
-        {
-          "kinds": [
-            1
+          "id": "f870b95e72ccf0aa869f28ce2a3027528800dfdba6c06b93f805b01241ee4055",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": []
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
     },
     "expected": {
       "branch": "general",
@@ -287,24 +536,40 @@
   },
   {
     "name": "blockedRelays removes a user-blocked relay from the general branch",
-    "context": {
-      "userRelayUrls": [
-        "wss://user.example.com",
-        "wss://blocked.example.com"
-      ],
-      "callerRelays": [
-        "wss://caller.example.com"
-      ],
-      "filters": [
+    "filters": [
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
+          "id": "7b6b94b2bdaf02174edaf365ae1285fca50c0f927a8716feaf95b122a2a1ce11",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user.example.com"
+            ],
+            [
+              "r",
+              "wss://blocked.example.com"
+            ]
           ]
         }
       ],
-      "relayListEvents": [],
       "blockedRelays": [
         "wss://blocked.example.com"
+      ]
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
       ]
     },
     "expected": {
@@ -316,24 +581,40 @@
     }
   },
   {
-    "name": "searchRelays union into the Search branch when filter has search",
-    "context": {
-      "userRelayUrls": [],
-      "callerRelays": [
-        "wss://caller-search.example.com"
-      ],
-      "filters": [
+    "name": "the user's kind 10007 search relays union into the Search branch when filter has search",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "search": "hello"
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
-          ],
-          "search": "hello"
+          "id": "b7c9c3cfc098884ee60d3787e59ae34a7891a438558ae92be0ad8b13f712d6f0",
+          "kind": 10007,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://nostr.wine"
+            ],
+            [
+              "relay",
+              "wss://search.nos.today"
+            ]
+          ]
         }
       ],
-      "relayListEvents": [],
-      "searchRelays": [
-        "wss://nostr.wine",
-        "wss://search.nos.today"
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller-search.example.com"
       ]
     },
     "expected": {
@@ -346,27 +627,42 @@
     }
   },
   {
-    "name": "searchRelays still respects blockedRelays in the Search branch",
-    "context": {
-      "userRelayUrls": [],
-      "callerRelays": [
-        "wss://caller-search.example.com"
-      ],
-      "filters": [
+    "name": "the user's search relays still respect blockedRelays in the Search branch",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "search": "hello"
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
         {
-          "kinds": [
-            1
-          ],
-          "search": "hello"
+          "id": "e5c782c4f120d4925a0bde5c0c56963304957f7d9327614fe9111905cba19d7a",
+          "kind": 10007,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://nostr.wine"
+            ],
+            [
+              "relay",
+              "wss://blocked-search.example.com"
+            ]
+          ]
         }
-      ],
-      "relayListEvents": [],
-      "searchRelays": [
-        "wss://nostr.wine",
-        "wss://blocked-search.example.com"
       ],
       "blockedRelays": [
         "wss://blocked-search.example.com"
+      ]
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller-search.example.com"
       ]
     },
     "expected": {
@@ -379,21 +675,20 @@
   },
   {
     "name": "blockedRelays applies in the dmInbox branch",
-    "context": {
-      "userRelayUrls": [],
-      "callerRelays": [],
-      "filters": [
-        {
-          "kinds": [
-            1059
-          ],
-          "#p": [
-            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-          ]
-        }
-      ],
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
       "relayListEvents": [
         {
+          "id": "f78ac35f518e495a322f6d7567c0643d1b7839f68591af19e0a14ef86fa6be3b",
           "kind": 10050,
           "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           "created_at": 1,
@@ -413,10 +708,467 @@
         "wss://blocked-dm.example.com"
       ]
     },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
+    },
     "expected": {
       "branch": "dmInbox",
       "relays": [
         "wss://alice-dm.example.com"
+      ]
+    }
+  },
+  {
+    "name": "general: the user's inbox and outbox are both read, inbox entries first",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "7988b58f14f24a3b5accb7e8bfe22e7e2b401f4bc2a7fae121cbf0cc8c598203",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-read.example.com",
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "dmInbox: a recipient whose every DM relay is blocked is refused",
+    "filters": [
+      {
+        "kinds": [
+          1059
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "66e7f9037a9839c6d1f1c5c5434d7a6c15dd5a7b9d08207c7494f2aa0f6c1361",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://alice-dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://alice-dm.example.com"
+      ]
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "failure": "noDmRelays"
+    }
+  },
+  {
+    "name": "general: a #p filter reads the tagged user's inbox relays, then callerRelays, not the user's own (NIP-65)",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "3f90593ea8dcdb51b6d6277cc69e60ca32634b013fb584a82673fe8a5bb6689e",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "615f6836db764abfe30aa477d5e64500f3adc82253b5e2eeea695b87ba33f627",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-outbox.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com",
+        "wss://caller.example.com"
+      ]
+    }
+  },
+  {
+    "name": "general: the inboxes of several tagged users are unioned in tag order",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "#p": [
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "dec44586c6476de6f292589d6d82d199c61d5673df480410aba8e35dc418b1f6",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "49bbb5617b87391beb171237562ca090c37d00596dd11843ec61e8a748bc93bf",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-outbox.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "77ecb8b0d38262d3752d5fe4554c6871aef7bd048d17f9c396add5faeacf51da",
+          "kind": 10002,
+          "pubkey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://bob-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://bob-inbox.example.com",
+        "wss://alice-inbox.example.com",
+        "wss://caller.example.com"
+      ]
+    }
+  },
+  {
+    "name": "general: a tagged user with no inbox adds the user's own inbox and outbox after the tagged inboxes",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "b8bd1a37a1af22f5eedaf00a7c1a823f75f7520b9091337ceac17b6284c9fb41",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "1a3b054d52671f2c0f1d34f99be1c8eac27508d7d0d67bae87737876b19b5cd5",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-outbox.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com",
+        "wss://user-read.example.com",
+        "wss://user-write.example.com",
+        "wss://caller.example.com"
+      ]
+    }
+  },
+  {
+    "name": "general: a filter without #p beside a #p filter adds the user's own relays",
+    "filters": [
+      {
+        "kinds": [
+          1
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      },
+      {
+        "kinds": [
+          1
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "3562194d2be5b5b9ba24b82997c966bb01c9478c82f0d40a6db3b4b14378d904",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "9f4e1dde53d30ec154023be41c08303b07e22bb3f5a617db6e1a75163921b5d2",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-outbox.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-inbox.example.com",
+        "wss://user-read.example.com",
+        "wss://user-write.example.com",
+        "wss://caller.example.com"
+      ]
+    }
+  },
+  {
+    "name": "general: blocked relays are removed from a tagged user's inbox first, and one left with none adds the user's own relays",
+    "filters": [
+      {
+        "kinds": [
+          7
+        ],
+        "#p": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      }
+    ],
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "79073f94c5e24e9eaf1a8a7433d990660009879eb7148e46fecef28bc3022a0d",
+          "kind": 10002,
+          "pubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        },
+        {
+          "id": "9fee5ffc3427f093622016fb721ce33a84172108195110fda04dc62c521a46f2",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-outbox.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://alice-inbox.example.com"
+      ]
+    },
+    "policy": {
+      "userPubkey": "9999999999999999999999999999999999999999999999999999999999999999",
+      "callerRelays": [
+        "wss://caller.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-read.example.com",
+        "wss://user-write.example.com",
+        "wss://caller.example.com"
       ]
     }
   }

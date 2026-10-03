@@ -1,35 +1,25 @@
 import type { RelayUrl } from "./types.ts"
 
-// Pure URL classification predicates. The library does NOT apply these itself
-// to routing outputs — callers compose filters with them when they want to
-// exclude classes of relay (e.g. onion-only mode, no insecure clearnet).
+const IPV4_REGEX = /^\d+\.\d+\.\d+\.\d+$/
+const PRIVATE_IPV4_REGEX = /^(?:10\.|192\.168\.|172\.(?:1[6-9]|2\d|3[01])\.)/
 
-const hostnameOf = (url: RelayUrl): string => {
-  try {
-    return new URL(url).hostname.toLowerCase()
-  } catch {
-    return ""
-  }
-}
+const hostOf = (url: RelayUrl): string => url.slice(url.indexOf("//") + 2).split(/[:/?]/, 1)[0] ?? ""
+
+const isIpv4 = (host: string): boolean => IPV4_REGEX.test(host)
 
 /** Host ends with `.onion`. */
-export const isOnionUrl = (url: RelayUrl): boolean => hostnameOf(url).endsWith(".onion")
+export const isOnionUrl = (url: RelayUrl): boolean => hostOf(url).endsWith(".onion")
 
-/** Host is `localhost`, the `127.0.0.0/8` range, or `::1`. */
+/** Host is `localhost` or an IPv4 address in `127.0.0.0/8`. */
 export const isLoopbackUrl = (url: RelayUrl): boolean => {
-  const host = hostnameOf(url)
-  return host === "localhost" || host === "::1" || host.startsWith("127.")
+  const host = hostOf(url)
+  return host === "localhost" || (isIpv4(host) && host.startsWith("127."))
 }
 
-/** Loopback, RFC1918 (`10/8`, `172.16/12`, `192.168/16`), or `.local` mDNS. */
+/** Loopback, an RFC 1918 IPv4 address (`10/8`, `172.16/12`, `192.168/16`), or a `.local` mDNS host. */
 export const isLocalAddrUrl = (url: RelayUrl): boolean => {
-  if (isLoopbackUrl(url)) return true
-  const host = hostnameOf(url)
-  if (host.endsWith(".local")) return true
-  if (/^10\./.test(host)) return true
-  if (/^192\.168\./.test(host)) return true
-  if (/^172\.(1[6-9]|2[0-9]|3[0-1])\./.test(host)) return true
-  return false
+  const host = hostOf(url)
+  return isLoopbackUrl(url) || host.endsWith(".local") || (isIpv4(host) && PRIVATE_IPV4_REGEX.test(host))
 }
 
 /** `ws://` and not an onion host. */

@@ -1,52 +1,36 @@
 import type { Filter, PublicKey } from "./types.ts"
 import { createPublicKey } from "./create-public-key.ts"
+import { isRecord } from "./is-record.ts"
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value)
+const MISSING = Symbol("missing")
+
+const parseKinds = (value: unknown): ReadonlyArray<number> | null =>
+  Array.isArray(value) && value.every((kind) => typeof kind === "number" && Number.isInteger(kind)) ? value : null
+
+const parsePubkeys = (value: unknown): ReadonlyArray<PublicKey> | null => {
+  if (!Array.isArray(value)) return null
+  const pubkeys = value.map((hex) => typeof hex === "string" ? createPublicKey(hex) : null)
+  return pubkeys.every((pubkey): pubkey is PublicKey => pubkey !== null) ? pubkeys : null
+}
+
+const parseSearch = (value: unknown): string | null => typeof value === "string" ? value : null
 
 /**
  * Validate and construct a typed `Filter` from JSON-shaped input. Validates
- * `kinds`, `#p` (each entry must be a valid pubkey), and `search`; returns
- * `null` on malformed input. Use at the wire-format boundary when the input is
+ * `kinds`, `#p` (each entry must be a valid pubkey) and `search`; returns
+ * `null` on malformed input. Other filter fields are dropped, since routing
+ * never reads them. Use at the wire-format boundary when the input is
  * untrusted JSON.
  */
 export const createFilter = (raw: unknown): Filter | null => {
   if (!isRecord(raw)) return null
-
-  const result: Record<string, unknown> = {}
-
-  if ("kinds" in raw) {
-    const rawKinds = raw.kinds
-    if (!Array.isArray(rawKinds)) return null
-    const kinds: Array<number> = []
-    for (const kind of rawKinds) {
-      if (typeof kind !== "number" || !Number.isInteger(kind)) return null
-      kinds.push(kind)
-    }
-    result.kinds = kinds
+  const kinds = "kinds" in raw ? parseKinds(raw.kinds) : MISSING
+  const pTags = "#p" in raw ? parsePubkeys(raw["#p"]) : MISSING
+  const search = "search" in raw ? parseSearch(raw.search) : MISSING
+  if (kinds === null || pTags === null || search === null) return null
+  return {
+    ...(kinds === MISSING ? {} : { kinds }),
+    ...(pTags === MISSING ? {} : { "#p": pTags }),
+    ...(search === MISSING ? {} : { search }),
   }
-
-  if ("#p" in raw) {
-    const rawP = raw["#p"]
-    if (!Array.isArray(rawP)) return null
-    const pTags: Array<PublicKey> = []
-    for (const pubkeyHex of rawP) {
-      if (typeof pubkeyHex !== "string") return null
-      const pubkey = createPublicKey(pubkeyHex)
-      if (pubkey === null) return null
-      pTags.push(pubkey)
-    }
-    result["#p"] = pTags
-  }
-
-  if ("search" in raw) {
-    if (typeof raw.search !== "string") return null
-    result.search = raw.search
-  }
-
-  // Branded-type factory: every field above has been validated as it was placed
-  // into `result`, so this `as` is the single legitimate construction point for
-  // the `Filter` shape.
-  // deno-lint-ignore innis/no-type-assertions
-  return result as Filter
 }

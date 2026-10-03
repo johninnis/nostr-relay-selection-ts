@@ -1,0 +1,512 @@
+[
+  {
+    "name": "author has kind 10002 with inbox entries",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "45d359cf75447c35729a95032c2b60a3dbc42a16a2436839e114f784bab442ac",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-inbox.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://author-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://author-inbox.example.com"
+    ]
+  },
+  {
+    "name": "author has kind 10002 with only write entries returns empty",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "2161f93caf198a62d56f66395f88f96be1d33b6bd811655ca4227da615e1e395",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "unmarked r tag treated as both (inbox and outbox)",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "ccd66ac04a91a273a910dca6cc686ee8de735708a08d75fcced4ad717c325cd3",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-both.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://author-both.example.com"
+    ]
+  },
+  {
+    "name": "author has no cached relay list returns empty",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "rust-nostr fixture: kind-10002 inbox extraction (unmarked r-tags = read+write)",
+    "source": "input event from tests/corpus/external-fixtures/rust-nostr/kind-10002-nip65-relay-list.json",
+    "pubkey": "68d81165918100b7da43fc28f7d1fc12554466e1115886b9e7bb326f65ec4272",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0a49bed4a1eb0973a68a0d43b7ca62781ffd4e052b91bbadef09e5cf756f6e68",
+          "pubkey": "68d81165918100b7da43fc28f7d1fc12554466e1115886b9e7bb326f65ec4272",
+          "created_at": 1759351841,
+          "kind": 10002,
+          "tags": [
+            [
+              "alt",
+              "Relay list to discover the user's content"
+            ],
+            [
+              "r",
+              "wss://relay.damus.io/"
+            ],
+            [
+              "r",
+              "wss://nostr.wine/"
+            ],
+            [
+              "r",
+              "wss://nostr.oxtr.dev/"
+            ],
+            [
+              "r",
+              "wss://relay.nostr.wirednet.jp/"
+            ]
+          ],
+          "content": "",
+          "sig": "f5bc6c18b0013214588d018c9086358fb76a529aa10867d4d02a75feb239412ae1c94ac7c7917f6e6e2303d72f00dc4e9b03b168ef98f3c3c0dec9a457ce0304"
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://relay.damus.io",
+      "wss://nostr.wine",
+      "wss://nostr.oxtr.dev",
+      "wss://relay.nostr.wirednet.jp"
+    ]
+  },
+  {
+    "name": "outbox role keeps write and both markers",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "outbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "85ba9b11792261e801578fcbe441c106049e47163f072c2a7e90e1f8a49738b8",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://both.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://write.example.com",
+      "wss://both.example.com"
+    ]
+  },
+  {
+    "name": "dm role reads the newest kind 10050, not kind 10002",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "dm",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0c9442978c51d56555dd92b997bfae7c7d43686a1bb9b28237cade23fcdfab34",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 5,
+          "tags": [
+            [
+              "r",
+              "wss://nip65.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "800b218b7e5e9f1014f26658d75b9bfeeb5c0baadf00b37eb081f20fceb91f9d",
+          "kind": 10050,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://dm.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://dm.example.com"
+    ]
+  },
+  {
+    "name": "search role reads the kind 10007 search relay list",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "search",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0c3c24e1ab0dde29a68dfb17a443dd15aa8fdc33bdac448576b50bd89a3b9a7b",
+          "kind": 10007,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://search.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://search.example.com"
+    ]
+  },
+  {
+    "name": "blocked role reads the public entries of the kind 10006 blocked relay list",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "blocked",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "70e9ea5f0d907e5eb58039e8c13dcc323bfd68d8035d5062796c122936c262db",
+          "kind": 10006,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "relay",
+              "wss://spam.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://spam.example.com"
+    ]
+  },
+  {
+    "name": "the directory blocklist is subtracted from every role",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "557f5e108d3a1cf5c11e1bd46ab4c62e959a5c9c33a787475cc3694d70373723",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://kept.example.com"
+            ],
+            [
+              "r",
+              "wss://blocked.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://blocked.example.com"
+      ]
+    },
+    "expected": [
+      "wss://kept.example.com"
+    ]
+  },
+  {
+    "name": "duplicate entries in a relay list collapse to one",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "9a4196faabcad63df3fb23dbea7c2bcc2d260a5299fa2a16f9752df4a96bea79",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://dup.example.com"
+            ],
+            [
+              "r",
+              "WSS://Dup.Example.COM/"
+            ],
+            [
+              "r",
+              "wss://other.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://dup.example.com",
+      "wss://other.example.com"
+    ]
+  },
+  {
+    "name": "the newest list wins even when it arrives first",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "f92d5f65bf71722c5a2ac6ca1562815b288a883be88bcf44c80e92d559551f46",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 200,
+          "tags": [
+            [
+              "r",
+              "wss://new.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0a877fffe5d6a0d03b0c59f7147bc4a9dfc55ddc330a46ef2b9485b409e1973e",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://old.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://new.example.com"
+    ]
+  },
+  {
+    "name": "equal created_at: the lowest id wins (NIP-01), lower id listed first",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0000000000000000000000000000000000000000000000000000000000000001",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://low-id.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0000000000000000000000000000000000000000000000000000000000000002",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://high-id.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://low-id.example.com"
+    ]
+  },
+  {
+    "name": "equal created_at: the lowest id wins (NIP-01), lower id listed last",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0000000000000000000000000000000000000000000000000000000000000002",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://high-id.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0000000000000000000000000000000000000000000000000000000000000001",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://low-id.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://low-id.example.com"
+    ]
+  },
+  {
+    "name": "equal created_at: ids are compared as text, never as numbers (0e… ids read as zero)",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "0e00000000000000000000000000000000000000000000000000000000000002",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://high-id.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0e00000000000000000000000000000000000000000000000000000000000001",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://low-id.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://low-id.example.com"
+    ]
+  },
+  {
+    "name": "equal created_at: ids are compared as text, never as numbers (1e…5 and …100000 read as equal)",
+    "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "role": "inbox",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1e00000000000000000000000000000000000000000000000000000000000005",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://high-id.example.com"
+            ]
+          ]
+        },
+        {
+          "id": "0000000000000000000000000000000000000000000000000000000000100000",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 100,
+          "tags": [
+            [
+              "r",
+              "wss://low-id.example.com"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": [
+      "wss://low-id.example.com"
+    ]
+  }
+]

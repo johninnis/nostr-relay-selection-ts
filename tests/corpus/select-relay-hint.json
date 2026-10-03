@@ -1,105 +1,408 @@
 [
   {
-    "name": "picks overlap of target inbox and user outbox",
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "name": "the target's first outbox relay, where its events are found (NIP-02, NIP-10, NIP-18, NIP-19), never its inbox",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "b97039513175155f6b727ba798a64cae268bcc4b3101e4e4f03767298638dbbf",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
-          "tags": [["r", "wss://shared.example.com", "write"], ["r", "wss://user-only.example.com", "write"]]
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
         },
         {
+          "id": "ffe78ea00381062fe088373344c5eaf7b454e1d1fc56565aad320f6c43581528",
           "kind": 10002,
           "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
           "created_at": 1,
-          "tags": [["r", "wss://shared.example.com", "read"], ["r", "wss://target-only.example.com", "read"]]
+          "tags": [
+            [
+              "r",
+              "wss://target-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://target-write.example.com",
+              "write"
+            ]
+          ]
         }
-      ]
+      ],
+      "blockedRelays": []
     },
-    "expected": "wss://shared.example.com"
+    "expected": "wss://target-write.example.com"
   },
   {
-    "name": "no overlap: falls back to first entry of target's inbox",
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "name": "a target whose relay list has no outbox falls back to the user's first inbox relay",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "b97039513175155f6b727ba798a64cae268bcc4b3101e4e4f03767298638dbbf",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
-          "tags": [["r", "wss://user-only.example.com", "write"]]
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
         },
         {
+          "id": "24d0a884be180217422edea4f361abf5aabf62f725127e6b5b08ceaf6a2193b4",
           "kind": 10002,
           "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
           "created_at": 1,
-          "tags": [["r", "wss://target-a.example.com", "read"], ["r", "wss://target-b.example.com", "read"]]
+          "tags": [
+            [
+              "r",
+              "wss://target-read.example.com",
+              "read"
+            ]
+          ]
         }
-      ]
+      ],
+      "blockedRelays": []
     },
-    "expected": "wss://target-a.example.com"
+    "expected": "wss://user-read.example.com"
   },
   {
-    "name": "target has no inbox: falls back to first entry of user's outbox",
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "name": "a target with no relay list falls back to the user's first inbox relay",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "1b64a0805644fbd050e5d16297937252d66695d421863bb9d27a1783e39873ce",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 1,
-          "tags": [["r", "wss://user-a.example.com", "write"], ["r", "wss://user-b.example.com", "write"]]
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read-a.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://user-read-b.example.com",
+              "read"
+            ]
+          ]
         }
-      ]
+      ],
+      "blockedRelays": []
     },
-    "expected": "wss://user-a.example.com"
+    "expected": "wss://user-read-a.example.com"
   },
   {
-    "name": "neither side has relays: returns null",
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
-      "relayListEvents": []
+    "name": "no target outbox and no user inbox returns null, never the user's outbox",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
     },
     "expected": null
   },
   {
     "name": "newest kind 10002 per pubkey wins (replaceable-event semantics)",
-    "context": {
-      "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
-      "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
       "relayListEvents": [
         {
+          "id": "39d08345061b60a0280d2b63f174940e560d6b39e719822a3efc11b1c25f91a9",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 100,
-          "tags": [["r", "wss://user-old.example.com", "write"]]
+          "tags": [
+            [
+              "r",
+              "wss://user-old.example.com",
+              "read"
+            ]
+          ]
         },
         {
+          "id": "c364bf19fbca9fd506e5ce96a2cbf26171fb5621adf4702fadce7a2ad0dcf42b",
           "kind": 10002,
           "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
           "created_at": 200,
-          "tags": [["r", "wss://user-new.example.com", "write"]]
+          "tags": [
+            [
+              "r",
+              "wss://user-new.example.com",
+              "read"
+            ]
+          ]
         },
         {
+          "id": "2a038bde446f1b2467a7a68916f7292aead8835a859e54e58c4f14639f59232a",
           "kind": 10002,
           "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
           "created_at": 100,
-          "tags": [["r", "wss://target-old.example.com", "read"]]
+          "tags": [
+            [
+              "r",
+              "wss://target-old.example.com",
+              "write"
+            ]
+          ]
         },
         {
+          "id": "c29fefd901c8d1bee7ef46f17962a19c420e55cfe4173881b32b402f3f055846",
           "kind": 10002,
           "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
           "created_at": 200,
-          "tags": [["r", "wss://target-new.example.com", "read"]]
+          "tags": [
+            [
+              "r",
+              "wss://target-new.example.com",
+              "write"
+            ]
+          ]
         }
-      ]
+      ],
+      "blockedRelays": []
     },
     "expected": "wss://target-new.example.com"
+  },
+  {
+    "name": "a blocked outbox relay is skipped for the target's next outbox relay",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "b97039513175155f6b727ba798a64cae268bcc4b3101e4e4f03767298638dbbf",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0c070bdd061ecffad82115831ab1be59091e9582e2e940c94567b726100309b5",
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://target-blocked.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://target-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://target-blocked.example.com"
+      ]
+    },
+    "expected": "wss://target-write.example.com"
+  },
+  {
+    "name": "the relay the target was seen on wins, in canonical form",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "seenOn": "WSS://Seen.Example.com/",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "78ac68e683f27bb1d90844e71b63dea1efcbf1641f07caae52fc749c1e54499c",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0eb9e30314b0812cdd9912024c1b4f0dc94bcf4cffb8d0ac18168119e0b6a8a4",
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://author-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "expected": "wss://seen.example.com"
+  },
+  {
+    "name": "a blocked seen-on relay is skipped for the target's first outbox relay",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "seenOn": "wss://seen.example.com",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "78ac68e683f27bb1d90844e71b63dea1efcbf1641f07caae52fc749c1e54499c",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0eb9e30314b0812cdd9912024c1b4f0dc94bcf4cffb8d0ac18168119e0b6a8a4",
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://author-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://seen.example.com"
+      ]
+    },
+    "expected": "wss://author-write.example.com"
+  },
+  {
+    "name": "a target whose outbox is all blocked falls back to the user's first inbox relay",
+    "userPubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+    "targetPubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "78ac68e683f27bb1d90844e71b63dea1efcbf1641f07caae52fc749c1e54499c",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ],
+            [
+              "r",
+              "wss://user-read.example.com",
+              "read"
+            ]
+          ]
+        },
+        {
+          "id": "0eb9e30314b0812cdd9912024c1b4f0dc94bcf4cffb8d0ac18168119e0b6a8a4",
+          "kind": 10002,
+          "pubkey": "2222222222222222222222222222222222222222222222222222222222222222",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://author-read.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://author-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": [
+        "wss://author-write.example.com"
+      ]
+    },
+    "expected": "wss://user-read.example.com"
   }
 ]

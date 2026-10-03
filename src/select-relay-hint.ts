@@ -1,32 +1,31 @@
-import type { RelayHintContext, RelayUrl } from "./types.ts"
-import { KIND_RELAY_LIST } from "./kinds.ts"
-import { subtractRelays } from "./build-relay-set.ts"
-import { extractInboxRelayUrls, extractOutboxRelayUrls } from "./relay-list.ts"
-import { newestEventByPubkeyAndKind } from "./event-utils.ts"
+import type { PublicKey, RelayDirectory, RelayUrl } from "./types.ts"
 
 /**
- * Pick a single relay URL hint for an `e` / `p` / `q` tag. Prefers the
- * intersection of the user's outbox with the target's inbox, falls back to
- * either side's first relay, returns `null` if neither side has a list.
+ * What a relay hint points at. `pubkey` is whose events the hint should find:
+ * the referenced event's author for an `e` / `q` / `a` tag, the tagged user for
+ * a `p` tag. `seenOn` is a relay the caller received the target from, when
+ * known: the referenced event itself, or an event by the tagged user.
  */
-export const selectRelayHint = (context: RelayHintContext): RelayUrl | null => {
-  const targetList = newestEventByPubkeyAndKind(context.relayListEvents, context.targetPubkey, KIND_RELAY_LIST)
-  const userList = newestEventByPubkeyAndKind(context.relayListEvents, context.userPubkey, KIND_RELAY_LIST)
-  const targetInbox = subtractRelays(
-    targetList ? extractInboxRelayUrls(targetList.tags) : [],
-    context.blockedRelays,
-  )
-  const userOutbox = subtractRelays(
-    userList ? extractOutboxRelayUrls(userList.tags) : [],
-    context.blockedRelays,
-  )
-
-  const targetInboxSet = new Set(targetInbox)
-  for (const url of userOutbox) {
-    if (targetInboxSet.has(url)) return url
-  }
-
-  if (targetInbox.length > 0) return targetInbox[0] ?? null
-  if (userOutbox.length > 0) return userOutbox[0] ?? null
-  return null
+export interface RelayHintTarget {
+  readonly pubkey: PublicKey
+  readonly seenOn?: RelayUrl | undefined
 }
+
+/**
+ * Pick one relay URL hint for a tag pointing at `target`: a relay where the
+ * target's events are found. `null` when no candidate remains. Blocked relays
+ * are never chosen.
+ *
+ * Candidates, in order: `seenOn`, then the first of the target's outbox
+ * relays, then the first of the user's inbox relays.
+ */
+export const selectRelayHint = (
+  userPubkey: PublicKey,
+  target: RelayHintTarget,
+  directory: RelayDirectory,
+): RelayUrl | null =>
+  directory.permitted(
+    target.seenOn === undefined ? [] : [target.seenOn],
+    directory.relaysOf(target.pubkey, "outbox"),
+    directory.relaysOf(userPubkey, "inbox"),
+  )[0] ?? null
