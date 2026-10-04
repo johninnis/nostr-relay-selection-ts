@@ -26,15 +26,15 @@
     "fmt": "deno fmt",
     "fmt:check": "deno fmt --check",
     "test": "deno test -A",
-    "coverage": "rm -rf cov_profile && deno test -A --coverage=cov_profile && deno coverage cov_profile --lcov --output=cov_profile/lcov.info && deno coverage cov_profile && deno run --allow-read jsr:@innis/coding-standards@^0.2.2/check-coverage",
-    "exports-tested": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.2/check-exports-tested --exempt '^KIND_'",
-    "docs": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.2/check-docs",
-    "lint-exemptions": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.2/check-lint-exemptions",
+    "coverage": "rm -rf cov_profile && deno test -A --coverage=cov_profile && deno coverage cov_profile --lcov --output=cov_profile/lcov.info && deno coverage cov_profile && deno run --allow-read jsr:@innis/coding-standards@^0.2.3/check-coverage",
+    "exports-tested": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.3/check-exports-tested --exempt '^KIND_'",
+    "docs": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.3/check-docs",
+    "lint-exemptions": "deno run --allow-read --allow-run jsr:@innis/coding-standards@^0.2.3/check-lint-exemptions",
     "publish:dry": "deno publish --dry-run",
     "ci": "deno task fmt:check && deno task lint && deno task lint-exemptions && deno task check && deno task coverage && deno task exports-tested && deno task docs"
   },
   "lint": {
-    "plugins": ["jsr:@innis/coding-standards@^0.2.2/lint-plugin"],
+    "plugins": ["jsr:@innis/coding-standards@^0.2.3/lint-plugin"],
     "rules": {
       "include": ["no-console", "ban-untagged-todo", "explicit-function-return-type", "no-non-null-assertion"],
       "exclude": ["require-await"]
