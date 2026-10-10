@@ -12,7 +12,7 @@ import {
   KIND_AUTHORED_PODCASTS_LIST,
   KIND_BLOCKED_RELAYS_LIST,
   KIND_DM_RELAY_LIST,
-  KIND_DRAFT_EVENT,
+  KIND_DRAFT_WRAP,
   KIND_EPHEMERAL_GIFT_WRAP,
   KIND_FAVOURITE_PODCASTS_LIST,
   KIND_FOLLOW_LIST,
@@ -81,8 +81,8 @@ Deno.test("createEventId rejects uppercase, short and non-hex input", () => {
   assertEquals(["F".repeat(64), "f".repeat(63), "g".repeat(64)].map(createEventId), [null, null, null])
 })
 
-Deno.test("isDraftKind is true for a NIP-37 draft and false for a short note", () => {
-  assertEquals([isDraftKind(KIND_DRAFT_EVENT), isDraftKind(TEXT_NOTE)], [true, false])
+Deno.test("isDraftKind is true for a NIP-37 draft wrap and false for a short note", () => {
+  assertEquals([isDraftKind(KIND_DRAFT_WRAP), isDraftKind(TEXT_NOTE)], [true, false])
 })
 
 Deno.test("isGiftWrapKind is true for both NIP-59 gift wraps and false for a short note", () => {

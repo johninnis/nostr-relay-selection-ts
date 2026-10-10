@@ -36,8 +36,8 @@ export const KIND_KIND_MUTE_SET = 30007
 export const KIND_LONGFORM_CONTENT_DRAFT = 30024
 /** NIP-99 classified listing draft. */
 export const KIND_CLASSIFIED_LISTING_DRAFT = 30403
-/** NIP-37 private draft event. */
-export const KIND_DRAFT_EVENT = 31234
+/** NIP-37 draft wrap. */
+export const KIND_DRAFT_WRAP = 31234
 /** NIP-51 starter pack. */
 export const KIND_STARTER_PACK = 39089
 /** NIP-51 media starter pack. */
@@ -48,7 +48,7 @@ const GIFT_WRAP_KINDS: ReadonlySet<number> = new Set([KIND_GIFT_WRAP, KIND_EPHEM
 const DRAFT_KINDS: ReadonlySet<number> = new Set([
   KIND_LONGFORM_CONTENT_DRAFT,
   KIND_CLASSIFIED_LISTING_DRAFT,
-  KIND_DRAFT_EVENT,
+  KIND_DRAFT_WRAP,
 ])
 
 const PUBKEY_DATA_KINDS: ReadonlySet<number> = new Set([
