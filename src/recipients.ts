@@ -1,4 +1,4 @@
-import type { Event, PublicKey, RelayUrl } from "./types.ts"
+import type { Event, PublicKey, RelayUrl, Tag } from "./types.ts"
 import { createPublicKey } from "./create-public-key.ts"
 import { isPubkeyDataKind } from "./kinds.ts"
 import { normaliseRelayUrl } from "./normalise-url.ts"
@@ -8,7 +8,7 @@ export interface Recipient {
   readonly hint: RelayUrl | null
 }
 
-const recipientOf = (tag: ReadonlyArray<string>): Recipient | null => {
+const recipientOf = (tag: Tag): Recipient | null => {
   const pubkey = tag[0] === "p" && tag[1] !== undefined ? createPublicKey(tag[1]) : null
   return pubkey === null ? null : { pubkey, hint: normaliseRelayUrl(tag[2]) }
 }

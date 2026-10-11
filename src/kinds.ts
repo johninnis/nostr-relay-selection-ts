@@ -2,6 +2,8 @@
 export const KIND_METADATA = 0
 /** NIP-02 follow list. */
 export const KIND_FOLLOW_LIST = 3
+/** NIP-A4 public message: sent to every inbox relay of each receiver, whatever the per-recipient cap. */
+export const KIND_PUBLIC_MESSAGE = 24
 /** NIP-59 gift wrap (used for NIP-17 DMs). */
 export const KIND_GIFT_WRAP = 1059
 /** NIP-56 report. */
@@ -34,8 +36,6 @@ export const KIND_FOLLOW_SET = 30000
 export const KIND_KIND_MUTE_SET = 30007
 /** NIP-23 long-form draft. */
 export const KIND_LONGFORM_CONTENT_DRAFT = 30024
-/** NIP-99 classified listing draft. */
-export const KIND_CLASSIFIED_LISTING_DRAFT = 30403
 /** NIP-37 draft wrap. */
 export const KIND_DRAFT_WRAP = 31234
 /** NIP-51 starter pack. */
@@ -45,11 +45,7 @@ export const KIND_MEDIA_STARTER_PACK = 39092
 
 const GIFT_WRAP_KINDS: ReadonlySet<number> = new Set([KIND_GIFT_WRAP, KIND_EPHEMERAL_GIFT_WRAP])
 
-const DRAFT_KINDS: ReadonlySet<number> = new Set([
-  KIND_LONGFORM_CONTENT_DRAFT,
-  KIND_CLASSIFIED_LISTING_DRAFT,
-  KIND_DRAFT_WRAP,
-])
+const DRAFT_KINDS: ReadonlySet<number> = new Set([KIND_LONGFORM_CONTENT_DRAFT, KIND_DRAFT_WRAP])
 
 const PUBKEY_DATA_KINDS: ReadonlySet<number> = new Set([
   KIND_FOLLOW_LIST,

@@ -10,6 +10,7 @@ import {
   type RelayDirectory,
   type RelayRole,
   type RelayUrl,
+  type Tag,
 } from "../../mod.ts"
 
 export type Json = Readonly<Record<string, unknown>>
@@ -36,7 +37,14 @@ export const stringOf = (value: unknown): string =>
 
 export const stringsOf = (value: unknown): ReadonlyArray<string> => listOf(value).map(stringOf)
 
-export const tagsOf = (value: unknown): ReadonlyArray<ReadonlyArray<string>> => listOf(value).map(stringsOf)
+const tagOf = (value: unknown): Tag => {
+  const [name, ...values] = stringsOf(value)
+  return name === undefined
+    ? fail(`expected a tag of one or more strings, got ${JSON.stringify(value)}`)
+    : [name, ...values]
+}
+
+export const tagsOf = (value: unknown): ReadonlyArray<Tag> => listOf(value).map(tagOf)
 
 export const relayUrlOf = (value: unknown): RelayUrl =>
   normaliseRelayUrl(stringOf(value)) ?? fail(`invalid relay URL in fixture: ${value}`)

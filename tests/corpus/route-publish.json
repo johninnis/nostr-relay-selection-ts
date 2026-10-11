@@ -556,7 +556,7 @@
     }
   },
   {
-    "name": "kind 30403 classified listing draft with privateContentRelays routes exclusively to those",
+    "name": "kind 30403 classified listing draft is a public listing, not private content: it takes the general branch and privateContentRelays are not used (NIP-99)",
     "event": {
       "id": "876e0db2cf7765e1af2ce23537e2e8ef762f8b16d9204f5446a67777f533e5c2",
       "kind": 30403,
@@ -590,14 +590,14 @@
       "groupRelays": []
     },
     "expected": {
-      "branch": "draft",
+      "branch": "general",
       "relays": [
-        "wss://private.example.com"
+        "wss://user-write.example.com"
       ]
     }
   },
   {
-    "name": "kind 30403 classified listing draft with empty privateContentRelays falls back to userOutbox",
+    "name": "kind 30403 classified listing draft with empty privateContentRelays goes to the author's outbox on the general branch, like any public event",
     "event": {
       "id": "876e0db2cf7765e1af2ce23537e2e8ef762f8b16d9204f5446a67777f533e5c2",
       "kind": 30403,
@@ -629,9 +629,56 @@
       "groupRelays": []
     },
     "expected": {
-      "branch": "draft",
+      "branch": "general",
       "relays": [
         "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an h-tagged kind 30403 classified listing draft takes the group branch, like any public group event",
+    "event": {
+      "id": "5e7fe83a0cc64579c5bfb59ddf730bd7308512affbed8b2cb62af9775425bc6e",
+      "kind": 30403,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [
+        "wss://private.example.com"
+      ],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
       ]
     }
   },
@@ -1132,6 +1179,63 @@
       "branch": "general",
       "relays": [
         "wss://alice-1.example.com"
+      ]
+    }
+  },
+  {
+    "name": "kind 24 public message is exempt from perRecipientCap: it goes to every inbox relay of each receiver (NIP-A4)",
+    "event": {
+      "id": "eb41f9368e3cce12ce15122afab60435185ed02876db4ff0929941c58e752be5",
+      "kind": 24,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "ea95a90a9fda2c79026a6edbee248dfbfa5a89792855371caa84a3093d50cc47",
+          "kind": 10002,
+          "pubkey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://alice-1.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-2.example.com",
+              "read"
+            ],
+            [
+              "r",
+              "wss://alice-3.example.com",
+              "read"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [],
+      "perRecipientCap": 1
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://alice-1.example.com",
+        "wss://alice-2.example.com",
+        "wss://alice-3.example.com"
       ]
     }
   },
@@ -1888,7 +1992,7 @@
     }
   },
   {
-    "name": "real-world: kind 9 group message with no relay hint and no groupRelays falls through to general",
+    "name": "real-world: kind 9 group message with no relay hint and no groupRelays takes the group route with no relays, never the general route",
     "event": {
       "kind": 9,
       "id": "8d0f60327e886d7bc96d35a6c0a937fb63ac17617720c396a70840aeffab2f17",
@@ -1916,7 +2020,7 @@
       "groupRelays": []
     },
     "expected": {
-      "branch": "general",
+      "branch": "group",
       "relays": []
     }
   },
@@ -2390,7 +2494,7 @@
     }
   },
   {
-    "name": "a group message whose every group relay is blocked falls through to its kind's normal branch",
+    "name": "a group message whose every group relay is blocked takes the group route with no relays, never its kind's public route",
     "event": {
       "id": "94aeb4da2f8d6444a0c313e6182c7c00ea5c72283ad2c06733790abd227bd87b",
       "kind": 9,
@@ -2430,10 +2534,8 @@
       "groupRelays": []
     },
     "expected": {
-      "branch": "general",
-      "relays": [
-        "wss://user-write.example.com"
-      ]
+      "branch": "group",
+      "relays": []
     }
   },
   {
@@ -3086,6 +3188,396 @@
       "branch": "group",
       "relays": [
         "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "h tags naming the same group id are one claim: the relay their hints name, compared in canonical form, is the hint",
+    "event": {
+      "id": "2d31793293987a70f3cd43b6b4576ed1bcebda239e9b110ad40651d9de90a8e2",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ],
+        [
+          "h",
+          "group-id",
+          "WSS://Group.Example.com:443/"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "h tags naming the same group id with disagreeing hints carry no hint: the caller's groupRelays are the group relays",
+    "event": {
+      "id": "f40114e112e28193a98e4048e51c0589a7d01dbfd2230086cff41be6807bf4ba",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "wss://group-a.example.com"
+        ],
+        [
+          "h",
+          "group-id",
+          "wss://group-b.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [
+        "wss://group.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an h tag with no hint takes no part in the hint: the hint of the other h tag naming the group is used",
+    "event": {
+      "id": "8144c61fdcf0175332082dbb06ef217782c9eb363007cd6f508dd9b8741bf33b",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id"
+        ],
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an h tag whose hint is not a relay URL takes no part in the hint: the hint of the other h tag naming the group is used",
+    "event": {
+      "id": "a4d332e0a44a914e67bea5bbbebda544b938bdc3baaa9c9dca236e0fa8e39beb",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id",
+          "https://group.example.com"
+        ],
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "h tags naming different group ids name no group: the group route with no relays, whatever their hints and groupRelays",
+    "event": {
+      "id": "d783e7fa5228c940cd07a8296e50ca53f29d354503a6fb794cbeaf1ab9af8da3",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-a",
+          "wss://group-a.example.com"
+        ],
+        [
+          "h",
+          "group-b",
+          "wss://group-b.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [
+        "wss://group.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "group",
+      "relays": []
+    }
+  },
+  {
+    "name": "an h tag with an empty group id takes no part: the other h tag's group decides the route",
+    "event": {
+      "id": "f66a9b05a575246cb1beda365dd67e18170451944954aa72ecda532542c6360e",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          ""
+        ],
+        [
+          "h",
+          "group-id",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "group",
+      "relays": [
+        "wss://group.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an event whose only h tag has an empty group id names no group and takes its kind's normal branch",
+    "event": {
+      "id": "7baa4062ad8b3ae063bcfc8771d61c97cd5ef50f0fabdde1531a56f7be517574",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "",
+          "wss://group.example.com"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": []
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
+      ]
+    }
+  },
+  {
+    "name": "an h tag with no group id names no group: the event takes its kind's normal branch, and groupRelays are not used",
+    "event": {
+      "id": "4afa743f09c44e2933149b71889e1afe6221f436240b4d075f90846d44a6dda7",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [
+        {
+          "id": "1d1af8d73ed68456788c57fe7ce2cc77829dfd70e1276527f62c870f5668d97d",
+          "kind": 10002,
+          "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+          "created_at": 1,
+          "tags": [
+            [
+              "r",
+              "wss://user-write.example.com",
+              "write"
+            ]
+          ]
+        }
+      ],
+      "blockedRelays": []
+    },
+    "policy": {
+      "privateContentRelays": [],
+      "indexerRelays": [],
+      "groupRelays": [
+        "wss://group.example.com"
+      ]
+    },
+    "expected": {
+      "branch": "general",
+      "relays": [
+        "wss://user-write.example.com"
       ]
     }
   }

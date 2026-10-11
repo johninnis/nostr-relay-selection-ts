@@ -1,9 +1,11 @@
 import { assert, assertEquals, assertThrows } from "@std/assert"
 import {
+  createEvent,
   createEventId,
   createPublicKey,
   createRelayDirectory,
   type Event,
+  extractRelays,
   findFilterPattern,
   isDraftKind,
   isGiftWrapKind,
@@ -56,6 +58,7 @@ const requireRelayUrl = (raw: string): RelayUrl => {
 const ALICE = requirePublicKey("a".repeat(64))
 const TEXT_NOTE = 1
 const LONG_FORM_ARTICLE = 30023
+const CLASSIFIED_LISTING_DRAFT = 30403
 const RELAY_A = requireRelayUrl("wss://a.example.com")
 const RELAY_B = requireRelayUrl("wss://b.example.com")
 
@@ -64,6 +67,14 @@ const relayList = (urls: ReadonlyArray<string>): Event => {
   if (id === null) throw new Error("Invalid event id")
   return { id, kind: KIND_RELAY_LIST, pubkey: ALICE, created_at: 1, tags: urls.map((url) => ["r", url]) }
 }
+
+const rawEventCreatedAt = (createdAt: number): unknown => ({
+  id: "e".repeat(64),
+  kind: TEXT_NOTE,
+  pubkey: ALICE,
+  created_at: createdAt,
+  tags: [],
+})
 
 Deno.test("createPublicKey accepts 64 lowercase hex characters", () => {
   assertEquals(createPublicKey("a".repeat(64)), "a".repeat(64))
@@ -81,8 +92,29 @@ Deno.test("createEventId rejects uppercase, short and non-hex input", () => {
   assertEquals(["F".repeat(64), "f".repeat(63), "g".repeat(64)].map(createEventId), [null, null, null])
 })
 
+Deno.test("the Event type refuses a tag with no elements at compile time, as createEvent refuses one at run time", () => {
+  const event: Event = {
+    ...relayList([]),
+    // @ts-expect-error a tag is one or more strings, so the compiler refuses an empty one
+    tags: [[]],
+  }
+  assertEquals(createEvent(event), null)
+})
+
+Deno.test("createEvent reads a created_at of Number.MAX_SAFE_INTEGER", () => {
+  assertEquals(createEvent(rawEventCreatedAt(Number.MAX_SAFE_INTEGER))?.created_at, Number.MAX_SAFE_INTEGER)
+})
+
+Deno.test("createEvent refuses a created_at above Number.MAX_SAFE_INTEGER, as @innis/nostr-core does", () => {
+  assertEquals(createEvent(rawEventCreatedAt(Number.MAX_SAFE_INTEGER + 1)), null)
+})
+
 Deno.test("isDraftKind is true for a NIP-37 draft wrap and false for a short note", () => {
   assertEquals([isDraftKind(KIND_DRAFT_WRAP), isDraftKind(TEXT_NOTE)], [true, false])
+})
+
+Deno.test("isDraftKind is false for a NIP-99 classified listing draft, a public listing", () => {
+  assertEquals(isDraftKind(CLASSIFIED_LISTING_DRAFT), false)
 })
 
 Deno.test("isGiftWrapKind is true for both NIP-59 gift wraps and false for a short note", () => {
@@ -123,6 +155,11 @@ Deno.test("isPubkeyDataKind is false for kinds whose p tags are mentions", () =>
   ])
 })
 
+Deno.test("extractRelays refuses a tag with no elements at compile time, as the Event type does", () => {
+  // @ts-expect-error a tag is one or more strings, so the compiler refuses an empty one
+  assertEquals(extractRelays([[]], "inbox"), [])
+})
+
 Deno.test("relayListKindOf names the kind each role is read from", () => {
   assertEquals(
     (["inbox", "outbox", "dm", "search", "blocked"] as const).map(relayListKindOf),
@@ -161,7 +198,7 @@ Deno.test("findFilterPattern carries the shared gift-wrap recipient on the dmInb
 })
 
 Deno.test("routePublish refuses a gift wrap with no DM relays by returning NO_DM_RELAYS", () => {
-  const event = { ...relayList([]), kind: KIND_GIFT_WRAP, tags: [["p", ALICE]] }
+  const event: Event = { ...relayList([]), kind: KIND_GIFT_WRAP, tags: [["p", ALICE]] }
   assertEquals(routePublish(event, createRelayDirectory([])), NO_DM_RELAYS)
 })
 

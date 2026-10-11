@@ -100,6 +100,105 @@
     "valid": false
   },
   {
+    "name": "kind above 65535 returns null",
+    "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "kind": 65536,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "negative kind returns null",
+    "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "kind": -1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "kind 65535, the largest kind, is valid",
+    "input": {
+      "id": "d4d88c0ac4a076ff10dbd254fbd7d534e62db5c6a6c9ea8c0ffd58a3dd6d56bc",
+      "kind": 65535,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": []
+    },
+    "valid": true
+  },
+  {
+    "name": "negative created_at returns null",
+    "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": -1,
+      "tags": []
+    },
+    "valid": false
+  },
+  {
+    "name": "created_at 0, the earliest time, is valid",
+    "input": {
+      "id": "9fad9908f71d5120a13726cd333e74d163cd2b55b129e1ef29829056a363a8e7",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 0,
+      "tags": []
+    },
+    "valid": true
+  },
+  {
+    "name": "a tag with no elements returns null",
+    "input": {
+      "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        []
+      ]
+    },
+    "valid": false
+  },
+  {
+    "name": "a tag whose name is the empty string is valid",
+    "input": {
+      "id": "b18e12d211407bd0ebdc276a8cbc563c20b9ab74b5c3dc6a0b2f741106e73284",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "",
+          "x"
+        ]
+      ]
+    },
+    "valid": true
+  },
+  {
+    "name": "a tag of one empty string is valid",
+    "input": {
+      "id": "1afc6250850e1fcd5e3ec3e3c3617410022f9bdd89313257282822be7e6294f9",
+      "kind": 1,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          ""
+        ]
+      ]
+    },
+    "valid": true
+  },
+  {
     "name": "tag with non-string element returns null",
     "input": {
       "id": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",

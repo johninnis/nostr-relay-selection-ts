@@ -20,6 +20,12 @@ declare const eventIdBrand: unique symbol
 export type EventId = string & { readonly [eventIdBrand]: void }
 
 /**
+ * A NIP-01 event tag: one or more strings, the first its name. Any of them,
+ * the name included, may be the empty string.
+ */
+export type Tag = readonly [string, ...ReadonlyArray<string>]
+
+/**
  * Protocol-only Nostr event: the five fields relay routing reads. `id` is read
  * only to break a `created_at` tie between two relay lists (NIP-01: the lowest
  * id wins). Construct from untrusted JSON via `createEvent`.
@@ -29,7 +35,7 @@ export interface Event {
   readonly kind: number
   readonly pubkey: PublicKey
   readonly created_at: number
-  readonly tags: ReadonlyArray<ReadonlyArray<string>>
+  readonly tags: ReadonlyArray<Tag>
 }
 
 /**
@@ -111,7 +117,10 @@ export interface PublishPolicy {
   readonly indexerRelays?: ReadonlyArray<RelayUrl>
   /** Caller-resolved relays hosting the NIP-29 group of an `h`-tagged event. */
   readonly groupRelays?: ReadonlyArray<RelayUrl>
-  /** Most inbox relays taken per recipient; a positive integer or `Infinity` for all, default all (NIP-65). */
+  /**
+   * Most inbox relays taken per recipient; a positive integer or `Infinity` for all, default all (NIP-65). Never
+   * applies to a kind 24 public message, which goes to every inbox relay of each receiver (NIP-A4).
+   */
   readonly perRecipientCap?: number | undefined
 }
 

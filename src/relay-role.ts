@@ -1,4 +1,4 @@
-import type { RelayRole, RelaySet } from "./types.ts"
+import type { RelayRole, RelaySet, Tag } from "./types.ts"
 import { KIND_BLOCKED_RELAYS_LIST, KIND_DM_RELAY_LIST, KIND_RELAY_LIST, KIND_SEARCH_RELAYS_LIST } from "./kinds.ts"
 import { buildRelaySet } from "./relay-set.ts"
 
@@ -16,7 +16,7 @@ const ROLE_RULES: Readonly<Record<RelayRole, RoleRule>> = {
   blocked: { kind: KIND_BLOCKED_RELAYS_LIST, tagName: "relay" },
 }
 
-const accepts = (rule: RoleRule, tag: ReadonlyArray<string>): boolean =>
+const accepts = (rule: RoleRule, tag: Tag): boolean =>
   tag[0] === rule.tagName && (rule.oppositeMarker === undefined || tag[2] !== rule.oppositeMarker)
 
 /** The replaceable relay-list kind a role is read from: 10002, 10050, 10007 or 10006. */
@@ -29,7 +29,7 @@ export const relayListKindOf = (role: RelayRole): number => ROLE_RULES[role].kin
  * by several `r` tags serves the union of them. URLs are
  * normalised; malformed entries are dropped and duplicates collapse.
  */
-export const extractRelays = (tags: ReadonlyArray<ReadonlyArray<string>>, role: RelayRole): RelaySet => {
+export const extractRelays = (tags: ReadonlyArray<Tag>, role: RelayRole): RelaySet => {
   const rule = ROLE_RULES[role]
   return buildRelaySet(
     tags

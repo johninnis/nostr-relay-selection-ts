@@ -105,7 +105,7 @@ An **expected routing outcome** is one of:
 }
 ```
 
-`perRecipientCap` is optional: a positive integer or `"all"`, default `"all"`, the most inbox relays taken per recipient. In the `general` branch an event goes to the author's outbox and to the inbox of every `p`-tagged recipient (NIP-65), falling back to the `p` tag's relay hint, as best-effort delivery, for a recipient with no inbox. A kind whose `p` tags are data, not mentions, has no recipients and goes to the author's outbox only: kind 3 (NIP-02 follow list), kind 1984 (NIP-56 report), and the NIP-51 lists and sets of people, kinds 10000, 10017, 10020, 10054, 10064, 10101, 30000, 30007, 39089 and 39092. The publisher's outbox is the event author's (`event.pubkey`). Branches are tried in this order: `dm` (kind 1059 or 21059, the NIP-59 stored and ephemeral gift wraps), `draft` (kinds 30024, 30403, 31234), `group` (an `h` tag whose group relays, from the tag's relay hint and `groupRelays`, are not all blocked), then `general`. Blocked relays are removed before any choice is made: before the per-recipient cap is taken, before the `p`-tag hint fallback is considered, before `privateContentRelays` is judged empty, and before group relays are judged empty.
+`perRecipientCap` is optional: a positive integer or `"all"`, default `"all"`, the most inbox relays taken per recipient. It never applies to a kind 24 public message, which NIP-A4 sends to every inbox relay of each receiver. In the `general` branch an event goes to the author's outbox and to the inbox of every `p`-tagged recipient (NIP-65), falling back to the `p` tag's relay hint, as best-effort delivery, for a recipient with no inbox. A kind whose `p` tags are data, not mentions, has no recipients and goes to the author's outbox only: kind 3 (NIP-02 follow list), kind 1984 (NIP-56 report), and the NIP-51 lists and sets of people, kinds 10000, 10017, 10020, 10054, 10064, 10101, 30000, 30007, 39089 and 39092. The publisher's outbox is the event author's (`event.pubkey`). Branches are tried in this order: `dm` (kind 1059 or 21059, the NIP-59 stored and ephemeral gift wraps), `draft` (kinds 30024 and 31234; kind 30403, a NIP-99 listing saved as a draft or inactive, is public and routes like any other event), `group` (an `h` tag with a non-empty group id), then `general`. The `h` tags are read as one claim, as nostr-adrs ADR-0014 decides: tags naming the same group id name that group whatever relay hints they carry, and tags naming different group ids name no group. The hint is the one relay that every tag carrying a relay URL as its hint names, compared in canonical form; hints that disagree are no hint, and a tag with no hint, or with one that is not a relay URL, takes no part. A group event's relays are that hint and `groupRelays`. When none remains after blocking, or the tags name no one group, the route is `group` with no relays: a group event never takes the `general` branch. Blocked relays are removed before any choice is made: before the per-recipient cap is taken, before the `p`-tag hint fallback is considered, before `privateContentRelays` is judged empty, and from the group relays.
 
 ### `route-read.json`
 
@@ -155,7 +155,7 @@ An **expected routing outcome** is one of:
 { "name": "...", "event": { ... }, "directory": { ... }, "expected": ["<hex>"] }
 ```
 
-For every kind except the gift wrap kinds (1059, 21059), the draft kinds (30024, 30403, 31234) and the kinds whose `p` tags are data (listed under `route-publish.json`), the `p`-tagged recipients (first occurrence, malformed pubkeys skipped) whose inbox is empty after blocking: exactly the recipients the `general` publish branch falls back to the `p`-tag hint for. One vector per data kind pins that list.
+For every event except a gift wrap (kinds 1059, 21059), a draft (kinds 30024, 31234), a group event (an `h` tag with a non-empty group id, which takes the `group` branch) and a kind whose `p` tags are data (listed under `route-publish.json`), the `p`-tagged recipients (first occurrence, malformed pubkeys skipped) whose inbox is empty after blocking: exactly the recipients the `general` publish branch falls back to the `p`-tag hint for. One vector per data kind pins that list.
 
 ### `find-filter-pattern.json`
 
@@ -176,6 +176,8 @@ Address ranges are matched only on IPv4 dotted-quad hosts; a hostname such as `1
 ```json
 { "name": "...", "input": { ... }, "valid": true }
 ```
+
+An event is valid when all five fields are present and well-formed: `id` and `pubkey` 64 lowercase hex characters, `kind` an integer from 0 to 65535, `created_at` a non-negative integer, and `tags` a list of tags, each a list of one or more strings, any of which may be the empty string. A `created_at` above 2^53 − 1 is refused by the TypeScript implementation and read by the PHP one, each as its nostr-core library does (nostr-adrs ADR-0098), so no vector pins it.
 
 ### `real-world/*.json`
 

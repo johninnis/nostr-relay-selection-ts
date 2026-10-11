@@ -27,4 +27,4 @@ The DM-inbox branch is unchanged: a filter set asking only for gift wraps addres
 - A notification query (`#p` naming the user) reads the user's inbox, which is where NIP-65 publishers deliver it, and no longer adds the user's outbox.
 - A query for another user's mentions reads that user's inbox and does not depend on the querying user's relays.
 - Do not drop the fallback to the user's own relays for an untagged filter or a tagged user with no inbox: the read would route to nothing.
-- Shared decision: nostr-adrs ADR-0042.
+- Shared decisions: nostr-adrs ADR-0042 and ADR-0044 (blocked relays removed first).

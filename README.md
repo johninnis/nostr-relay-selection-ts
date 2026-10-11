@@ -70,7 +70,7 @@ const event = createEvent(json) // Event | null: id, kind, pubkey, created_at, t
 const filter = createFilter(json) // Filter | null: kinds, #p, search (other fields dropped)
 ```
 
-`Event` carries the five fields routing reads. `id` is used only to break a `created_at` tie between two relay lists: the lowest id wins, as NIP-01 specifies. See [ADR-0004](docs/adr/0004-the-event-value-carries-the-five-fields-routing-reads.md), [ADR-0003](docs/adr/0003-the-library-re-declares-the-protocol-types-it-needs-in-both-ports.md) and [ADR-0005](docs/adr/0005-a-relay-url-public-key-or-event-id-is-constructed-only-through-validation.md).
+`Event` carries the five fields routing reads. `id` is used only to break a `created_at` tie between two relay lists: the lowest id wins, as NIP-01 specifies. `createEvent` refuses, as `@innis/nostr-core` does, an event whose `kind` lies outside 0 to 65535, whose `created_at` is negative or above `Number.MAX_SAFE_INTEGER`, or which carries a tag with no elements, `[]`, and the `Event` type's `tags` are `Tag`s, one or more strings, so the compiler refuses `[]` too. A tag whose name is the empty string is a tag like any other. See [ADR-0004](docs/adr/0004-the-event-value-carries-the-five-fields-routing-reads.md), [ADR-0003](docs/adr/0003-the-library-re-declares-the-protocol-types-it-needs-in-both-ports.md) and [ADR-0005](docs/adr/0005-a-relay-url-public-key-or-event-id-is-constructed-only-through-validation.md).
 
 ## The relay directory
 
@@ -106,11 +106,11 @@ The blocklist is passed in rather than read from a kind 10006 event because NIP-
 | Branch | When | Relays |
 | --- | --- | --- |
 | `"dm"` | kind 1059 or 21059 (NIP-59 gift wrap, stored or ephemeral) | Every `p`-tagged recipient's kind 10050 relays. None left: `NoDmRelaysFailure` (NIP-17: do not publish; there is no fallback). |
-| `"draft"` | kinds 30024, 30403, 31234 | `privateContentRelays`, or the author's outbox when none remains after blocking. |
-| `"group"` | an `h` tag with a group id (NIP-29) | The `h` tag's relay hint and `groupRelays`; no outbox or inbox fan-out. When none remains after blocking, the event falls through to `"general"`. |
-| `"general"` | everything else | The author's outbox; plus every inbox relay of each `p`-tagged recipient (NIP-65), or, as a best-effort fallback, the `p` tag's relay hint when the recipient has no inbox; plus `indexerRelays` for indexed kinds (0, 3, 10002, 10050). `perRecipientCap` limits the inbox relays per recipient; by default there is no limit. A kind whose `p` tags are data, not mentions, has no recipients and goes to the author's outbox (and indexers) only: kind 3 (NIP-02 follow list), 1984 (NIP-56 report) and the NIP-51 lists and sets of people, 10000, 10017, 10020, 10054, 10064, 10101, 30000, 30007, 39089 and 39092 (`isPubkeyDataKind`). Every other kind fans out ([ADR-0018](docs/adr/0018-a-public-event-is-also-sent-to-every-inbox-relay-of-each-user-it-tags.md)). |
+| `"draft"` | kinds 30024 and 31234 (NIP-23 draft article, NIP-37 draft wrap) | `privateContentRelays`, or the author's outbox when none remains after blocking. Kind 30403, a NIP-99 classified listing saved as a draft or inactive, is public and takes the branch its tags give it. |
+| `"group"` | an `h` tag with a non-empty group id (NIP-29) | The `h` tags' relay hint and `groupRelays`; no outbox or inbox fan-out. The `h` tags are one claim: tags naming the same group id name that group whatever hints they carry, the hint is the one relay every tag with a relay URL hint names, compared in canonical form, and hints that disagree are no hint. Tags naming different group ids name no group, and the route has no relays. When none remains after blocking, the route has no relays either: a group event never falls through to `"general"` ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)). |
+| `"general"` | everything else | The author's outbox; plus every inbox relay of each `p`-tagged recipient (NIP-65), or, as a best-effort fallback, the `p` tag's relay hint when the recipient has no inbox; plus `indexerRelays` for indexed kinds (0, 3, 10002, 10050). `perRecipientCap` limits the inbox relays per recipient; by default there is no limit, and a kind 24 public message (NIP-A4) always goes to every inbox relay of each receiver. A kind whose `p` tags are data, not mentions, has no recipients and goes to the author's outbox (and indexers) only: kind 3 (NIP-02 follow list), 1984 (NIP-56 report) and the NIP-51 lists and sets of people, 10000, 10017, 10020, 10054, 10064, 10101, 30000, 30007, 39089 and 39092 (`isPubkeyDataKind`). Every other kind fans out ([ADR-0018](docs/adr/0018-a-public-event-is-also-sent-to-every-inbox-relay-of-each-user-it-tags.md)). |
 
-The outbox is always the event author's (`event.pubkey`). Blocked relays are removed before any choice: a recipient's inbox is deduplicated and cleared of blocked relays before the cap is taken, a blocked hint is ignored, and a draft or group whose relays are all blocked falls back as above ([ADR-0010](docs/adr/0010-blocked-relays-are-removed-before-any-choice-is-made.md)). DM and draft branches come before the group branch, so private content never reaches a group relay ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)), and no DM, draft or group message fans out to a tagged user's inbox.
+The outbox is always the event author's (`event.pubkey`). Blocked relays are removed before any choice: a recipient's inbox is deduplicated and cleared of blocked relays before the cap is taken, a blocked hint is ignored, a draft whose relays are all blocked falls back to the author's outbox, and a group event whose relays are all blocked keeps the group route with none ([ADR-0010](docs/adr/0010-blocked-relays-are-removed-before-any-choice-is-made.md)). DM and draft branches come before the group branch, so private content never reaches a group relay ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)), and no DM, draft or group message fans out to a tagged user's inbox.
 
 NIP-65 also asks that the author's kind 10002 be sent to every relay the event was published to. That is your job: publish the author's relay list event to the same route.
 
@@ -123,7 +123,7 @@ const route = routePublish(event, directory, {
 })
 ```
 
-A non-DM route may have an empty `relays` when your inputs name no relay (the author has no outbox and you supplied nothing); what to fall back to is your decision. `perRecipientCap` must be a positive integer or `Infinity`; anything else throws `RangeError`.
+A non-DM route may have an empty `relays` when your inputs name no relay (the author has no outbox and you supplied nothing, or a group event names no relay of its group); what to fall back to is your decision. `perRecipientCap` must be a positive integer or `Infinity`; anything else throws `RangeError`.
 
 ## Route a read
 
@@ -155,7 +155,7 @@ for (const route of routeAuthorReads(followed, directory, { fallbackRelays, maxA
 | --- | --- |
 | `selectRelayHint(userPubkey, target, directory)` | One relay hint for a tag, else `null`: a relay where the target's events are found ([ADR-0020](docs/adr/0020-a-relay-hint-names-where-its-target-is-found-and-prefers-the-relay-it-was-seen-on.md)). `target` is `{ pubkey, seenOn? }`: `pubkey` is the referenced event's author for an `e` / `q` / `a` tag and the tagged user for a `p` tag; `seenOn` is a relay you received the target from (the event, or an event by the tagged user). The hint is `seenOn` unless blocked, else the target's first outbox relay, else the user's first inbox relay. |
 | `selectZapRequestRelays(zapperPubkey, recipientPubkey, directory)` | NIP-57: the zapper's inbox relays, then the recipient's. |
-| `recipientsWithoutInbox(event, directory)` | The `p`-tagged recipients publish routing cannot reach through an inbox (no kind 10002, no read entries, or all blocked), for which the `"general"` branch falls back to the `p`-tag hint. Useful for fetching missing relay lists before publishing. Empty for gift wrap and draft kinds and for kinds whose `p` tags are data, which never fan out. |
+| `recipientsWithoutInbox(event, directory)` | The `p`-tagged recipients publish routing cannot reach through an inbox (no kind 10002, no read entries, or all blocked), for which the `"general"` branch falls back to the `p`-tag hint. Useful for fetching missing relay lists before publishing. Empty for gift wrap and draft kinds, for a group event (an `h` tag with a non-empty group id) and for kinds whose `p` tags are data, none of which fans out to an inbox. |
 | `extractRelays(tags, role)` | Read one role's relays from a relay-list event's tags. |
 | `relayListKindOf(role)` | The kind a role is read from. |
 | `buildRelaySet(...sources)` | Parse raw URL strings into a `RelaySet`: normalised, malformed ones dropped, duplicates collapsed, first-seen order. |
@@ -175,6 +175,17 @@ Three lists can be partly or wholly encrypted, so you pass their relays in rathe
 | 10006 blocked relays | NIP-51 | `createRelayDirectory(events, blockedRelays)`; removed from everything. |
 | 10007 search relays | NIP-51 | Public entries are read from the directory for the `"search"` branch; add decrypted entries to `callerRelays` for a search query. |
 | 10013 private content relays | NIP-37 | `privateContentRelays` on the publish policy, for drafts. |
+
+## Upgrading from 0.3
+
+0.4 routes group events, kind 30403 and kind 24 as the shared Nostr records decide, and refuses more malformed events:
+
+- A NIP-29 group event never falls through to `"general"`. An event whose `h` tag names a group routes as `"group"` even when no relay remains, from the tag's hint or `groupRelays`, after blocking, and the route's `relays` is then empty: resolve the group's relay, or do not publish ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)).
+- `h` tags are read as one claim instead of first-wins. Tags naming the same group id name that group whatever hints they carry; the hint is the one relay every tag with a relay URL hint names, in canonical form, and hints that disagree are no hint, leaving `groupRelays`. Tags naming different group ids name no group and route as `"group"` with no relays ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)).
+- `recipientsWithoutInbox` reports no recipients for a group event (an `h` tag with a non-empty group id), which never fans out to an inbox. It tells a group event by the reader `routePublish` uses ([ADR-0011](docs/adr/0011-private-branches-take-precedence-over-group-routing.md)).
+- Kind 30403, the NIP-99 classified listing draft, is a public listing, no longer a draft: it routes as `"general"`, or `"group"` when an `h` tag names its group, never to `privateContentRelays`, and `recipientsWithoutInbox` reports its recipients. `KIND_CLASSIFIED_LISTING_DRAFT` is removed, and `isDraftKind(30403)` is `false` ([ADR-0014](docs/adr/0014-a-kind-is-named-only-when-routing-branches-on-it.md)).
+- A kind 24 public message (NIP-A4) goes to every inbox relay of each receiver whatever `perRecipientCap` you set. `KIND_PUBLIC_MESSAGE` (24) is exported again for it ([ADR-0018](docs/adr/0018-a-public-event-is-also-sent-to-every-inbox-relay-of-each-user-it-tags.md)).
+- `createEvent` returns `null` for a `kind` outside 0 to 65535, a negative `created_at` or one above `Number.MAX_SAFE_INTEGER` (2^53 − 1), and a tag with no elements, `[]`, as `@innis/nostr-core` refuses them. `Event`'s `tags` are `ReadonlyArray<Tag>`, `Tag` being `readonly [string, ...ReadonlyArray<string>]`, so an event built in code with a tag `[]` no longer compiles, and an event literal whose tags TypeScript infers as `string[][]` needs an `Event` annotation. `extractRelays` takes `ReadonlyArray<Tag>` likewise: pass it an `Event`'s `tags` ([ADR-0004](docs/adr/0004-the-event-value-carries-the-five-fields-routing-reads.md)).
 
 ## Upgrading from 0.2
 

@@ -323,6 +323,82 @@
     "expected": []
   },
   {
+    "name": "a kind 30403 classified listing draft with a recipient who has no inbox reports them: it is a public listing, not private content (NIP-99)",
+    "event": {
+      "id": "d6e4c397febf8aa1739ccb931b8ea2587bfa96ed829174541eb17c9ef1339bc8",
+      "kind": 30403,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "d",
+          "listing"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
+    "name": "a group event reports nothing, whatever its group relays: an h tag naming a group takes the group route, which never fans out to an inbox",
+    "event": {
+      "id": "d60bcbbffa2f8e3ae7c06fcefb2c0c7f80d884ec45648d6d1b7e8cc82e619e8e",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          "group-id"
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": []
+  },
+  {
+    "name": "an event whose only h tag has an empty group id names no group, so its recipient with no inbox is reported",
+    "event": {
+      "id": "aba7c4f392c2e61a7148ac189722d222b6b60f6ed2e246e7f03f6aaff92200ee",
+      "kind": 9,
+      "pubkey": "1111111111111111111111111111111111111111111111111111111111111111",
+      "created_at": 100,
+      "tags": [
+        [
+          "h",
+          ""
+        ],
+        [
+          "p",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ]
+      ]
+    },
+    "directory": {
+      "relayListEvents": [],
+      "blockedRelays": []
+    },
+    "expected": [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    ]
+  },
+  {
     "name": "a kind 3 follow list reports nothing: its p tags are data, not mentions (NIP-02)",
     "event": {
       "id": "764eb150dd3714318f285c9dd0aa2d8b10fcf88ea181e9d1cb08c4af9fb6ae80",
