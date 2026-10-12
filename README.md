@@ -220,7 +220,7 @@ Three lists can be partly or wholly encrypted, so you pass their relays in rathe
 ## Testing
 
 ```bash
-deno task ci       # format check, lint, type-check, tests with the coverage floor, exports tested, docs
+deno task ci       # format check, lint, type-check, tests with the coverage floor, exports tested, docs, path lengths
 deno task test     # tests only
 deno publish --dry-run
 ```
